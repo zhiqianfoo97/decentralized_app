@@ -1,0 +1,41 @@
+body{
+    width:100%;
+    height:100%;
+}
+
+#pageMain{
+    display :flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    align-content: space-around;
+    margin: auto;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(143, 143, 182);
+
+
+    
+}
+
+#signupBox{
+    display: flex;
+    flex-direction: column;
+    width:100%;
+    height:100%;
+
+}
+
+#signupBox input{
+    padding:10px;
+    margin: 10px;
+}
+
+#signupBox button{
+
+    margin-top: 25px;
+
+
+}
