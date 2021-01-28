@@ -5,3 +5,7 @@ import UserResultPage from './userResultPage';
 import UserSignupPage from './signupPage';
 import UserInfo from './userInfo';
 import UserPayment from './userPayment';
+import UserLandingPage from './userLandingPage';
+import UserHistory from './userHistory';
+import ProviderHistory from './providerHistory';
+import ProviderIncomingAppointment from './providerIncomingAppointment'
