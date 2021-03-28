@@ -1,5 +1,6 @@
 import React, { useState }  from "react";
-import './page.css';
+// import './page.css';
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 const RegisterPage = () => {
 
@@ -16,26 +17,25 @@ const RegisterPage = () => {
 
 
     return (
-        <body>
-            <div id="pageMain">
+            <div >
+                <h3>
+                    Register As
+                </h3>
                 <div>
-                    REGISTER AS
-                </div>
-                <div>
-                    {/* bottom is just a temp, need to change to router in the future */}
-                    <form onSubmit={asUser} id="signupBox"> 
-                        <button type="submit">New User</button>
-                    </form>
-                    <form onSubmit={asProvider} id="signupBox"> 
-                        <button type="submit">New Supplier</button>
-                    </form>
+                    <button type="submit" className="btn custom-button btn-block">
+                        <Link className="nav-link" to={"/user-sign-up"}>New User</Link>
+                    </button>
+
+                    <button type="submit" className="btn custom-button btn-block">
+                        <Link className="nav-link" to={"/supplier-sign-up"}>New Supplier</Link>
+                    </button>
+                    
                 </div>
             </div>
-        </body>
-
-
     )
 
 }
+
+
 
 export default RegisterPage;
