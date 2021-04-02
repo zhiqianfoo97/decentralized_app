@@ -1,6 +1,4 @@
 import React, { useState }  from "react";
-import './page.css';
-
 const SupplierSignUpPage = () => {
     const initialState = {
         username : "",
@@ -29,34 +27,36 @@ const SupplierSignUpPage = () => {
 
     
     return (
-        <form>
-            <h3>New Supplier</h3>
+        <div className="auth-inner"> 
+            <form>
+                <h3>New Supplier</h3>
 
-            <div className="form-group">
-                <label>Name</label>
-                <input type="text" className="form-control" placeholder="Enter name" />
-            </div>
+                <div className="form-group">
+                    <label>Name</label>
+                    <input type="text" className="form-control" placeholder="Enter name" />
+                </div>
 
-            <div className="form-group">
-                <label>Address </label>
-                <input type="text" className="form-control" placeholder="Enter address" />
-            </div>
+                <div className="form-group">
+                    <label>Address </label>
+                    <input type="text" className="form-control" placeholder="Enter address" />
+                </div>
 
-            <div className="form-group">
-                <label>Healthcare Provider Number</label>
-                <input type="text" className="form-control" placeholder="Enter healthcare provider no." />
-            </div>
+                <div className="form-group">
+                    <label>Healthcare Provider Number</label>
+                    <input type="text" className="form-control" placeholder="Enter healthcare provider no." />
+                </div>
 
-            <div className="form-group">
-                <label>Password</label>
-                <input type="password" className="form-control" placeholder="Enter password" />
-            </div>
+                <div className="form-group">
+                    <label>Password</label>
+                    <input type="password" className="form-control" placeholder="Enter password" />
+                </div>
 
-            <button type="submit" className="btn btn-primary btn-block">Sign Up</button>
-            <p className="forgot-password text-right">
-                Already registered <a href="#">sign in?</a>
-            </p>
-        </form>
+                <button type="submit" className="btn btn-primary btn-block">Sign Up</button>
+                <p className="forgot-password text-right">
+                    Already registered <a href="#">sign in?</a>
+                </p>
+            </form>
+        </div>
     );
 
 

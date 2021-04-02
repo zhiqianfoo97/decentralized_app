@@ -3,8 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.35",
+    "@fortawesome/free-solid-svg-icons": "^5.15.3",
+    "@fortawesome/react-fontawesome": "^0.1.14",
+    "awesome-react-icons": "^1.4.8",
     "react": "16.11.0",
     "react-dom": "16.11.0",
+    "react-minimal-side-navigation": "^1.8.0",
     "react-scripts": "3.2.0",
     "web3": "1.2.2"
   },

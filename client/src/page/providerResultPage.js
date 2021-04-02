@@ -1,39 +1,9 @@
 import React, { useState }  from "react";
+const ProviderResultPage = (props) => {
 
-const UserResultPage = (props) => {
-
-    // return (
-    //     <body>
-    //         <div id="pageMain">
-    //             <div>
-    //                 Result
-    //             </div>
-    //             <div>
-    //                 <div>
-    //                     Venue : {props.venue}
-    //                 </div>
-    //                 <div>
-    //                     Date : {props.date}
-    //                 </div>
-    //                 <div>
-    //                     Name : {props.name}
-    //                 </div>
-    //                 <div>
-    //                     HKID : {props.hkid}
-    //                 </div>
-    //                 <div>
-    //                     Result : {props.result}
-    //                 </div>
-
-    //                 <button type="submit">Pay to view</button>
-    //             </div>
-    //         </div>
-    //     </body>
-
-
-    // )
 
     return (
+        
         <div className="auth-inner"> 
             <form>
                 <h3 class = "title">User Result</h3>
@@ -88,4 +58,4 @@ const UserResultPage = (props) => {
 
 }
 
-export default UserResultPage;
+export default ProviderResultPage;

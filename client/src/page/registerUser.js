@@ -1,5 +1,4 @@
 import React, { useState }  from "react";
-// import './page.css';
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 const RegisterPage = () => {
@@ -17,6 +16,7 @@ const RegisterPage = () => {
 
 
     return (
+        <div className="auth-inner"> 
             <div >
                 <h3>
                     Register As
@@ -32,6 +32,7 @@ const RegisterPage = () => {
                     
                 </div>
             </div>
+        </div>
     )
 
 }

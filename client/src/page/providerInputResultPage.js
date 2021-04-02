@@ -1,7 +1,6 @@
 import React, { useState }  from "react";
-import ProviderIncomingAppointment from "./providerIncomingAppointment";
 
-const ProviderAppointmentInfo = (props) => {
+const ProviderInputResultPage = (props) => {
 
     const [pressed, setPressed] = useState(false)
 
@@ -30,9 +29,9 @@ const ProviderAppointmentInfo = (props) => {
     // )
 
     return (
-        <div className="auth-inner">
+        <div className="auth-inner"> 
             <form>
-                <h3 class = "title">Appointment Information</h3>
+                <h3 class = "title">Input Result</h3>
 
                 <div class = "split-container">
                     <div class = "left-half-container">
@@ -45,8 +44,11 @@ const ProviderAppointmentInfo = (props) => {
                         <div className="form-group">
                             <label>HKID: </label> 
                         </div>
-                        <div className="form-group">
+                        <div className="form-group medium-label">
                             <label>Ethereum Address: </label> 
+                        </div>
+                        <div className="form-group">
+                            <label>Test Result: </label> 
                         </div>
                     </div>
                     <div class = "right-half-container">
@@ -59,21 +61,25 @@ const ProviderAppointmentInfo = (props) => {
                         <div className="form-group">
                             <label>M712312(5)</label> 
                         </div>
-                        <div className="form-group">
+                        <div className="form-group medium-label">
                             <label>123124x123912301xasd</label> 
+                        </div>
+                        <div className="form-group">
+                            <input type="text" className="form-control" placeholder="Enter test result" />
                         </div>
                     </div>
 
                 </div>
                 
 
-                <button type="submit" className="btn btn-primary btn-block result-btn">Input Result</button>
+                <button type="submit" className="btn btn-primary btn-block result-btn">Confirm</button>
             
 
                 
             </form>
-     </div>
+        </div>
+
     )
 }
 
-export default ProviderAppointmentInfo;
+export default ProviderInputResultPage;

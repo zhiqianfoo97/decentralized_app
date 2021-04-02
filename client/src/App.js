@@ -1,21 +1,24 @@
 import React from "react";
-// import LoginPage from './page/loginPage';
-// import RegisterPage from './page/registerUser';
-// import PSignupPage from './page/providerSignupPage';
 import UserResultPage from './page/userResultPage';
+import ProviderResultPage from './page/providerResultPage';
+import ProviderInputResultPage from './page/providerInputResultPage';
+import ProviderLandingPage from './page/providerLandingPage';
+import UserPayment from './page/userPayment'
 import UserLandingPage from './page/userLandingPage';
 import UserHistory from './page/userHistory';
 import ProviderHistory from './page/providerHistory';
-import ProviderIncomingAppointment from './page/providerIncomingAppointment'
-
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './App.css';
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-
+import ProviderIncomingAppointment from './page/providerIncomingAppointment';
+import ProviderAppointmentInfo from './page/providerAppointmentInfo';
+import UserInfoPage from './page/userInfo';
 import Login from './page/loginPage';
 import UserSignUp from './page/userSignUpPage';
 import SupplierSignUp from './page/supplierSignUpPage';
 import Register from './page/registerUser';
+
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+
+
 
 function App() {
   return (<Router>
@@ -37,15 +40,15 @@ function App() {
       </nav>
 
       <div className="auth-wrapper">
-        <div className="auth-inner">
+        
           <Switch>
-            <Route exact path='/' component={Login} />
+            <Route exact path='/' component={ProviderIncomingAppointment} />
             <Route path="/sign-in" component={Login} />
             <Route path="/register" component={Register} />
             <Route path="/user-sign-up" component={UserSignUp} />
             <Route path="/supplier-sign-up" component={SupplierSignUp} />
           </Switch>
-        </div>
+        
       </div>
     </div></Router>
   );
