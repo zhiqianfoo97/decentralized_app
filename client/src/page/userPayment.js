@@ -1,4 +1,6 @@
 import React, { useState }  from "react";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+
 const UserPayment = (props) => {
 
     // return (
@@ -31,10 +33,10 @@ const UserPayment = (props) => {
     return (
         <div className="auth-inner"> 
             <form>
-                <h3 class = "title">User Payment</h3>
+                <h3 className = "title">User Payment</h3>
 
-                <div class = "split-container">
-                    <div class = "left-half-container">
+                <div className = "split-container">
+                    <div className = "left-half-container">
                         <div className="form-group">
                             <label>Provider Name: </label> 
                         </div>
@@ -48,7 +50,7 @@ const UserPayment = (props) => {
                             <label>Ether Payable: </label> 
                         </div>
                     </div>
-                    <div class = "right-half-container">
+                    <div className = "right-half-container">
                         <div className="form-group">
                             <label>Queen's Mary Hospital</label> 
                         </div>

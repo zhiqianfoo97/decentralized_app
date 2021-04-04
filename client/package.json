@@ -7,10 +7,15 @@
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
     "@fortawesome/react-fontawesome": "^0.1.14",
     "awesome-react-icons": "^1.4.8",
-    "react": "16.11.0",
-    "react-dom": "16.11.0",
+    "bootstrap": "^4.6.0",
+    "react-addons-css-transition-group": "^15.6.2",
+    "react-addons-update": "^15.6.3",
+    "react-bootstrap": "^1.5.2",
     "react-minimal-side-navigation": "^1.8.0",
+    "react-picky-date-time": "^1.6.1",
     "react-scripts": "3.2.0",
+    "react": "^16.11.0",
+    "react-dom": "16.11.0",
     "web3": "1.2.2"
   },
   "scripts": {

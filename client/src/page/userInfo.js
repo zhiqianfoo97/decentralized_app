@@ -35,10 +35,10 @@ const UserInfo = (props) => {
     return (
         <div className="auth-inner"> 
             <form>
-                <h3 class = "title">User Information</h3>
+                <h3 className = "title">User Information</h3>
 
-                <div class = "split-container">
-                    <div class = "left-half-container">
+                <div className = "split-container">
+                    <div className = "left-half-container">
                         <div className="form-group">
                             <label>Username: </label> 
                         </div>
@@ -52,7 +52,7 @@ const UserInfo = (props) => {
                             <label>Ether Balance: </label> 
                         </div>
                     </div>
-                    <div class = "right-half-container">
+                    <div className = "right-half-container">
                         <div className="form-group">
                             <label>zhiqian97</label> 
                         </div>
@@ -71,7 +71,7 @@ const UserInfo = (props) => {
                 
 
                 <div className="form-group">
-                    <img class = "qrCode" src={qrcode} alt="QrCode" />
+                    <img className = "qrCode" src={qrcode} alt="QrCode" />
                 </div>
             
 

@@ -40,7 +40,7 @@ const ProviderHistory = (props) => {
                 <form>
                     <h3 >History</h3>
 
-                    <div class = "row_container">
+                    <div className = "column_container">
                         <div className="form-group border-bottom">
                             <label>Ethereum Address: 123124x123912301xasd </label> 
                             <label>Date: 03/01/2021 </label> <br></br>
@@ -48,7 +48,7 @@ const ProviderHistory = (props) => {
                         </div>
                     </div>
                     
-                    <div class = "row_container">
+                    <div className = "column_container">
                         <div className="form-group border-bottom">
                             <label>Ethereum Address: 123124x123912301xasd </label> 
                             <label>Date: 03/01/2021 </label> <br></br>
@@ -56,7 +56,7 @@ const ProviderHistory = (props) => {
                         </div>
                     </div>
                     
-                    <div class = "row_container">
+                    <div className = "column_container">
                         <div className="form-group border-bottom">
                             <label>Ethereum Address: 123124x123912301xasd </label> 
                             <label>Date: 03/01/2021 </label> <br></br>
@@ -64,7 +64,7 @@ const ProviderHistory = (props) => {
                         </div>
                     </div>
 
-                    <div class = "row_container">
+                    <div className = "column_container">
                         <div className="form-group">
                             <label>Ethereum Address: 123124x123912301xasd </label> 
                             <label>Date: 03/01/2021 </label> <br></br>

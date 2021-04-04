@@ -107,6 +107,12 @@ body, html, .App, #root, .auth-wrapper {
   justify-content: flex-start;
 }
 
+.split-container-appointment{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+
 .left-half-container{
   margin-right: 30px;
 } 
@@ -138,9 +144,14 @@ body, html, .App, #root, .auth-wrapper {
   min-height:56px;
 }
 
-.row_container{
+.column_container{
   display: flex;
   flex-direction: column;
+}
+
+.row_container{
+  display: flex;
+  flex-direction: row;
 }
 
 .border-bottom{
@@ -671,7 +682,6 @@ h6 {
  */
 
 a {
-  color: inherit;
   text-decoration: inherit;
 }
 
@@ -93824,9 +93834,51 @@ video {
     animation: bounce 1s infinite;
   }
 
-  .same-row{
-    display: flex;
-    justify-content: flex-start;
+}
 
-  }
+.same-row{
+  display: flex;
+  justify-content: flex-start;
+
+}
+
+.picky-date-time-calendar__default-day {
+  right: 45px !important;
+}
+
+.picky-date-time-calendar__body-container.s {
+  height: 224px !important;
+}
+
+.picky-date-time {
+  opacity: 1 !important;
+  display: none !important;
+}
+
+.picky-date-time.visible {
+  display: block !important;
+}
+
+.btn-wrapper{
+  text-align: center;
+}
+
+.center_title{
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.center_item{
+  margin-left: 20px;
+}
+
+.btn-primary a{
+  color: #fff !important;
+  text-decoration: none;
+  background-color: transparent;
+}
+
+.appointment-info{
+  color: black !important;
+  cursor: pointer;
 }

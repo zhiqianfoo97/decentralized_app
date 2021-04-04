@@ -31,10 +31,10 @@ const ProviderInputResultPage = (props) => {
     return (
         <div className="auth-inner"> 
             <form>
-                <h3 class = "title">Input Result</h3>
+                <h3 className = "title">Input Result</h3>
 
-                <div class = "split-container">
-                    <div class = "left-half-container">
+                <div className = "split-container">
+                    <div className = "left-half-container">
                         <div className="form-group">
                             <label>Name: </label> 
                         </div>
@@ -51,7 +51,7 @@ const ProviderInputResultPage = (props) => {
                             <label>Test Result: </label> 
                         </div>
                     </div>
-                    <div class = "right-half-container">
+                    <div className = "right-half-container">
                         <div className="form-group">
                             <label>Foo Zhi Qian</label> 
                         </div>

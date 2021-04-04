@@ -1,5 +1,6 @@
 import React, { useState }  from "react";
 import ProviderIncomingAppointment from "./providerIncomingAppointment";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 const ProviderAppointmentInfo = (props) => {
 
@@ -32,10 +33,10 @@ const ProviderAppointmentInfo = (props) => {
     return (
         <div className="auth-inner">
             <form>
-                <h3 class = "title">Appointment Information</h3>
+                <h3 className = "title">Appointment Information</h3>
 
-                <div class = "split-container">
-                    <div class = "left-half-container">
+                <div className = "split-container">
+                    <div className = "left-half-container">
                         <div className="form-group">
                             <label>Name: </label> 
                         </div>
@@ -49,7 +50,7 @@ const ProviderAppointmentInfo = (props) => {
                             <label>Ethereum Address: </label> 
                         </div>
                     </div>
-                    <div class = "right-half-container">
+                    <div className = "right-half-container">
                         <div className="form-group">
                             <label>Foo Zhi Qian</label> 
                         </div>
@@ -67,7 +68,9 @@ const ProviderAppointmentInfo = (props) => {
                 </div>
                 
 
-                <button type="submit" className="btn btn-primary btn-block result-btn">Input Result</button>
+                <button type="submit" className="btn btn-primary btn-block result-btn">
+                    <Link className="nav-link" to={"/provider-input-result-page"}>Input Result</Link>
+                </button>
             
 
                 

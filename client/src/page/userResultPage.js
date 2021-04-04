@@ -1,4 +1,5 @@
 import React, { useState }  from "react";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 const UserResultPage = (props) => {
 
@@ -36,10 +37,10 @@ const UserResultPage = (props) => {
     return (
         <div className="auth-inner"> 
             <form>
-                <h3 class = "title">User Result</h3>
+                <h3 className = "title">User Result</h3>
 
-                <div class = "split-container">
-                    <div class = "left-half-container">
+                <div className = "split-container">
+                    <div className = "left-half-container">
                         <div className="form-group">
                             <label>Venue: </label> 
                         </div>
@@ -56,7 +57,7 @@ const UserResultPage = (props) => {
                             <label>Result: </label> 
                         </div>
                     </div>
-                    <div class = "right-half-container">
+                    <div className = "right-half-container">
                         <div className="form-group">
                             <label>HKU</label> 
                         </div>
@@ -77,7 +78,9 @@ const UserResultPage = (props) => {
                 </div>
                 
 
-                <button type="submit" className="btn btn-primary btn-block result-btn">Pay to View</button>
+                <button type="submit" className="btn btn-primary btn-block result-btn">
+                    <Link className="nav-link" to={"/user-payment-page"}>Pay to View</Link>
+                </button>
             
 
                 

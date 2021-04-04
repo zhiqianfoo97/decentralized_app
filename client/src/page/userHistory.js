@@ -62,28 +62,28 @@ const UserHistory = (props) => {
     const appointment = () => {
         return(
             <div className="userAppointment">
-                   <div class = "row_container">
+                   <div className = "column_container">
                         <div className="form-group border-bottom">
                             <label>Venue: HKU </label> 
                             <label>Date: 03/01/2021 </label> 
                         </div>
                     </div>
                     
-                    <div class = "row_container">
+                    <div className = "column_container">
                         <div className="form-group border-bottom">
                             <label>Venue: Queen's Mary Hospital </label> 
                             <label>Date: 03/01/2021 </label> 
                         </div>
                     </div>
                     
-                    <div class = "row_container">
+                    <div className = "column_container">
                         <div className="form-group border-bottom">
                             <label>Venue: Lai Chi Kok </label> 
                             <label>Date: 03/01/2021 </label> 
                         </div>
                     </div>
 
-                    <div class = "row_container">
+                    <div className = "column_container">
                         <div className="form-group">
                             <label>Venue: Mong Kok </label> 
                             <label>Date: 03/01/2021 </label> 
@@ -98,7 +98,7 @@ const UserHistory = (props) => {
             <form>
                 <h3 >History</h3>
 
-                <div class= "side-by-side-button">
+                <div className= "side-by-side-button">
                     <button type="submit" className="btn custom-button">
                         Appointments
                     </button>
@@ -108,7 +108,7 @@ const UserHistory = (props) => {
                     </button>
                 </div>
 
-                <div class = "row_container">
+                <div className = "column_container">
                     <div className="form-group border-bottom">
                         <label>Ethereum Address: 123124x123912301xasd </label> 
                         <label>Date: 03/01/2021 </label> <br></br>
@@ -116,7 +116,7 @@ const UserHistory = (props) => {
                     </div>
                 </div>
                 
-                <div class = "row_container">
+                <div className = "column_container">
                     <div className="form-group border-bottom">
                         <label>Ethereum Address: 123124x123912301xasd </label> 
                         <label>Date: 03/01/2021 </label> <br></br>
@@ -124,7 +124,7 @@ const UserHistory = (props) => {
                     </div>
                 </div>
                 
-                <div class = "row_container">
+                <div className = "column_container">
                     <div className="form-group border-bottom">
                         <label>Ethereum Address: 123124x123912301xasd </label> 
                         <label>Date: 03/01/2021 </label> <br></br>
@@ -132,7 +132,7 @@ const UserHistory = (props) => {
                     </div>
                 </div>
 
-                <div class = "row_container">
+                <div className = "column_container">
                     <div className="form-group">
                         <label>Ethereum Address: 123124x123912301xasd </label> 
                         <label>Date: 03/01/2021 </label> <br></br>

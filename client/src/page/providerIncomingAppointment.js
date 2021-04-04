@@ -1,4 +1,5 @@
 import React, { useState }  from "react";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 const ProviderIncomingAppointment = () => {
 
@@ -40,36 +41,42 @@ const ProviderIncomingAppointment = () => {
                 
                 <h3 >Incoming Appointment</h3>
 
-                <input name="text" class = "search-bar" type="text" placeholder="Search" />
+                <input name="text" className = "search-bar" type="text" placeholder="Search" />
 
-                <div class = "row_container">
-                    <div className="form-group border-bottom">
-                        <label>Ethereum Address: 123124x123912301xasd </label> 
-                        <label>Date: 03/01/2021 </label> 
-                    </div>
+                <div className = "column_container">
+                    <Link to={"/provider-appointment-info"}>
+                        <div className="form-group border-bottom">
+                                <label className="appointment-info">Ethereum Address: 123124x123912301xasd </label> 
+                                <label className="appointment-info">Date: 03/01/2021 </label>                             
+                        </div>
+                    </Link>
+              </div>
+                <div className = "column_container">
+                        <Link to={"/provider-appointment-info"}>
+                            <div className="form-group border-bottom">
+                                    <label className="appointment-info">Ethereum Address: 123124x123912301xasd </label> 
+                                    <label className="appointment-info">Date: 03/01/2021 </label>                             
+                            </div>
+                        </Link>
+                </div>
+                <div className = "column_container">
+                        <Link to={"/provider-appointment-info"}>
+                            <div className="form-group border-bottom">
+                                    <label className="appointment-info">Ethereum Address: 123124x123912301xasd </label> 
+                                    <label className="appointment-info">Date: 03/01/2021 </label>                             
+                            </div>
+                        </Link>
+                </div>
+                <div className = "column_container">
+                        <Link to={"/provider-appointment-info"}>
+                            <div className="form-group border-bottom">
+                                    <label className="appointment-info">Ethereum Address: 123124x123912301xasd </label> 
+                                    <label className="appointment-info">Date: 03/01/2021 </label>                             
+                            </div>
+                        </Link>
                 </div>
                 
-                <div class = "row_container">
-                    <div className="form-group border-bottom">
-                        <label>Ethereum Address: 123124x123912301xasd </label> 
-                        <label>Date: 03/01/2021 </label> 
-                    </div>
-                </div>
                 
-                <div class = "row_container">
-                    <div className="form-group border-bottom">
-                        <label>Ethereum Address: 123124x123912301xasd </label> 
-                        <label>Date: 03/01/2021 </label> 
-                    </div>
-                </div>
-
-                <div class = "row_container">
-                    <div className="form-group">
-                        <label>Ethereum Address: 123124x123912301xasd </label> 
-                        <label>Date: 03/01/2021 </label> 
-                    </div>
-                </div>
-
             </form>
         </div>
 

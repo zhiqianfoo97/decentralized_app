@@ -1,49 +1,3 @@
-// import React, { useState }  from "react";
-
-// // can merge with user with flag depending on props
-
-// const ProviderLandingPage = (props) => {
-
-//     const goUserInfo = () => {
-//         console.log("test");
-//     }
-
-//     const goAppointment = () => {
-//         console.log("test2");
-//     }
-
-//     const goHistory = () => {
-//         console.log("test3");
-//     }
-
-//     return (
-//         <body  >
-//             <div id="userLandingPage">
-//                 <div id="boxInfoOuter">
-//                     <div className="boxInfo" onClick={() => goUserInfo()}>
-//                         User
-//                     </div>
-//                     <div className="boxInfo" onClick={() => goAppointment()}>
-//                         Appointment
-//                     </div>
-//                     <div className="boxInfo" onClick={()=> goHistory()}> 
-//                         History
-//                     </div>
-//                 </div>
-//                 <div>
-//                     <div>{/* page for covid ingo */}</div>
-//                 </div>
-//             </div>
-//         </body>
-
-
-//     )
-
-
-
-// }
-
-// export default ProviderLandingPage;
 import React, { useState }  from "react";
 import './landing.css';
 
@@ -53,121 +7,118 @@ import Icon from "awesome-react-icons";
 import "react-minimal-side-navigation/lib/ReactMinimalSideNavigation.css";
 import {FontAwesomeIcon}  from '@fortawesome/react-fontawesome';
 import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
+import { Redirect } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
-const ProviderLandingPage = (props) => {
+export default class MyComponent extends React.Component {
+  state = {
+    redirect: false,
+    isSidebarOpen: false,
+    itemId: ""
+  }
 
-    // const goUserInfo = () => {
-    //     console.log("test");
-    // }
+  setIsSidebarOpen = (arg) =>{
+      console.log(arg);
+    this.setState({
+        isSidebarOpen: arg
+      })
+  }
 
-    // const goAppointment = () => {
-    //     console.log("test2");
-    // }
+  setRedirect = (itemId) => {
+    this.setState({
+      redirect: true,
+      itemId: itemId
+    })
+  }
 
-    // const goHistory = () => {
-    //     console.log("test3");
-    // }
-
-    // return (
-
-    //         <div id="userLandingPage">
-    //             <div id="boxInfoOuter">
-    //                 <div className="boxInfo" onClick={() => goUserInfo()}>
-    //                     User
-    //                 </div>
-    //                 <div className="boxInfo" onClick={() => goAppointment()}>
-    //                     Make Appointment
-    //                 </div>
-    //                 <div className="boxInfo" onClick={()=> goHistory()}> 
-    //                     History
-    //                 </div>
-    //             </div> 
-    //             <div>
-    //                 <button type="submit">Latest test result</button>
-    //                 <div>{/* page for covid ingo */}</div>
-    //             </div>
-    //         </div>
-
-
-    // )
-
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    console.log (isSidebarOpen);
-
+  renderRedirect = (itemId) => {
+    if (this.state.redirect) {
+        console.log(this.state.itemId)
+      return <Redirect to={this.state.itemId} />
+    }
+  }
+  
+  render () {
     return (
-      <>
         <div className="auth-inner" style= {{ width: "1000px"}}> 
-            <div
-            onClick={() => setIsSidebarOpen(false)}
-            className={`fixed inset-0 z-20 block transition-opacity bg-black opacity-50 lg:hidden ${
-                isSidebarOpen ? "block" : "hidden"
-            }`}
-            />
+          <div
+          onClick={() => this.setIsSidebarOpen(false)}
+          className={`fixed inset-0 z-20 block transition-opacity bg-black opacity-50 lg:hidden ${
+            this.state.isSidebarOpen ? "block" : "hidden"
+          }`}
+        />
 
-            <div class = "same-row">
-                <div>
-                <button
-                    className="btn-menu"
-                    onClick={(): void => isSidebarOpen? setIsSidebarOpen(false): setIsSidebarOpen(true)}
-                    type="button"
-                >
-                    <Icon name="burger" className="w-6 h-6" />
-                </button>
-                </div>
-
+        <div className = "same-row">
+            <div>
+              <button
+                className="btn-menu"
+                onClick={(): void => this.state.isSidebarOpen? this.setIsSidebarOpen(false): this.setIsSidebarOpen(true)}
+                type="button"
+              >
+                <Icon name="burger" className="w-6 h-6" />
+              </button>
             </div>
-            {/* Sidebar */}
-        <div
-            className={`fixed inset-y-0 left-0 z-30 w-64 overflow-y-auto transition duration-300 ease-out transform translate-x-0 bg-white border-r-2 lg:translate-x-0 lg:static lg:inset-0 ${
-            isSidebarOpen ? "ease-out translate-x-0" : "ease-in -translate-x-full"
-            }`}  style ={isSidebarOpen ? {display:"block"} : {display:"none"}}
+
             
-    
-        >
+          </div>
 
-        <div className="flex items-center justify-center text-center py-6">
-            <span className="mx-2 text-2xl font-semibold text-black">
-                Foo Zhi Qian
-            </span>
-            </div>
-            <div className="flex items-center justify-center text-center mb-3 " >
-            <FontAwesomeIcon icon={faUserCircle} style = {{width:'100px', height: '100px'}}/>
-            </div>
+          {this.renderRedirect()}
+          {/* Sidebar */}
+      <div
+        className={`fixed inset-y-0 left-0 z-30 w-64 overflow-y-auto transition duration-300 ease-out transform translate-x-0 bg-white border-r-2 lg:translate-x-0 lg:static lg:inset-0 ${
+            this.state.isSidebarOpen ? "ease-out translate-x-0" : "ease-in -translate-x-full"
+        }`}  style ={this.state.isSidebarOpen ? {display:"block"} : {display:"none"}}
+        
+  
+      >
 
-            <Navigation
-                    // you can use your own router's api to get pathname
-                    activeItemId="/management/members"
-                    onSelect={({itemId}) => {
-                    // maybe push to the route
-                    }}
-                    items={[
-                    {
-                        title: 'Appointments',
-                        itemId: '/dashboard',
-                        // you can use your own custom Icon component as well
-                        // icon is optional
-                        elemBefore: () => <Icon name="inbox" />,
-                    },
-                    {
-                        title: 'History',
-                        itemId: '/management',
-                        elemBefore: () => <Icon name="users" />,
-                    },
-                    
-                    ]}
-                />
-
-                
-
+      <div className="flex items-center justify-center text-center py-6">
+          <span className="mx-2 text-2xl font-semibold text-black">
+            Foo Zhi Qian
+          </span>
         </div>
-      
-    </div>
-      </>
-    );
+        <div className="flex items-center justify-center text-center mb-3 " >
+          <FontAwesomeIcon icon={faUserCircle} style = {{width:'100px', height: '100px'}}/>
+        </div>
+          <Navigation
+                // you can use your own router's api to get pathname
+                activeItemId="home/management/members"
+                onSelect={({itemId}) => 
+                  // maybe push to the route   
+                  this.setRedirect(itemId)
+                }
 
+                items={[
+                  {
+                    title: 'Appointments',
+                    itemId: '/provider-incoming-appointment-page',
+                    // you can use your own custom Icon component as well
+                    // icon is optional
+                    elemBefore: () => <Icon name="inbox" />,
+                  },
+                  {
+                    title: 'History',
+                    itemId: '/provider-history',
+                    elemBefore: () => <Icon name="activity" />,
+                  },
+                
+                ]}
+              />
+
+           
+
+      </div>
+    </div>
+
+    )
+  }
+
+
+
+
+
+  
 
 }
-
-export default ProviderLandingPage;
 
 
