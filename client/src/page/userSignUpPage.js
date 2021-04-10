@@ -1,5 +1,5 @@
 import React, { useState }  from "react";
-
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 const UserSignUpPage = () => {
     const initialState = {
         username : "",
@@ -54,7 +54,7 @@ const UserSignUpPage = () => {
 
                 <button type="submit" className="btn btn-primary btn-block">Sign Up</button>
                 <p className="forgot-password text-right">
-                    Already registered <a href="#">sign in?</a>
+                    Already registered? <Link className="nav-link" to={"/sign-in"}>Sign in</Link>
                 </p>
             </form>
         </div>

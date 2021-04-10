@@ -179,6 +179,31 @@ body, html, .App, #root, .auth-wrapper {
   margin-bottom:20px;
 }
 
+.login-page-button{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+
+}
+
+.login-page-button-unit{
+  border: none;
+  padding: 20px;
+  text-align: center;
+  font-size: 16px;
+  background-color: rgb(163, 228, 228);
+
+}
+
+#back-button{
+  
+  padding: 0px 20px;
+  border: none;
+  text-align: center;
+  font-size: 16px;
+  background-color:  rgb(163, 228, 228);
+}
+
 
 /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
 
