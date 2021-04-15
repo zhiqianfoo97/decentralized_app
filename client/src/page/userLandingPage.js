@@ -33,7 +33,6 @@ export default class MyComponent extends React.Component {
 
   renderRedirect = (itemId) => {
     if (this.state.redirect) {
-        console.log(this.state.itemId)
       return <Redirect to={this.state.itemId} />
     }
   }

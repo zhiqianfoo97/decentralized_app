@@ -1,12 +1,12 @@
 import React, { useState }  from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+
 const UserSignUpPage = () => {
     const initialState = {
-        username : "",
-        password : "",
-        hkid : "",
-        email : "",
-        ethAdd : "",
+        username : " ",
+        password : " ",
+        hkid : " ",
+        ethAdd : " ",
     };
 
     const [field, setField] = useState(initialState);
@@ -19,14 +19,65 @@ const UserSignUpPage = () => {
     }
 
 
-    //need to improve this
-    const signUp = (e) => {
-        e.preventDefault();
-        console.log("Test : " , e.target)
+    // //need to improve this
+    // const signUp = (e) => {
+    //     e.preventDefault();
+    //     console.log("Test : " , e.target)
 
-    }
+    // }
+    const ipfsAPI = require('ipfs-api');
+    // // const ipfs = ipfsAPI('localhost', '5001');
+    const ipfs = ipfsAPI({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
+    // ipfs.id(function(err, res) {
+    //     if (err) throw err
+    //     console.log("Connected to IPFS node!", res.id, res.agentVersion, res.protocolVersion);
+    // });
 
-    
+    function createUser (e) {
+       e.preventDefault();
+        var username = field.username;
+        var ethAdd = field.ethAdd;
+        var hkid = field.hkid;
+        var password = field.password;
+        var ipfsHash = "";
+        console.log("creating user on ipfs for", username);
+        var userJson = {
+            username: username,
+            // ethAdd: ethAdd,
+            // hkid: hkid,
+            password: password
+        };
+
+        // var FileSaver = require('file-saver');
+        // var blob = new Blob([username + ":" + password], {type: "text/plain;charset=utf-8"});
+        // FileSaver.saveAs(blob, "authentication.txt");
+        // ipfs.files.mkdir('/example')
+        // ipfs.files.stat('/example')
+        
+    //     var EMPTY_DIR=ipfs.object new unixfs-dir);
+    // //   $ BAR=$(echo "bar" | ipfs add -q)
+    // //   $ ipfs object patch $EMPTY_DIR add-link foo $BAR
+
+        
+        ipfs.add([Buffer.from(JSON.stringify(userJson))], function(err, res) {
+            if (err) throw err
+            ipfsHash = res[0].hash
+            console.log(ipfsHash);
+            console.log("creating user on eth for", username, ethAdd, hkid, password);
+            if(ipfsHash != 'not-available') {
+                var url = 'https://ipfs.io/ipfs/' + ipfsHash;
+                console.log('getting user info from', url);
+
+            }
+        });
+        
+        }
+
+        
+
+
+
+
     return (
         <div className="auth-inner"> 
             <form>
@@ -34,25 +85,25 @@ const UserSignUpPage = () => {
 
                 <div className="form-group">
                     <label>Username</label>
-                    <input type="text" className="form-control" placeholder="Enter username" />
+                    <input type="text" className="form-control" placeholder="Enter username"  onChange={(e) => changeValue('username', e.target.value)}/>
                 </div>
 
                 <div className="form-group">
                     <label>Ethereum Address</label>
-                    <input type="text" className="form-control" placeholder="Enter ethereum address" />
+                    <input type="text" className="form-control" placeholder="Enter ethereum address" onChange={(e) => changeValue('ethAdd', e.target.value)} />
                 </div>
 
                 <div className="form-group">
                     <label>HKID / Passport Number</label>
-                    <input type="text" className="form-control" placeholder="Enter hkid or passport no." />
+                    <input type="text" className="form-control" placeholder="Enter hkid or passport no."  onChange={(e) => changeValue('hkid', e.target.value)}/>
                 </div>
 
                 <div className="form-group">
                     <label>Password</label>
-                    <input type="password" className="form-control" placeholder="Enter password" />
+                    <input type="password" className="form-control" placeholder="Enter password"  onChange={(e) => changeValue('password', e.target.value)}/>
                 </div>
 
-                <button type="submit" className="btn btn-primary btn-block">Sign Up</button>
+                <button type="submit" className="btn btn-primary btn-block" onClick = {createUser}>Sign Up</button>
                 <p className="forgot-password text-right">
                     Already registered? <Link className="nav-link" to={"/sign-in"}>Sign in</Link>
                 </p>

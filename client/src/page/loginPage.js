@@ -1,79 +1,273 @@
 import React, { useState }  from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-const LoginPage = () => {
+import { Redirect } from "react-router-dom";
 
-    const [showUser, setShowUser] = useState(false);
-    const [showProvider, setShowProvider] = useState(false);
-    const [showAll, setShowAll] = useState(true);
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
 
-    const loginUser = (e) => {
+export default class LoginPage extends React.Component{
+
+
+    state = {
+        redirect: false,
+        showUser: false,
+        showProvider: false,
+        showAll: true,
+        username: '',
+        password: ''
+    }
+
+
+    setRedirect = () => {
+        this.setState({
+          redirect: true,
+        })
+    }
+    
+    renderRedirect = () => {
+        if (this.state.redirect) {
+          return <Redirect to={"/user-landing-page"} />
+        }
+    }
+    
+
+    fetchWithTimeout = (resource, options) => {
+        const { timeout = 8000 } = options;
+        
+        const controller = new AbortController();
+        const id = setTimeout(() => controller.abort(), timeout);
+  
+        const response = fetch(resource, {
+          ...options,
+          signal: controller.signal  
+        });
+        clearTimeout(id);
+  
+        return response;
+      }
+
+      MakeQuerablePromise = (promise) => {
+        // Don't modify any promise that has been already modified.
+        if (promise.isResolved) return promise;
+    
+        // Set initial state
+        var isPending = true;
+        var isRejected = false;
+        var isFulfilled = false;
+    
+        // Observe the promise, saving the fulfillment in a closure scope.
+        var result = promise.then(
+            function(v) {
+                isFulfilled = true;
+                isPending = false;
+                return v; 
+            }, 
+            function(e) {
+                isRejected = true;
+                isPending = false;
+                throw e; 
+            }
+        );
+    
+        result.isFulfilled = function() { return isFulfilled; };
+        result.isPending = function() { return isPending; };
+        result.isRejected = function() { return isRejected; };
+        return result;
+    }
+
+   
+
+    loginUser = (e)=>{
         e.preventDefault();
         sessionStorage.setItem("user_type","user");
         sessionStorage.setItem("name", "test");
-        sessionStorage.setItem("username", username);
+        sessionStorage.setItem("username", this.state.username);
         sessionStorage.setItem("address", "temp");
         sessionStorage.setItem("logged", true);
 
+        var userJson = {
+            username: this.state.username,
+            password: this.state.password
+        };
+        var ipfsHash = "";
+        const ipfsAPI = require('ipfs-api');
+        const ipfs = ipfsAPI({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
+
+        var that = this;
+        ipfs.add([Buffer.from(JSON.stringify(userJson))], {"only-hash": true}, function(err, res){
+            if (err) throw err
+            ipfsHash = res[0].hash;
+            console.log("test hash");
+            console.log(ipfsHash);
+            if(ipfsHash != 'not-available') {
+                var url = 'https://ipfs.io/ipfs/' + ipfsHash;
+                console.log('getting user info from', url);
+
+
+               
+                const authentication = fetch(url).then(response => response.json());
+                var myPromise = that.MakeQuerablePromise(authentication);
+                
+                // console.log("Initial fulfilled:", myPromise.isFulfilled());//false
+                // console.log("Initial rejected:", myPromise.isRejected());//false
+                // console.log("Initial pending:", myPromise.isPending());//true
+
+                setTimeout(() => {
+                    if (myPromise.isPending()){
+                        console.log("wrong authentication info")
+                    }else{
+                        console.log("success")
+                        that.setRedirect();
+                    }
+    
+                }, 2000);
+                
+                // myPromise.then(function(data){
+                //     console.log(data); // "Yeah !"
+                //     console.log("Final fulfilled:", myPromise.isFulfilled());//true
+                //     console.log("Final rejected:", myPromise.isRejected());//false
+                //     console.log("Final pending:", myPromise.isPending());//false
+                // });
+            
+            
+
+                // fetch(url)
+                // .then(response => response.json())
+                // .then((jsonData) => {
+                //     // jsonData is parsed json object received from url
+                //     if (jsonData["username"] == userJson.username && jsonData["password"] == userJson.password){
+                //         console.log("authenticated");
+                //         that.setRedirect();
+                //     }
+                //     else{
+                //         console.log("none");
+                //     }
+                    
+                // })
+                // .catch((error) => {
+                //     // handle your errors here
+                //     console.error(error)
+                // })
+            }
+        })
+
+
+
+
+
     }
 
-    const loginProvider = (e) => {
+  
+  
+
+
+
+    loginProvider = (e) => {
         e.preventDefault();
         sessionStorage.setItem("user_type","provider");
         sessionStorage.setItem("name", "test");
-        sessionStorage.setItem("username", username);
+        sessionStorage.setItem("username", this.state.username);
         sessionStorage.setItem("address", "temp");
         sessionStorage.setItem("location", "xx");
 
     }
 
-    const openUser = (e) => {
+    openUser = (e) => {
         e.preventDefault();
-        setShowAll(false);
-        setShowUser(true);
+        this.setState({
+            showAll: false,
+            showUser: true
+        })
         
     }
 
-    const openProvider = (e) =>{
+    openProvider = (e) =>{
         e.preventDefault();
-        setShowAll(false);
-        setShowProvider(true);
+        this.setState({
+            showAll: false,
+            showProvider: true
+        })
         
     }
 
-    const closeAll = (e) =>{
+    closeAll = (e) =>{
         e.preventDefault();
-        setShowUser(false);
-        setShowProvider(false);
-        setShowAll(true);
+        this.setState({
+            showUser: false,
+            showProvider: false,
+            showAll: true
+        })
     }
 
-    const handleUserChanges = (e) =>{
+    handleUserChanges = (e) =>{
         e.preventDefault();
-        setUsername(e.target.value);
+        this.setState({
+            username: e.target.value
+        })
     }
 
-    const handlePasswordChanges = (e) =>{
+     handlePasswordChanges = (e) =>{
         e.preventDefault();
-        setPassword(e.target.value);
+        this.setState({
+            password: e.target.value
+        })
     }
 
 
-    
-    return (
-        <div className="auth-inner">
-            {showAll ? "" : <button id="back-button" onClick={closeAll}> Back </button> }
-            <form>
-                <h3>Sign In As</h3>
+
+    // getAUser: function(instance, i) {
+    //     var instanceUsed = instance;
+    //         var username;
+    //         var ipfsHash;
+    //         var address;
+    //         var userCardId = 'user-card-' + i;
+    //     return instanceUsed.getUsernameByIndex.call(i).then(function(_username) {
+    //     console.log('username:', username = web3.toAscii(_username), i);
                 
-                {showAll ? 
+    //           $('#' + userCardId).find('.card-title').text(username);
+            
+    //           return instanceUsed.getIpfsHashByIndex.call(i);
+    //     }).then(function(_ipfsHash) {
+    //     console.log('ipfsHash:', ipfsHash = web3.toAscii(_ipfsHash), i);
+    //     // $('#' + userCardId).find('.card-subtitle').text('title');
+    //     if(ipfsHash != 'not-available') {
+    //             var url = 'https://ipfs.io/ipfs/' + ipfsHash;
+    //             console.log('getting user info from', url);
+    //     $.getJSON(url, function(userJson) {
+    //     console.log('got user info from ipfs', userJson);
+    //               $('#' + userCardId).find('.card-subtitle').text(userJson.title);
+    //               $('#' + userCardId).find('.card-text').text(userJson.intro);
+    //     });
+    //           }
+    //     return instanceUsed.getAddressByIndex.call(i);
+            
+    //         }).then(function(_address) {
+    //     console.log('address:', address = _address, i);
+              
+    //           $('#' + userCardId).find('.card-eth-address').text(address);
+    //     return true;
+    //     }).catch(function(e) {
+    //     // There was an error! Handle it.
+    //           console.log('error getting user #', i, ':', e);
+    //     });
+    //     }
+
+   
+
+
+    render(){
+    return (
+        
+        <div className="auth-inner">
+            {this.state.showAll ? "" : <button id="back-button" onClick={(e) => this.closeAll(e)}> Back </button> }
+            <form>
+                <h3>Sign In As</h3> 
+                
+                {this.state.showAll ? 
                     <div className="login-page-button">
                         
-                        <button className="login-page-button-unit" onClick={openUser}>
+                        <button className="login-page-button-unit" onClick={(e) => this.openUser(e)}>
                             User
                         </button>
-                        <button className="login-page-button-unit" onClick={openProvider}>
+                        <button className="login-page-button-unit" onClick={(e) => this.openProvider(e)}>
                             Test Provider
                         </button>
                             
@@ -82,18 +276,18 @@ const LoginPage = () => {
                 : "" }
                 
                 
-                {showUser ?
+                {this.state.showUser ?
 
                     <div id="user-login">
                         <h3>User</h3>
                         <div className="form-group">
                             <label>Username</label>
-                            <input type="username" className="form-control" placeholder="Enter username" value={username} onChange={handleUserChanges}/>
+                            <input type="username" className="form-control" placeholder="Enter username" value={this.state.username} onChange={(e) => this.handleUserChanges(e)}/>
                         </div>
 
                         <div className="form-group">
                             <label>Password</label>
-                            <input type="password" className="form-control" placeholder="Enter password" value={password} onChange={handlePasswordChanges} />
+                            <input type="password" className="form-control" placeholder="Enter password" value={this.state.password} onChange={(e) => this.handlePasswordChanges(e)} />
                         </div>
 
                         <div className="form-group">
@@ -103,26 +297,26 @@ const LoginPage = () => {
                             </div>
                         </div>
 
-                        <button type="submit" className="btn btn-primary btn-block" onClick={loginUser}>
-                            <Link className="nav-link" to={"/user-landing-page"}>Submit</Link>
+                        <button type="submit" className="btn btn-primary btn-block" onClick={(e) => this.loginUser(e)}>
+                            {/* <Link className="nav-link" to={"/user-landing-page"}>Submit</Link> */}
                         </button>
                     
                     </div>
                 
                 : ""}
-
-                {showProvider ?
+                {this.renderRedirect()}
+                {this.state.showProvider ?
                 
                     <div id="provider-login">
                         <h3>Provider</h3>
                         <div className="form-group">
                             <label>Username</label>
-                            <input type="username" className="form-control" placeholder="Enter username"  value={username} onChange={handleUserChanges}/>
+                            <input type="username" className="form-control" placeholder="Enter username"  value={this.state.username} onChange={(e) => this.handleUserChanges(e)}/>
                         </div>
 
                         <div className="form-group">
                             <label>Password</label>
-                            <input type="password" className="form-control" placeholder="Enter password" value={password} onChange={handlePasswordChanges} />
+                            <input type="password" className="form-control" placeholder="Enter password" value={this.state.password} onChange={(e) => this.handlePasswordChanges(e)} />
                         </div>
 
                         <div className="form-group">
@@ -132,7 +326,7 @@ const LoginPage = () => {
                             </div>
                         </div>
 
-                        <button type="submit" className="btn btn-primary btn-block" onClick={loginProvider}>
+                        <button type="submit" className="btn btn-primary btn-block" onClick={(e) => this.loginProvider(e)}>
                             <Link className="nav-link" to={"/provider-landing-page"}>Submit</Link>
                         </button>
                         
@@ -141,8 +335,7 @@ const LoginPage = () => {
 
             </form>
         </div>
+       
     );
-
+ }
 }
-
-export default LoginPage;
