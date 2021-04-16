@@ -6,7 +6,7 @@ const UserSignUpPage = () => {
         password : "",
         hkid : "",
         email : "",
-        ethAdd : "",
+        eth_address : "",
     };
 
     const [field, setField] = useState(initialState);
@@ -34,22 +34,22 @@ const UserSignUpPage = () => {
 
                 <div className="form-group">
                     <label>Username</label>
-                    <input type="text" className="form-control" placeholder="Enter username" />
+                    <input type="text" value={field.username} className="form-control" placeholder="Enter username" onChange={(e) => changeValue('username', e.target.value)}/>
                 </div>
 
                 <div className="form-group">
                     <label>Ethereum Address</label>
-                    <input type="text" className="form-control" placeholder="Enter ethereum address" />
+                    <input type="text" value={field.eth_address} className="form-control" placeholder="Enter ethereum address" onChange={(e) => changeValue('eth_address', e.target.value)}/>
                 </div>
 
                 <div className="form-group">
                     <label>HKID / Passport Number</label>
-                    <input type="text" className="form-control" placeholder="Enter hkid or passport no." />
+                    <input type="text" value={field.hkid} className="form-control" placeholder="Enter hkid or passport no." onChange={(e) => changeValue('hkid', e.target.value)} />
                 </div>
 
                 <div className="form-group">
                     <label>Password</label>
-                    <input type="password" className="form-control" placeholder="Enter password" />
+                    <input type="password" value={field.password} className="form-control" placeholder="Enter password" onChange={(e) => changeValue('password', e.target.value)}/>
                 </div>
 
                 <button type="submit" className="btn btn-primary btn-block">Sign Up</button>
@@ -61,31 +61,6 @@ const UserSignUpPage = () => {
     );
 
 
-
-    // onChange = { (e) => setField({...field, temp : val})}
-    // return (
-    //     <body>
-    //         <div id="pageMain">
-    //             <div>
-    //                 NEW USER
-    //             </div>
-    //             <div>
-    //                 <form onSubmit={signUp} id="signupBox"> 
-    //                     <input type="text" placeholder="Username"  onChange={(e) => changeValue('username', e.target.value)}/>
-    //                     <input type="text" placeholder="Ethereum address"  onChange={(e) => changeValue('ethAdd', e.target.value)}/>
-    //                     <input type="text"  placeholder="HKID / Passport number" onChange={(e) => changeValue('hkid', e.target.value)}/>
-    //                     <input type="text"  placeholder="Email address" onChange={(e) => changeValue('email', e.target.value)}/>
-    //                     <input type="password" placeholder="Password" onChange={(e) => changeValue('password', e.target.value)}/>
-    //                     <button type="submit">Sign Up</button>
-    //                 </form>
-    //             </div>
-    //         </div>
-    //     </body>
-
-        
-
-
-    // )
 }
 
 

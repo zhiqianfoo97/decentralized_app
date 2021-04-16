@@ -1,35 +1,10 @@
-import React, { useState }  from "react";
+import React, { useState, useEffect }  from "react";
 
 import PickyDateTime from "react-picky-date-time";
 import Dropdown from 'react-bootstrap/Dropdown';
 
 const UserMakeAppointment = () => {
 
-
-
-    // return(
-    //     <body>
-    //         <div>
-    //             Appointment
-    //         </div>
-    //         <div>
-    //             <div>
-    //                 <input type="text" placeholder="Places"></input>
-    //             </div>
-    //             <div>
-    //                 Pick a date placeholder
-    //             </div>
-    //         </div>
-    //         <div>
-    //             Pick a time placeholder
-    //         </div>
-    //         <div>
-    //             <form>
-    //                 <button type="submit">Set appointment</button>
-    //             </form>
-    //         </div>
-    //     </body>
-    // )
     const [showPickyDateTime, setShowPickyDateTime] = useState(true);
     const [date, setDate] = useState('30');
     const [month, setMonth] = useState('01');
@@ -39,6 +14,9 @@ const UserMakeAppointment = () => {
     const [second, setSecond] = useState('40');
     const [meridiem, setMeridiem] = useState('PM');
     const [center, setCenter] = useState("Choose a center");
+
+
+
 
     const onYearPicked = (res) => {
         const {year} = res;

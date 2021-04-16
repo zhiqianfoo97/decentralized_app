@@ -3,37 +3,6 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 const UserResultPage = (props) => {
 
-    // return (
-    //     <body>
-    //         <div id="pageMain">
-    //             <div>
-    //                 Result
-    //             </div>
-    //             <div>
-    //                 <div>
-    //                     Venue : {props.venue}
-    //                 </div>
-    //                 <div>
-    //                     Date : {props.date}
-    //                 </div>
-    //                 <div>
-    //                     Name : {props.name}
-    //                 </div>
-    //                 <div>
-    //                     HKID : {props.hkid}
-    //                 </div>
-    //                 <div>
-    //                     Result : {props.result}
-    //                 </div>
-
-    //                 <button type="submit">Pay to view</button>
-    //             </div>
-    //         </div>
-    //     </body>
-
-
-    // )
-
     return (
         <div className="auth-inner"> 
             <form>
@@ -77,7 +46,6 @@ const UserResultPage = (props) => {
 
                 </div>
                 
-
                 <button type="submit" className="btn btn-primary btn-block result-btn">
                     <Link className="nav-link" to={"/user-payment-page"}>Pay to View</Link>
                 </button>

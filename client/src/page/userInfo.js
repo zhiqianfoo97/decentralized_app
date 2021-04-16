@@ -1,36 +1,39 @@
-import React, { useState }  from "react";
+import React, { useState, useEffect }  from "react";
 import qrcode from '../qrcode.png';
+import { QRCode } from 'react-qr-svg';
+import getWeb3 from "../getWeb3";
 
 const UserInfo = (props) => {
 
-    // return (
-    //     <body>
-    //         <div id="pageMain">
-    //             <div>
-    //                 User Information
-    //             </div>
-    //             <div>
-    //                 <div>
-    //                     Username : {props.username}
-    //                 </div>
-    //                 <div>
-    //                     Name : {props.name}
-    //                 </div>
-    //                 <div>
-    //                     Ethereum address : {props.ethAdd}
-    //                 </div>
-    //                 <div>
-    //                     Ether balance : {props.ether}
-    //                 </div>
-    //                 <div>
-    //                     {/* insert qr code here */}
-    //                 </div>
-    //             </div>
-    //         </div>
-    //     </body>
+    const [balance, setBalance] = useState(0);
+    const [account, setAccount] = useState(null);
+    const [web3, setWeb3] = useState(null);
 
+    const setup = async () => {
+        let balance_temp = 0;
+        try{
+            
+            const web3_ = await getWeb3();
+            setWeb3(web3_);
+            let temp = localStorage.getItem("eth_address");  
+            setAccount(temp);
+            
+            if (account !== null){
+                    balance_temp = await web3.eth.getBalance(account); 
+                    setBalance(web3.utils.fromWei(balance_temp));
+            }
 
-    // )
+        }catch(error){
+            console.log(error);
+        }
+        
+
+    }
+
+    useEffect (() => {
+        setup();
+
+    },[account, balance])
 
     return (
         <div className="auth-inner"> 
@@ -46,6 +49,9 @@ const UserInfo = (props) => {
                             <label>Name: </label> 
                         </div>
                         <div className="form-group">
+                            <label>HKID: </label> 
+                        </div>
+                        <div className="form-group">
                             <label>Ethereum Address: </label> 
                         </div>
                         <div className="form-group">
@@ -54,16 +60,20 @@ const UserInfo = (props) => {
                     </div>
                     <div className = "right-half-container">
                         <div className="form-group">
-                            <label>zhiqian97</label> 
+                            <label>{localStorage.getItem("username")}</label> 
+                        </div>
+                        
+                        <div className="form-group">
+                            <label>{localStorage.getItem("name")}</label> 
                         </div>
                         <div className="form-group">
-                            <label>Foo Zhi Qian</label> 
+                            <label>{localStorage.getItem("hkid")}</label> 
                         </div>
                         <div className="form-group">
-                            <label>123124x123912301xasd</label> 
+                            <label>{account}</label> 
                         </div>
                         <div className="form-group">
-                            <label>$300</label> 
+                            <label>{balance}</label> 
                         </div>
                     </div>
 
@@ -71,7 +81,17 @@ const UserInfo = (props) => {
                 
 
                 <div className="form-group">
-                    <img className = "qrCode" src={qrcode} alt="QrCode" />
+                    <div className = "qrCode">
+                        <QRCode
+                            level="Q"
+                            
+                            value={JSON.stringify({
+                            name: localStorage.getItem("name") ,
+                            hkid: localStorage.getItem("hkid"),
+                            eth_address: account,
+                            })}
+                        />
+                    </div>
                 </div>
             
 

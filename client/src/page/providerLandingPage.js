@@ -101,6 +101,11 @@ export default class MyComponent extends React.Component {
                     itemId: '/provider-history',
                     elemBefore: () => <Icon name="activity" />,
                   },
+                  {
+                    title: 'Input Result',
+                    itemId: '/provider-input-result-page',
+                    elemBefore: () => <Icon name="book" />,
+                  },
                 
                 ]}
               />

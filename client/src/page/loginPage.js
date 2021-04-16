@@ -1,5 +1,6 @@
 import React, { useState }  from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+
 const LoginPage = () => {
 
     const [showUser, setShowUser] = useState(false);
@@ -10,21 +11,23 @@ const LoginPage = () => {
 
     const loginUser = (e) => {
         e.preventDefault();
-        sessionStorage.setItem("user_type","user");
-        sessionStorage.setItem("name", "test");
-        sessionStorage.setItem("username", username);
-        sessionStorage.setItem("address", "temp");
-        sessionStorage.setItem("logged", true);
+        localStorage.setItem("user_type","user");
+        localStorage.setItem("name", "test");
+        localStorage.setItem("username", username);
+        localStorage.setItem("eth_address", "0xD1b31cdbAc81cb4E61910A1c8056B83Cb3eA784A");
+        localStorage.setItem("logged", true);
+        localStorage.setItem("hkid", "m1234123");
 
     }
 
     const loginProvider = (e) => {
         e.preventDefault();
-        sessionStorage.setItem("user_type","provider");
-        sessionStorage.setItem("name", "test");
-        sessionStorage.setItem("username", username);
-        sessionStorage.setItem("address", "temp");
-        sessionStorage.setItem("location", "xx");
+        localStorage.setItem("user_type","provider");
+        localStorage.setItem("name", "test2");
+        localStorage.setItem("username", username);
+        localStorage.setItem("eth_address", "0xD1b31cdbAc81cb4E61910A1c8056B83Cb3eA784A");
+        localStorage.setItem("location", "xx");
+        localStorage.setItem("email", "zxxc@porkmail.com");
 
     }
 

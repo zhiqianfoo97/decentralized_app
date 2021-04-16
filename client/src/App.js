@@ -14,9 +14,14 @@ import UserSignUp from './page/userSignUpPage';
 import SupplierSignUp from './page/supplierSignUpPage';
 import Register from './page/registerUser';
 import UserMakeAppointment from './page/userMakeAppointment'
+import getWeb3 from "./getWeb3";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+
+// // const contractAddr = '0x97EaC1d4C5eA22dE6ba7292FA5d01a591Aac83A7';
+// // const contractInstance = new web3.eth.Contract(simpleStorageAbi, contractAddr);
+
 
 
 function App() {

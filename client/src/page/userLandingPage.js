@@ -9,6 +9,10 @@ import {FontAwesomeIcon}  from '@fortawesome/react-fontawesome';
 import { faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import { Redirect } from "react-router-dom";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+// import getWeb3 from "../getWeb3";
+// const web3 = getWeb3();
+
+
 
 export default class MyComponent extends React.Component {
   state = {
@@ -60,7 +64,7 @@ export default class MyComponent extends React.Component {
             </div>
 
             <button type="submit" className="btn btn-primary btn-block" style={{width: '30%', marginLeft:'40%'}} >
-              <Link className="nav-link" to={"/user-result-page"}>Lastest Test Result</Link>
+              <Link className="nav-link" to={"/user-result-page"}>Latest Test Result</Link>
               </button>
           </div>
 
@@ -76,7 +80,7 @@ export default class MyComponent extends React.Component {
 
       <div className="flex items-center justify-center text-center py-6">
           <span className="mx-2 text-2xl font-semibold text-black">
-            {sessionStorage.getItem("name")}
+            {localStorage.getItem("name")}
             
           </span>
         </div>

@@ -4,9 +4,10 @@ const SupplierSignUpPage = () => {
     const initialState = {
         username : "",
         password : "",
-        hkid : "",
+        hcare_num : "",
         email : "",
-        ethAdd : "",
+        eth_address : "",
+        location: "",
     };
 
     const [field, setField] = useState(initialState);
@@ -19,73 +20,58 @@ const SupplierSignUpPage = () => {
     }
 
 
-    //need to improve this
+    //need to improve this, send data to us
     const signUp = (e) => {
         e.preventDefault();
-        console.log("Test : " , e.target)
+        console.log(JSON.stringify(field));
 
     }
 
     
     return (
-        <div className="auth-inner"> 
+        <div className="auth-inner2"> 
             <form>
                 <h3>New Supplier</h3>
 
                 <div className="form-group">
                     <label>Name</label>
-                    <input type="text" className="form-control" placeholder="Enter name" />
+                    <input type="text" className="form-control" value={field.username} placeholder="Enter name" onChange={(e) => changeValue('username', e.target.value)}/>
                 </div>
 
                 <div className="form-group">
-                    <label>Address </label>
-                    <input type="text" className="form-control" placeholder="Enter address" />
+                    <label>Ethereum Address </label>
+                    <input type="text" className="form-control" value={field.eth_address} placeholder="Enter Ethereum address" onChange={(e) => changeValue('eth_address', e.target.value)} />
                 </div>
 
                 <div className="form-group">
                     <label>Healthcare Provider Number</label>
-                    <input type="text" className="form-control" placeholder="Enter healthcare provider no." />
+                    <input type="text" className="form-control" value={field.hcare_num} placeholder="Enter healthcare provider no." onChange={(e) => changeValue('hcare_num', e.target.value)} />
+                </div>
+
+                <div className="form-group">
+                    <label>Email</label>
+                    <input type="text" className="form-control" value={field.email} placeholder="Enter email" onChange={(e) => changeValue('email', e.target.value)} />
+                </div>
+
+                <div className="form-group">
+                    <label>Location</label>
+                    <input type="text" className="form-control" value={field.location} placeholder="Enter location" onChange={(e) => changeValue('location', e.target.value)} />
                 </div>
 
                 <div className="form-group">
                     <label>Password</label>
-                    <input type="password" className="form-control" placeholder="Enter password" />
+                    <input type="password" className="form-control" value={field.password} placeholder="Enter password" onChange={(e) => changeValue('password', e.target.value)}/>
                 </div>
 
-                <button type="submit" className="btn btn-primary btn-block">Sign Up</button>
+                <button type="submit" className="btn btn-primary btn-block" onClick={signUp}>Sign Up</button>
                 <p className="forgot-password text-right">
-                    Already registered? <Link className="nav-link" to={"/sign-in"}>Sign in</Link>
+                    {/* Already registered? <Link className="nav-link" to={"/sign-in"}>Sign in</Link> */}
+                    Registration will be subjected to manual review.
                 </p>
             </form>
         </div>
     );
 
-
-
-    // onChange = { (e) => setField({...field, temp : val})}
-    // return (
-    //     <body>
-    //         <div id="pageMain">
-    //             <div>
-    //                 NEW USER
-    //             </div>
-    //             <div>
-    //                 <form onSubmit={signUp} id="signupBox"> 
-    //                     <input type="text" placeholder="Username"  onChange={(e) => changeValue('username', e.target.value)}/>
-    //                     <input type="text" placeholder="Ethereum address"  onChange={(e) => changeValue('ethAdd', e.target.value)}/>
-    //                     <input type="text"  placeholder="HKID / Passport number" onChange={(e) => changeValue('hkid', e.target.value)}/>
-    //                     <input type="text"  placeholder="Email address" onChange={(e) => changeValue('email', e.target.value)}/>
-    //                     <input type="password" placeholder="Password" onChange={(e) => changeValue('password', e.target.value)}/>
-    //                     <button type="submit">Sign Up</button>
-    //                 </form>
-    //             </div>
-    //         </div>
-    //     </body>
-
-        
-
-
-    // )
 }
 
 

@@ -1,32 +1,75 @@
-import React, { useState }  from "react";
+import React, { useState, useEffect }  from "react";
+import getWeb3 from "../getWeb3";
+import HealthRecord from "../contracts/HealthRecord.json";
 
 const ProviderInputResultPage = (props) => {
 
-    const [pressed, setPressed] = useState(false)
+    const [pressed, setPressed] = useState(false);
+    const [name, setName] = useState("");
+    const [hkid, setHKID] = useState("");
+    const [date, setDate] = useState("");
+    const [ethAdd, setEthAdd] = useState("");
+    const [result, setResult] = useState("");
+    const [setupStatus, setSetupStatus] = useState(false);
+    const [web3 , setWeb3] = useState(null);
+    const [contract, setContract] = useState(null);
+    const [etherAmt, setEtherAmt] = useState("");
 
-    // return(
-    //     <body>
-    //         <div>
-    //             Appointment Information
-    //         </div>
-    //         <div>
-    //             Name : {props.name}
-    //         </div>
-    //         <div>
-    //             Date : {props.date}
-    //         </div>
-    //         <div>
-    //             HKID : {props.hkid}
-    //         </div>
-    //         <div>
-    //             Ethereum Address : {props.ethAdd}
-    //         </div>
-    //         <div>
-    //             Test result : <input type="text"></input>
-    //         </div>
-    //         {pressed} ? <button onClick = {() => setPressed(true)}>Input result</button> : <button>Send</button>
-    //     </body>
-    // )
+    const setup = async () => {
+        const web3_ = await getWeb3();
+        setWeb3(web3_);
+        let networkID = await web3_.eth.net.getId();
+        const deployedNetwork = HealthRecord.networks[networkID];
+        let contract_ = new web3_.eth.Contract(HealthRecord.abi, deployedNetwork.address);
+
+        setContract(contract_);
+        setSetupStatus(true);
+    }
+
+    const handleName = (e) => {
+        e.preventDefault();
+        setName(e.target.value);
+    }
+
+    const handleDate = (e) =>{
+        e.preventDefault();
+        setDate(e.target.value);
+    }
+    const handleHKID = (e) =>{
+        e.preventDefault();
+        setHKID(e.target.value);
+    }
+    const handleEthAdd = (e) =>{
+        e.preventDefault();
+        setEthAdd(e.target.value);
+    }
+
+    const handleResult = (e) =>{
+        e.preventDefault();
+        setResult(e.target.value);
+    }
+
+    const handleEther = (e) => {
+        e.preventDefault();
+        setEtherAmt(e.target.value);
+    }
+
+    const uploadResult = async (e) =>{
+        e.preventDefault();
+        try{
+            await contract.methods.addPendingHealthRecord(result, date, localStorage.getItem("name"), localStorage.getItem("location"), ethAdd, etherAmt);
+            alert("Success!");
+            window.location.reload();
+        }catch(error){
+            console.log(error);
+            alert(error);
+        }
+
+    }
+
+    useEffect(() => {
+        setup();
+    }, [setupStatus])
 
     return (
         <div className="auth-inner"> 
@@ -50,29 +93,36 @@ const ProviderInputResultPage = (props) => {
                         <div className="form-group">
                             <label>Test Result: </label> 
                         </div>
+                        <div className="form-group">
+                            <label>Ether payable: </label> 
+                        </div>
                     </div>
                     <div className = "right-half-container">
                         <div className="form-group">
-                            <label>Foo Zhi Qian</label> 
+                            <input type="text" value={name}  className="form-control" placeholder="Enter Name" onChange={handleName}/>
                         </div>
                         <div className="form-group">
-                            <label>13/01/2021</label> 
+                            <input type="text" value={date}  className="form-control" placeholder="Enter Date" onChange={handleDate}/>
                         </div>
                         <div className="form-group">
-                            <label>M712312(5)</label> 
+                            <input type="text" value={hkid}  className="form-control" placeholder="Enter HKID" onChange={handleHKID}/>
                         </div>
-                        <div className="form-group medium-label">
-                            <label>123124x123912301xasd</label> 
+                        <div className="form-group ">
+                            <input type="text" value={ethAdd}  className="form-control" placeholder="Enter Ethereum address" onChange={handleEthAdd}/>
                         </div>
                         <div className="form-group">
-                            <input type="text" className="form-control" placeholder="Enter test result" />
+                            <input type="text" value={result} className="form-control" placeholder="Enter Test Result" onChange={handleResult} />
+                        </div>
+
+                        <div className="form-group">
+                            <input type="text" value={etherAmt} className="form-control" placeholder="Enter Ether Amount" onChange={handleEther} />
                         </div>
                     </div>
 
                 </div>
                 
 
-                <button type="submit" className="btn btn-primary btn-block result-btn">Confirm</button>
+                <button type="submit" onClick={uploadResult} className="btn btn-primary btn-block result-btn">Confirm</button>
             
 
                 

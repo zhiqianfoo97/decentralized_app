@@ -50,9 +50,21 @@ body, html, .App, #root, .auth-wrapper {
 .auth-inner {
   width: 450px;
   margin: auto;
+  
   background: #ffffff;
   box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
-  padding: 40px 55px 45px 55px;
+  padding: 30px 55px 10px 55px;
+  border-radius: 15px;
+  transition: all .3s;
+}
+
+.auth-inner2 {
+  width: 450px;
+  margin: auto;
+  margin-top: 50px;
+  background: #ffffff;
+  box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
+  padding: 30px 55px 10px 55px;
   border-radius: 15px;
   transition: all .3s;
 }
@@ -124,8 +136,8 @@ body, html, .App, #root, .auth-wrapper {
 .qrCode{
   margin-left:auto;
   margin-right: auto;
-  width: 225px;
-  height: 225px;
+  width: 150px;
+  height: 150px;
 }
 
 .title{
@@ -204,6 +216,22 @@ body, html, .App, #root, .auth-wrapper {
   background-color:  rgb(163, 228, 228);
 }
 
+
+.center_popup{
+  display: block;
+  position:absolute;
+  top:50%;
+  left:50%;
+  background-color: green;
+  width: 500px;
+  height: 500px;
+  margin-left:-250px;   /* negative half of width above */
+  margin-top:-250px ;
+}
+
+.center_hidden{
+  display: none;
+}
 
 /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
 
