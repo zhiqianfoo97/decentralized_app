@@ -1,18 +1,15 @@
-import React, { useState }  from "react";
+import React, { useState}  from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { Redirect } from "react-router-dom";
-
-
 export default class LoginPage extends React.Component{
-
-
+    
     state = {
         redirect: false,
         showUser: false,
         showProvider: false,
         showAll: true,
         username: '',
-        password: ''
+        password: '',
     }
 
 
@@ -114,8 +111,11 @@ export default class LoginPage extends React.Component{
                     if (myPromise.isPending()){
                         console.log("wrong authentication info")
                     }else{
+                        
                         console.log("success")
                         that.setRedirect();
+
+                        
                     }
     
                 }, 2000);
@@ -255,21 +255,50 @@ export default class LoginPage extends React.Component{
 
     render(){
     return (
-        
+        <>
+        <nav className="navbar navbar-expand-lg navbar-light fixed-top">
+            <div className="container">
+
+            <Link className="navbar-brand" to={"/sign-in"}>Stay Home</Link>
+            <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
+                <ul className="navbar-nav ml-auto">
+                
+                    <li className="nav-item">
+
+                    <Link className="nav-link" to={"/sign-in"}>Login</Link>
+                    </li>
+                    <li className="nav-item">
+                    <Link className="nav-link" to={"/register"}>Sign up</Link>
+                    </li>
+                    
+                </ul>
+
+            </div>
+            </div>
+        </nav>
+
+      <div className="auth-wrapper">
         <div className="auth-inner">
             {this.state.showAll ? "" : <button id="back-button" onClick={(e) => this.closeAll(e)}> Back </button> }
             <form>
                 <h3>Sign In As</h3> 
                 
+                
                 {this.state.showAll ? 
-                    <div className="login-page-button">
-                        
-                        <button className="login-page-button-unit" onClick={(e) => this.openUser(e)}>
+                    <div >
+                        <button type="submit" className="btn custom-button btn-block loginButton" onClick={(e) => this.openUser(e)} >
+                             User
+                        </button>
+
+                        <button type="submit" className="btn custom-button btn-block loginButton" onClick={(e) => this.openProvider(e)}>
+                            Supplier
+                        </button>
+                        {/* <button className="login-page-button-unit" onClick={(e) => this.openUser(e)}>
                             User
                         </button>
                         <button className="login-page-button-unit" onClick={(e) => this.openProvider(e)}>
                             Test Provider
-                        </button>
+                        </button> */}
                             
                         
                     </div>
@@ -335,6 +364,8 @@ export default class LoginPage extends React.Component{
 
             </form>
         </div>
+        </div>
+        </>
        
     );
  }

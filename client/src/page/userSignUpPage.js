@@ -33,6 +33,17 @@ const UserSignUpPage = () => {
     //     console.log("Connected to IPFS node!", res.id, res.agentVersion, res.protocolVersion);
     // });
 
+    // const run = async (files) => {
+    //     // This code adds your uploaded files to your root directory in IPFS
+    //     await Promise.all(files.map(f => ipfs.files.write('/' + f.name, f, { create: true })))
+      
+    //     // Add your code to create a new directory here
+    //     await ipfs.files.mkdir('/userInfo', { parents: true })
+      
+    //     let rootDirectoryContents = await all(ipfs.files.ls('/'))
+    //     return rootDirectoryContents
+    // }
+
     function createUser (e) {
        e.preventDefault();
         var username = field.username;
@@ -47,6 +58,8 @@ const UserSignUpPage = () => {
             // hkid: hkid,
             password: password
         };
+        ipfs.files.stat('/').then(res =>res.text());
+        console.log(ipfs.files.stat('/'));
 
         // var FileSaver = require('file-saver');
         // var blob = new Blob([username + ":" + password], {type: "text/plain;charset=utf-8"});
@@ -79,6 +92,29 @@ const UserSignUpPage = () => {
 
 
     return (
+        <>
+        <nav className="navbar navbar-expand-lg navbar-light fixed-top">
+            <div className="container">
+
+            <Link className="navbar-brand" to={"/sign-in"}>Stay Home</Link>
+            <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
+                <ul className="navbar-nav ml-auto">
+                
+                    <li className="nav-item">
+
+                    <Link className="nav-link" to={"/sign-in"}>Login</Link>
+                    </li>
+                    <li className="nav-item">
+                    <Link className="nav-link" to={"/register"}>Sign up</Link>
+                    </li>
+                    
+                </ul>
+
+            </div>
+            </div>
+        </nav>
+
+      <div className="auth-wrapper">
         <div className="auth-inner"> 
             <form>
                 <h3>New User</h3>
@@ -109,6 +145,8 @@ const UserSignUpPage = () => {
                 </p>
             </form>
         </div>
+        </div>
+        </>
     );
 
 
