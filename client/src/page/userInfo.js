@@ -4,6 +4,7 @@ import { QRCode } from 'react-qr-svg';
 import getWeb3 from "../getWeb3";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
+
 const UserInfo = (props) => {
 
     const [balance, setBalance] = useState(0);

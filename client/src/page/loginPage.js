@@ -76,9 +76,11 @@ export default class LoginPage extends React.Component{
         localStorage.setItem("user_type","user");
         localStorage.setItem("name", "test");
         localStorage.setItem("username", this.state.username);
-        localStorage.setItem("eth_address", "0x501a19d036cD7DA7E353AD194bA08642cD560978");
+        localStorage.setItem("eth_address", "0x9545cE434c9743936dB8B0C7330254409458D076");
         localStorage.setItem("logged", true);
         localStorage.setItem("hkid", "m1234123");
+        localStorage.setItem("public_key", "");
+        localStorage.setItem("private_key", "");
 
         // var userJson = {
         //     username: this.state.username,
@@ -165,7 +167,7 @@ export default class LoginPage extends React.Component{
         localStorage.setItem("user_type","provider");
         localStorage.setItem("name", "test2");
         localStorage.setItem("username", this.state.username);
-        localStorage.setItem("eth_address", "0x501a19d036cD7DA7E353AD194bA08642cD560978");
+        localStorage.setItem("eth_address", "0x9545cE434c9743936dB8B0C7330254409458D076");
         localStorage.setItem("location", "xx");
         localStorage.setItem("email", "zxxc@porkmail.com");
 
