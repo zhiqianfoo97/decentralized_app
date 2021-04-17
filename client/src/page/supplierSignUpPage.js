@@ -7,10 +7,6 @@ const SupplierSignUpPage = () => {
         address : "",
         healthcare_provider_number : "",
         password : "",
-<<<<<<< HEAD
-=======
-        email: "",
->>>>>>> 3f8125866501d292012f00318b721e40900920d5
         eth_address : "",
         location: "",
         public_key: "",

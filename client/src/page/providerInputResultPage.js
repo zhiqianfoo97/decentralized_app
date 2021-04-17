@@ -2,8 +2,11 @@ import React, { useState, useEffect } from "react";
 import getWeb3 from "../getWeb3";
 import HealthRecord from "../contracts/HealthRecord.json";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-const ProviderInputResultPage = (props) => {
+import { Redirect } from "react-router-dom";
 
+const ProviderInputResultPage = (props) => {
+    const logged = localStorage.getItem("logged");
+    var backToLoginPage = false;
     const [pressed, setPressed] = useState(false);
     const [name, setName] = useState("");
     const [hkid, setHKID] = useState("");
@@ -14,6 +17,15 @@ const ProviderInputResultPage = (props) => {
     const [web3, setWeb3] = useState(null);
     const [contract, setContract] = useState(null);
     const [etherAmt, setEtherAmt] = useState("");
+
+
+    const logOut = () => {
+        localStorage.clear();
+    }
+
+    const onUnauthorised = () => {
+        backToLoginPage = true;
+    }
 
     const setup = async () => {
         const web3_ = await getWeb3();
@@ -74,6 +86,8 @@ const ProviderInputResultPage = (props) => {
     return (
 
         <>
+        {logged?
+        <>
             <nav className="navbar navbar-expand-lg navbar-light fixed-top">
                 <div className="container">
 
@@ -83,7 +97,7 @@ const ProviderInputResultPage = (props) => {
 
                             <li className="nav-item">
 
-                                <Link className="nav-link" to={"/sign-in"}>Log Out</Link>
+                                <Link className="nav-link" to={"/sign-in"} onClick={() => logOut()}>Log Out</Link>
                             </li>
 
                         </ul>
@@ -151,6 +165,8 @@ const ProviderInputResultPage = (props) => {
                     </form>
                 </div>
             </div>
+            </>:onUnauthorised()}
+            {backToLoginPage ? <Redirect to={"/sign-in"} />: ""}
         </>
     )
 }

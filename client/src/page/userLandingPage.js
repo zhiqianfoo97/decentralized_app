@@ -21,11 +21,13 @@ export default class MyComponent extends React.Component {
   state = {
     redirect: false,
     isSidebarOpen: true,
-    itemId: ""
+    itemId: "",
+    logged: localStorage.getItem("logged"),
+    backToLoginPage: false
   }
+  
 
   setIsSidebarOpen = (arg) => {
-    console.log(arg);
     this.setState({
       isSidebarOpen: arg
     })
@@ -38,10 +40,26 @@ export default class MyComponent extends React.Component {
     })
   }
 
+  setbackToLoginPage = () =>{
+    this.setState({
+      backToLoginPage: true,
+    })
+  }
+
   renderRedirect = (itemId) => {
     if (this.state.redirect) {
       return <Redirect to={this.state.itemId} />
     }
+  }
+
+  renderRedirectToLoginPage = () => {
+    if (this.state.backToLoginPage) {
+      return <Redirect to={"/sign-in"} />
+    }
+  }
+
+  logOut = () =>{
+    localStorage.clear();
   }
 
   render() {
@@ -64,6 +82,8 @@ export default class MyComponent extends React.Component {
     }
     return (
       <>
+      {this.state.logged ? 
+        <>
         <nav className="navbar navbar-expand-lg navbar-light fixed-top">
           <div className="container">
 
@@ -72,8 +92,7 @@ export default class MyComponent extends React.Component {
               <ul className="navbar-nav ml-auto">
 
                 <li className="nav-item">
-
-                  <Link className="nav-link" to={"/sign-in"}>Log Out</Link>
+                  <Link className="nav-link" to={"/sign-in"} onClick = {()=> this.logOut()}>Log Out</Link>
                 </li>
 
               </ul>
@@ -165,44 +184,49 @@ export default class MyComponent extends React.Component {
             </div>
           </div>
         </div>
+        </>
+        : this.setbackToLoginPage()}
+        {this.renderRedirectToLoginPage()}
       </>
-
+      
     )
   }
 
 
   componentDidMount() {
-    var chart = this.chart;
-    var json = [
-      {
-        "x": 1618358400000,
-        "y": 22
-      },
-      {
-        "x": 1618444800000,
-        "y": 18
-      },
-      {
-        "x": 1618531200000,
-        "y": 10
-      },
-      {
-        "x": 1618617600000,
-        "y": 5
-      },
-      {
-        "x": 1618704000000,
-        "y": 7
-      }
-    ]
+    if (this.state.logged){
+      var chart = this.chart;
+      var json = [
+        {
+          "x": 1618358400000,
+          "y": 22
+        },
+        {
+          "x": 1618444800000,
+          "y": 18
+        },
+        {
+          "x": 1618531200000,
+          "y": 10
+        },
+        {
+          "x": 1618617600000,
+          "y": 5
+        },
+        {
+          "x": 1618704000000,
+          "y": 7
+        }
+      ]
 
-    for (var i = 0; i < json.length; i++) {
-      dataPoints.push({
-        x: new Date(json[i].x),
-        y: json[i].y
-      });
+      for (var i = 0; i < json.length; i++) {
+        dataPoints.push({
+          x: new Date(json[i].x),
+          y: json[i].y
+        });
+      }
+      chart.render();
     }
-    chart.render();
 
   }
 

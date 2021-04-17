@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import getWeb3 from "../getWeb3";
 import HealthRecord from "../contracts/HealthRecord.json";
+import { Redirect } from "react-router-dom";
 
 
 const AppointmentRow = (props) => {
@@ -81,77 +82,58 @@ const AppointmentRow = (props) => {
             <div className={styleState}>
                 <button onClick={closePayment}>X</button>
                 <div className="auth-inner">
-                <form>
-                    <h3 className="title">Input Result</h3>
+                    <form>
+                        <h3 className="title">Input Result</h3>
 
-                    <div className="split-container">
-                        <div className="left-half-container">
-                            <div className="form-group">
-                                <label>Name: </label>
+                        <div className="split-container">
+                            <div className="left-half-container">
+                                <div className="form-group">
+                                    <label>Name: </label>
+                                </div>
+                                <div className="form-group">
+                                    <label>Date: </label>
+                                </div>
+                                <div className="form-group">
+                                    <label>HKID: </label>
+                                </div>
+                                <div className="form-group medium-label">
+                                    <label>Ethereum Address: </label>
+                                </div>
+                                <div className="form-group">
+                                    <label>Test Result: </label>
+                                </div>
+                                <div className="form-group">
+                                    <label>Ether payable: </label>
+                                </div>
                             </div>
-                            <div className="form-group">
-                                <label>Date: </label>
-                            </div>
-                            <div className="form-group">
-                                <label>HKID: </label>
-                            </div>
-                            <div className="form-group medium-label">
-                                <label>Ethereum Address: </label>
-                            </div>
-                            <div className="form-group">
-                                <label>Test Result: </label>
-                            </div>
-                            <div className="form-group">
-                                <label>Ether payable: </label>
-                            </div>
-                        </div>
-                        <div className="right-half-container">
-                            <div className="form-group">
-<<<<<<< HEAD
-                                <input type="text" value={props.name} className="form-control" placeholder="Enter Name" />
-                            </div>
-                            <div className="form-group">
-                                <input type="text" value={props.date} className="form-control" placeholder="Enter Date" />
-                            </div>
-                            <div className="form-group">
-                                <input type="text" value={props.hkid} className="form-control" placeholder="Enter HKID" />
-                            </div>
-                            <div className="form-group ">
-                                <input type="text" value={props.ethAdd} className="form-control" placeholder="Enter Ethereum address" />
-=======
-                                <input type="text" value={props.name}  className="form-control" readOnly placeholder="Enter Name" />
-                            </div>
-                            <div className="form-group">
-                                <input type="text" value={props.date}  className="form-control" readOnly placeholder="Enter Date" />
-                            </div>
-                            <div className="form-group">
-                                <input type="text" value={props.hkid}  className="form-control" readOnly  placeholder="Enter HKID"/>
-                            </div>
-                            <div className="form-group ">
-                                <input type="text" value={props.ethAdd}  className="form-control" readOnly placeholder="Enter Ethereum address" />
->>>>>>> 3f8125866501d292012f00318b721e40900920d5
-                            </div>
-                            <div className="form-group">
-                                <input type="text" value={result} className="form-control" placeholder="Enter Test Result" onChange={handleResult} />
+                            <div className="right-half-container">
+                                <div className="form-group">
+                                    <input type="text" value={props.name} className="form-control" readOnly placeholder="Enter Name" />
+                                </div>
+                                <div className="form-group">
+                                    <input type="text" value={props.date} className="form-control" readOnly placeholder="Enter Date" />
+                                </div>
+                                <div className="form-group">
+                                    <input type="text" value={props.hkid} className="form-control" readOnly placeholder="Enter HKID" />
+                                </div>
+                                <div className="form-group ">
+                                    <input type="text" value={props.ethAdd} className="form-control" readOnly placeholder="Enter Ethereum address" />
+                                </div>
+                                <div className="form-group">
+                                    <input type="text" value={result} className="form-control" placeholder="Enter Test Result" onChange={handleResult} />
+                                </div>
+
+                                <div className="form-group">
+                                    <input type="text" value={etherAmt} className="form-control" placeholder="Enter Ether Amount" onChange={handleEther} />
+                                </div>
                             </div>
 
-                            <div className="form-group">
-                                <input type="text" value={etherAmt} className="form-control" placeholder="Enter Ether Amount" onChange={handleEther} />
-                            </div>
                         </div>
 
-                    </div>
 
+                        <button type="submit" onClick={uploadResult} className="btn btn-primary btn-block result-btn">Confirm</button>
 
-                    <button type="submit" onClick={uploadResult} className="btn btn-primary btn-block result-btn">Confirm</button>
-<<<<<<< HEAD
-
-
-
-=======
-                
->>>>>>> 3f8125866501d292012f00318b721e40900920d5
-                </form>
+                    </form>
                 </div>
             </div>
 
@@ -164,7 +146,8 @@ const AppointmentRow = (props) => {
 
 
 const ProviderIncomingAppointment = () => {
-
+    const logged = localStorage.getItem("logged");
+    var backToLoginPage = false;
     const [web3, setWeb3] = useState(null);
     const [contract, setContract] = useState(null);
     const [setupStatus, setSetupStatus] = useState(false);
@@ -173,6 +156,14 @@ const ProviderIncomingAppointment = () => {
     const [appointmentLength, setAppointmentLength] = useState(5);
     const [pageLimit, setPageLimit] = useState(5);
     const [account, setAccount] = useState(localStorage.getItem("eth_address"));
+
+    const logOut = () => {
+        localStorage.clear();
+    }
+
+    const onUnauthorised = () => {
+        backToLoginPage = true;
+    }
 
     const setup = async () => {
         const web3_ = await getWeb3();
@@ -213,24 +204,24 @@ const ProviderIncomingAppointment = () => {
         let date = "";
         let hkid = "";
         let name = "";
-        for (let i = start - 1 ; i >= start - pageLimit; i--){
-            if (i < 0){
+        for (let i = start - 1; i >= start - pageLimit; i--) {
+            if (i < 0) {
                 continueFlag = false;
                 break;
-            } 
-            
-            try{
-                temp = await contract.methods.getProviderAppointmentList(i, account ).call({from: account}); 
-            }catch(error){
+            }
+
+            try {
+                temp = await contract.methods.getProviderAppointmentList(i, account).call({ from: account });
+            } catch (error) {
                 console.log("Provider appointment does not exist.");
-                temp = {"0": "0x6e70cdAf8049D1FDfAC7f31DD1eeC3517d50E75c", "1": "01-02-21"};
+                temp = { "0": "0x6e70cdAf8049D1FDfAC7f31DD1eeC3517d50E75c", "1": "01-02-21" };
                 ethAdd = "0x6e70cdAf8049D1FDfAC7f31DD1eeC3517d50E75c";
                 date = "01-02-21";
                 hkid = "M1238123";
                 name = "Ali";
 
             }
-            if(temp !== ""){
+            if (temp !== "") {
                 temp_list.push(<AppointmentRow key={i} count={i} ethAdd={ethAdd} date={date} hkid={hkid} name={name} contract={contract} web3={web3}></AppointmentRow>)
                 console.log("que?");
             }
@@ -248,7 +239,7 @@ const ProviderIncomingAppointment = () => {
             //         temp_list.push(<AppointmentRow key={i} count={i} ethAdd={ethAdd} date={date} hkid={hkid} name={name} contract={contract} web3={web3}></AppointmentRow>)
             //         console.log("que?");
             //     }
-                
+
             //     console.log("temp_list = "+ temp_list);
 
 
@@ -260,7 +251,7 @@ const ProviderIncomingAppointment = () => {
 
 
         }
-        if(continueFlag){
+        if (continueFlag) {
             setAppointmentList(temp_list);
         }
 
@@ -272,7 +263,7 @@ const ProviderIncomingAppointment = () => {
     const clickNext = (e) => {
         e.preventDefault();
         let count = currentLimit - 5;
-        if (count < 0){
+        if (count < 0) {
             return;
         };
         makeRow(count);
@@ -282,7 +273,7 @@ const ProviderIncomingAppointment = () => {
     const clickPrev = (e) => {
         e.preventDefault();
         let count = currentLimit + 5;
-        if (count >= appointmentLength){
+        if (count >= appointmentLength) {
             count = appointmentLength;
         }
         makeRow(count);
@@ -295,13 +286,15 @@ const ProviderIncomingAppointment = () => {
     }, [setupStatus])
 
     useEffect(() => {
-        if(setupStatus){
+        if (setupStatus) {
             makeRow(appointmentLength);
         }
 
     }, [setupStatus, appointmentLength])
 
     return (
+        <>
+        {logged? 
         <>
             <nav className="navbar navbar-expand-lg navbar-light fixed-top">
                 <div className="container">
@@ -312,7 +305,7 @@ const ProviderIncomingAppointment = () => {
 
                             <li className="nav-item">
 
-                                <Link className="nav-link" to={"/sign-in"}>Log Out</Link>
+                                <Link className="nav-link" to={"/sign-in"} onClick={() => logOut()}>Log Out</Link>
                             </li>
 
                         </ul>
@@ -327,19 +320,22 @@ const ProviderIncomingAppointment = () => {
                         <Link className="nav-link" to={"/provider-landing-page"} style={{ color: "black" }} >Back</Link>
                     </button>
 
-                    <h3 >Incoming Appointment</h3>
+                    <h3 >Incoming Appointments</h3>
 
-                    
+
 
                     {appointmentList}
 
 
 
-
-                    <button onClick={clickPrev}>Previous</button>
-                    <button onClick={clickNext}>Next</button>
+                    <div className="bottom_buttons">
+                        <button className="btn btn-primary btn-block" onClick={clickPrev} style={{ width: "20%", marginTop: "8px" }}>Previous</button>
+                        <button className="btn btn-primary btn-block" onClick={clickNext} style={{ width: "20%" }}>Next</button>
+                    </div>
                 </div>
             </div>
+        </> : onUnauthorised()}
+        {backToLoginPage ? <Redirect to={"/sign-in"} />: ""}
         </>
 
     )

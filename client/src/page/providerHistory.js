@@ -1,11 +1,8 @@
-<<<<<<< HEAD
-import React, { useState, useEffect } from "react";
-=======
 import React, { useState, useEffect }  from "react";
->>>>>>> 3f8125866501d292012f00318b721e40900920d5
 import getWeb3 from "../getWeb3";
 import HealthRecord from "../contracts/HealthRecord.json";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 
 const HistoryRow = (props) => {
     return (
@@ -18,11 +15,9 @@ const HistoryRow = (props) => {
     )
 }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 3f8125866501d292012f00318b721e40900920d5
 const ProviderHistory = (props) => {
+    const logged = localStorage.getItem("logged");
+    var backToLoginPage = false;
     const [pageLimit, setPageLimit] = useState(5);
     const [setupStatus, setSetupStatus] = useState(false);
     const [resultRow, setResultRow] = useState("");
@@ -32,6 +27,15 @@ const ProviderHistory = (props) => {
     const [contract, setContract] = useState(null);
     const [account, setAccount] = useState(localStorage.getItem("eth_address"));
 
+
+    const logOut = () => {
+        localStorage.clear();
+    }
+
+    const onUnauthorised = () => {
+        backToLoginPage = true;
+    }
+
     const setup = async () => {
         const web3_ = await getWeb3();
         setWeb3(web3_);
@@ -40,13 +44,8 @@ const ProviderHistory = (props) => {
         let contract_ = new web3_.eth.Contract(HealthRecord.abi, deployedNetwork.address);
         let length = 10;
 
-<<<<<<< HEAD
-        contract_.methods.getProviderHistoryListLength(account).call({ from: account }, function (error, result) {
-            setHistoryLength(10);
-=======
         contract_.methods.getProviderHistoryListLength(account).call({from: account}, function(error, result){
             setHistoryLength(10);  // change to result
->>>>>>> 3f8125866501d292012f00318b721e40900920d5
             setContract(contract_);
             setSetupStatus(true);
 
@@ -68,17 +67,11 @@ const ProviderHistory = (props) => {
 
     const setupHistory = async (start) => {
         let temp_list = [];
-<<<<<<< HEAD
-        let temp = { "0": "0x6e70cdAf8049D1FDfAC7f31DD1eeC3517d50E75c", "1": "01-02-21" };
-        for (let i = start; i > start - pageLimit; i--) {
-            if (i < 0) {
-=======
         let temp = {"0": "0x6e70cdAf8049D1FDfAC7f31DD1eeC3517d50E75c", "1": "01-02-21"};
         let continueFlag = true;
         for (let i = start - 1 ; i > start - pageLimit; i--){
             if (i < 0){
                 continueFlag = false;
->>>>>>> 3f8125866501d292012f00318b721e40900920d5
                 break;
             }
 
@@ -109,16 +102,11 @@ const ProviderHistory = (props) => {
 
 
         }
-<<<<<<< HEAD
-        setResultRow(temp_list)
-
-=======
         if(continueFlag){
             setResultRow(temp_list)
         }
         
         
->>>>>>> 3f8125866501d292012f00318b721e40900920d5
     }
 
     const clickNext = (e) => {
@@ -156,6 +144,8 @@ const ProviderHistory = (props) => {
     return (
 
         <>
+        {logged?
+        <>
             <nav className="navbar navbar-expand-lg navbar-light fixed-top">
                 <div className="container">
 
@@ -165,7 +155,7 @@ const ProviderHistory = (props) => {
 
                             <li className="nav-item">
 
-                                <Link className="nav-link" to={"/sign-in"}>Log Out</Link>
+                                <Link className="nav-link" to={"/sign-in"} onClick={() => logOut()}>Log Out</Link>
                             </li>
 
                         </ul>
@@ -186,11 +176,15 @@ const ProviderHistory = (props) => {
 
 
                     </form>
-
-                    <button onClick={clickPrev}>Previous</button>
-                    <button onClick={clickNext}>Next</button>
+                    <div className="bottom_buttons">
+                    <button className="btn btn-primary btn-block" onClick={clickPrev} style={{ width: "20%", marginTop: "8px" }}>Previous</button>
+                    <button className="btn btn-primary btn-block" onClick={clickNext} style={{ width: "20%"}}>Next</button>
+                    </div>
                 </div>
             </div>
+            </> :onUnauthorised()}
+            {backToLoginPage ? <Redirect to={"/sign-in"} />: ""}
+
         </>
     )
 }
