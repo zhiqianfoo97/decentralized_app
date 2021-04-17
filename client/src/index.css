@@ -93935,3 +93935,8 @@ video {
   color: black !important;
   cursor: pointer;
 }
+
+.loginButton{
+  padding: 0.9rem 1rem !important;
+  color: #007bff !important;
+}

@@ -2,7 +2,7 @@ import React, { useState, useEffect }  from "react";
 
 import PickyDateTime from "react-picky-date-time";
 import Dropdown from 'react-bootstrap/Dropdown';
-
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 const UserMakeAppointment = () => {
 
     const [showPickyDateTime, setShowPickyDateTime] = useState(true);
@@ -97,6 +97,26 @@ const UserMakeAppointment = () => {
 
     return (
         <>
+
+        <nav className="navbar navbar-expand-lg navbar-light fixed-top">
+            <div className="container">
+
+            <Link className="navbar-brand" to={"/sign-in"}>Stay Home</Link>
+            <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
+                <ul className="navbar-nav ml-auto">
+                
+                    <li className="nav-item">
+
+                    <Link className="nav-link" to={"/sign-in"}>Log Out</Link>
+                    </li>
+                    
+                </ul>
+
+            </div>
+            </div>
+        </nav>
+
+      <div className="auth-wrapper">
         <div className="auth-inner" style={{width:"fit-content"}}> 
 
         <form>
@@ -162,6 +182,7 @@ const UserMakeAppointment = () => {
                 
             </form>
            
+        </div>
         </div>
         </>
         

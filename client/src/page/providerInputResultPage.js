@@ -1,7 +1,12 @@
+<<<<<<< HEAD
 import React, { useState, useEffect }  from "react";
 import getWeb3 from "../getWeb3";
 import HealthRecord from "../contracts/HealthRecord.json";
 
+=======
+import React, { useState }  from "react";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+>>>>>>> 9c24233acae948092530839a2d1b86b6c28030a9
 const ProviderInputResultPage = (props) => {
 
     const [pressed, setPressed] = useState(false);
@@ -72,6 +77,27 @@ const ProviderInputResultPage = (props) => {
     }, [setupStatus])
 
     return (
+        
+      <>
+      <nav className="navbar navbar-expand-lg navbar-light fixed-top">
+          <div className="container">
+
+          <Link className="navbar-brand" to={"/sign-in"}>Stay Home</Link>
+          <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
+              <ul className="navbar-nav ml-auto">
+              
+                  <li className="nav-item">
+
+                  <Link className="nav-link" to={"/sign-in"}>Log Out</Link>
+                  </li>
+                  
+              </ul>
+
+          </div>
+          </div>
+      </nav>
+
+    <div className="auth-wrapper">
         <div className="auth-inner"> 
             <form>
                 <h3 className = "title">Input Result</h3>
@@ -126,7 +152,8 @@ const ProviderInputResultPage = (props) => {
             
             </form>
         </div>
-
+</div>
+</>
     )
 }
 

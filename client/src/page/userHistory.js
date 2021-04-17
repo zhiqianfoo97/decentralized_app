@@ -404,7 +404,7 @@ const UserHistory = (props) => {
             
                 
 
-        </div>
+        </div>   
 
     )
 

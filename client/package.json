@@ -2,12 +2,18 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost:3001",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
     "@fortawesome/react-fontawesome": "^0.1.14",
     "awesome-react-icons": "^1.4.8",
     "bootstrap": "^4.6.0",
+<<<<<<< HEAD
+=======
+    "file-saver": "^2.0.5",
+    "ipfs-api": "^26.1.2",
+>>>>>>> 9c24233acae948092530839a2d1b86b6c28030a9
     "react": "^16.11.0",
     "react-addons-css-transition-group": "^15.6.2",
     "react-addons-update": "^15.6.3",
@@ -17,7 +23,12 @@
     "react-picky-date-time": "^1.6.1",
     "react-qr-svg": "^2.3.0",
     "react-scripts": "3.2.0",
+<<<<<<< HEAD
     "web3": "1.2.2"
+=======
+    "web3": "1.2.2",
+    "write-file-p": "^1.0.8"
+>>>>>>> 9c24233acae948092530839a2d1b86b6c28030a9
   },
   "scripts": {
     "start": "react-scripts start",

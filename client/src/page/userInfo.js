@@ -1,8 +1,12 @@
 import React, { useState, useEffect }  from "react";
 import qrcode from '../qrcode.png';
+<<<<<<< HEAD
 import { QRCode } from 'react-qr-svg';
 import getWeb3 from "../getWeb3";
 
+=======
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+>>>>>>> 9c24233acae948092530839a2d1b86b6c28030a9
 const UserInfo = (props) => {
 
     const [balance, setBalance] = useState(0);
@@ -36,6 +40,26 @@ const UserInfo = (props) => {
     },[account, balance])
 
     return (
+        <>
+        <nav className="navbar navbar-expand-lg navbar-light fixed-top">
+            <div className="container">
+
+            <Link className="navbar-brand" to={"/sign-in"}>Stay Home</Link>
+            <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
+                <ul className="navbar-nav ml-auto">
+                
+                    <li className="nav-item">
+
+                    <Link className="nav-link" to={"/sign-in"}>Log Out</Link>
+                    </li>
+                    
+                </ul>
+
+            </div>
+            </div>
+        </nav>
+
+      <div className="auth-wrapper">
         <div className="auth-inner"> 
             <form>
                 <h3 className = "title">User Information</h3>
@@ -98,6 +122,8 @@ const UserInfo = (props) => {
                 
             </form>
         </div>
+    </div>
+    </>
     );
 
 }
