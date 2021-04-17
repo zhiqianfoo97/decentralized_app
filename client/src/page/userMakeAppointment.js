@@ -33,7 +33,7 @@ const UserMakeAppointment = () => {
 
     const onYearPicked = (res) => {
         const { year } = res;
-        setYear({ year });
+        setYear(year);
     };
 
 

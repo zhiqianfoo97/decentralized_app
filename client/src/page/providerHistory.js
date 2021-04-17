@@ -1,19 +1,18 @@
-import React, { useState, useEffect }  from "react";
+import React, { useState, useEffect } from "react";
 import getWeb3 from "../getWeb3";
 import HealthRecord from "../contracts/HealthRecord.json";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 const HistoryRow = (props) => {
-    return(
-        <div className = "column_container">
+    return (
+        <div className="column_container">
             <div className="form-group border-bottom">
-                <label>Ethereum Address: {props.userAddress} </label> 
+                <label>Ethereum Address: {props.userAddress} </label>
                 <label>Date: {props.date} </label> <br></br>
             </div>
         </div>
     )
 }
-
 
 const ProviderHistory = (props) => {
     const [pageLimit, setPageLimit] = useState(5);
@@ -50,8 +49,8 @@ const ProviderHistory = (props) => {
         //     setSetupStatus(true);
         //     setHistoryLength(length);
         // }
-    
-        
+
+
     }
 
     const setupHistory = async (start) => {
@@ -62,20 +61,20 @@ const ProviderHistory = (props) => {
             if (i < 0){
                 continueFlag = false;
                 break;
-            } 
-            
-            try{
-                temp = await contract.methods.getProviderHistoryList(i, account ).call({from: account}); 
-            }catch(error){
-                console.log("Provider history does not exist.");
-            }finally{
-                if(temp !== ""){
-                    temp_list.push(<HistoryRow key={i} userAddress={temp["0"]} date={temp["1"]}></HistoryRow>)
-            }
-                
             }
 
-            
+            try {
+                temp = await contract.methods.getProviderHistoryList(i, account).call({ from: account });
+            } catch (error) {
+                console.log("Provider history does not exist.");
+            } finally {
+                if (temp !== "") {
+                    temp_list.push(<HistoryRow key={i} userAddress={temp["0"]} date={temp["1"]}></HistoryRow>)
+                }
+
+            }
+
+
             //let temp = {"0": "0x6e70cdAf8049D1FDfAC7f31DD1eeC3517d50E75c", "1": "01-02-21"};
             // 0 = patient address, 1 = date
 
@@ -87,9 +86,9 @@ const ProviderHistory = (props) => {
 
 
             // })
-            
-        
-            
+
+
+
         }
         if(continueFlag){
             setResultRow(temp_list)
@@ -116,7 +115,7 @@ const ProviderHistory = (props) => {
         }
         setupHistory(count);
         setCurrentLimit(count);
-    
+
     }
 
     useEffect(() => {
@@ -127,45 +126,48 @@ const ProviderHistory = (props) => {
         if(setupStatus){
             setupHistory(historyLength );
         }
-        
+
     }, [setupStatus, historyLength])
 
-       return (
-           
-      <>
-      <nav className="navbar navbar-expand-lg navbar-light fixed-top">
-          <div className="container">
+    return (
 
-          <Link className="navbar-brand" to={"/sign-in"}>Stay Home</Link>
-          <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
-              <ul className="navbar-nav ml-auto">
-              
-                  <li className="nav-item">
+        <>
+            <nav className="navbar navbar-expand-lg navbar-light fixed-top">
+                <div className="container">
 
-                  <Link className="nav-link" to={"/sign-in"}>Log Out</Link>
-                  </li>
-                  
-              </ul>
+                    <Link className="navbar-brand" to={"/sign-in"}>Stay Home</Link>
+                    <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
+                        <ul className="navbar-nav ml-auto">
 
-          </div>
-          </div>
-      </nav>
+                            <li className="nav-item">
 
-    <div className="auth-wrapper">
-            <div className="auth-inner"> 
-                <form>
-                    <h3>History</h3>
+                                <Link className="nav-link" to={"/sign-in"}>Log Out</Link>
+                            </li>
 
-                    {resultRow}
+                        </ul>
 
-                    
-                </form>
+                    </div>
+                </div>
+            </nav>
 
-                <button onClick={clickPrev}>Previous</button>
-                <button onClick={clickNext}>Next</button>
-             </div>
-    </div>
-             </>
+            <div className="auth-wrapper">
+                <div className="auth-inner">
+                    <form>
+                        <button id="back-button">
+                            <Link className="nav-link" to={"/provider-landing-page"} style={{ color: "black" }} >Back</Link>
+                        </button>
+                        <h3>History</h3>
+
+                        {resultRow}
+
+
+                    </form>
+
+                    <button onClick={clickPrev}>Previous</button>
+                    <button onClick={clickNext}>Next</button>
+                </div>
+            </div>
+        </>
     )
 }
 

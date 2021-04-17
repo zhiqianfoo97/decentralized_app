@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import getWeb3 from "../getWeb3";
 import HealthRecord from "../contracts/HealthRecord.json";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 const UserResult = (props) => {
 
@@ -100,7 +101,7 @@ const UserResult = (props) => {
 
 
                 <div className={styleState}>
-                    <button onClick={closePayment}>X</button>
+                    <button onClick={closePayment} className="modalCloseButton">X</button>
                     <div className="auth-inner">
 
                         <form>
@@ -122,16 +123,16 @@ const UserResult = (props) => {
                                     </div>
                                 </div>
                                 <div className="right-half-container">
-                                    <div className="form-group">
+                                    <div className="form-group" style={{ minHeight: '56px' }}>
                                         <label>{props.provName}</label>
                                     </div>
-                                    <div className="form-group long-label">
+                                    <div className="form-group long-label" style={{ minHeight: '80px' }}>
                                         <label>{props.payableTo}</label>
                                     </div>
-                                    <div className="form-group">
+                                    <div className="form-group" style={{ minHeight: '56px' }}>
                                         <label>{props.provLocation}</label>
                                     </div>
-                                    <div className="form-group">
+                                    <div className="form-group" style={{ minHeight: '56px' }}>
                                         <label>{props.amount}</label>
                                     </div>
                                 </div>
@@ -146,6 +147,7 @@ const UserResult = (props) => {
                 </div>
             }
         </div>
+
     );
 
 
@@ -154,13 +156,19 @@ const UserResult = (props) => {
 
 const ResultRow = (props) => {
     const [styling, setStyling] = useState("center_hidden");
+    const [modalOverlay, setModalOverlay] = useState("modal-overlay-none");
+
+
     const openPopup = () => {
         setStyling("center_popup");
+        setModalOverlay("modal-overlay");
+
     }
 
     const closePopup = (e) => {
         e.preventDefault();
         setStyling("center_hidden");
+        setModalOverlay("modal-overlay-none");
     }
 
     return (
@@ -170,11 +178,11 @@ const ResultRow = (props) => {
                 <label>Address: {props.provLocation}</label><br></br>
                 <label>Date: {props.date} </label> <br></br>
                 <label>Result: {props.paidStat ? props.result : "****"}</label>
-                <label> Count: {props.count} </label>
             </div>
 
+
             <div className={styling}>
-                <button onClick={closePopup}> X </button>
+                <button onClick={closePopup} className="modalCloseButton"> X </button>
                 <UserResult paidStat={props.paidStat} date={props.date} amount={props.amount} provName={props.provName}
                     payableTo={props.payableTo} provLocation={props.provLocation}
                     name={localStorage.getItem("name")} hkid={localStorage.getItem("hkid")}
@@ -199,7 +207,8 @@ const AppointmentRow = (props) => {
 }
 
 const UserHistory = (props) => {
-
+    const window_height = window.innerHeight;
+    const window_width = window.innerWidth;
     const [pageLimit, setPageLimit] = useState(5);
     const [account, setAccount] = useState(localStorage.getItem("eth_address"));
     const [currentLimit, setCurrentLimit] = useState(0);
@@ -219,8 +228,8 @@ const UserHistory = (props) => {
         console.log("NETWORK ID = " + networkID);
         const deployedNetwork = HealthRecord.networks[networkID];
         let contract_ = new web3_.eth.Contract(HealthRecord.abi, deployedNetwork.address);
-        let appointLength = 0;
-        let resultLength_ = 0;
+        let appointLength = 5;
+        let resultLength_ = 5;
 
         contract_.methods.getUserAppointmentListLength(account).call({ from: account }, function (error, result) {
             setAppointmentLength(5);
@@ -252,7 +261,7 @@ const UserHistory = (props) => {
 
     const setupResult = async (start) => {
         let temp_list = [];
-        let temp = "";
+        let temp = "999";
         let provInfo = "";
         let continueFlag = true;
         for (let i = start - 1; i >= start - pageLimit; i--) {
@@ -276,10 +285,10 @@ const UserHistory = (props) => {
                 provInfo = { "0": "Queen mary", "1": "HKU" };
             }
             //let temp = await contract.methods.getPendingHealthRecord(i, account ).call({from: account}); 
-            //let temp = {"0": "pos", "1": "01-02-21", "2" : "Queen mary", "3": "Tsim sha tsui" ,"4":"1", "5": false, "6" : "0x6e70cdAf8049D1FDfAC7f31DD1eeC3517d50E75c"};
+            temp = { "0": "pos", "1": "01-02-21", "2": "Queen mary", "3": "Tsim sha tsui", "4": "1", "5": false, "6": "0x6e70cdAf8049D1FDfAC7f31DD1eeC3517d50E75c" };
             // 0 = test result, 1 = date, 2 = placeName, 3 = place, 4 = amount, 5 = paid status, 6=payable address
             // to use, temp["0"]
-            // let provInfo = {"0" :"Queen mary", "1":"HKU"};
+            provInfo = { "0": "Queen mary", "1": "HKU" };
             // 0 = place name, 1 = location
 
             if (temp !== "") {
@@ -377,7 +386,6 @@ const UserHistory = (props) => {
 
     useEffect(() => {
         setup();
-
     }, [setupStatus])
 
     useEffect(() => {
@@ -389,35 +397,60 @@ const UserHistory = (props) => {
     }, [appointmentLength, setupStatus, resultLength])
 
     return (
-        <div className="auth-inner">
+        <>
+            {/* <div style={{ backgroundColor: "black", height: window_height, width: window_width }}>
 
-            <h3>History</h3>
+            </div> */}
 
-            <div className="side-by-side-button">
-                <button type="submit" className="btn custom-button" onClick={changeToResult}>
-                    Results
+            <nav className="navbar navbar-expand-lg navbar-light fixed-top">
+                <div className="container">
+
+                    <Link className="navbar-brand" to={"/sign-in"}>Stay Home</Link>
+                    <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
+                        <ul className="navbar-nav ml-auto">
+
+                            <li className="nav-item">
+
+                                <Link className="nav-link" to={"/sign-in"}>Log Out</Link>
+                            </li>
+
+                        </ul>
+
+                    </div>
+                </div>
+            </nav>
+
+            <div className="auth-wrapper">
+                <div className="auth-inner">
+                    <button id="back-button">
+                        <Link className="nav-link" to={"/user-landing-page"} style={{ color: "black" }} >Back</Link>
+                    </button>
+                    <h3>History</h3>
+
+                    <div className="side-by-side-button">
+                        <button type="submit" className="btn custom-button" onClick={changeToResult} style={{ marginRight: '1px' }}>
+                            Results
                     </button>
 
-                <button type="submit" className="btn custom-button" onClick={changeToAppointment}>
-                    Appointment
+                        <button type="submit" className="btn custom-button" onClick={changeToAppointment}>
+                            Appointment
                     </button>
+                    </div>
+
+                    {
+                        currentClicked
+                            ?
+                            resultList
+                            :
+                            appointmentList
+                    }
+
+                    <button onClick={clickPrev}>Previous</button>
+                    <button onClick={clickNext}>Next</button>
+
+                </div>
             </div>
-
-            {
-                currentClicked
-                    ?
-                    resultList
-                    :
-                    appointmentList
-            }
-
-            <button onClick={clickPrev}>Previous</button>
-            <button onClick={clickNext}>Next</button>
-
-
-
-
-        </div>
+        </>
 
     )
 

@@ -1,6 +1,7 @@
 import React, { useState}  from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { Redirect } from "react-router-dom";
+
 export default class LoginPage extends React.Component{
     
     state = {
@@ -11,6 +12,7 @@ export default class LoginPage extends React.Component{
         showAll: true,
         username: '',
         password: '',
+        private_key:'',
     }
 
 
@@ -81,26 +83,27 @@ export default class LoginPage extends React.Component{
         localStorage.setItem("hkid", "m1234123");
         localStorage.setItem("public_key", "");
         localStorage.setItem("private_key", "");
+        localStorage.setItem("private_key", this.state.private_key);
 
-        // var userJson = {
-        //     username: this.state.username,
-        //     password: this.state.password
-        // };
-        // var ipfsHash = "";
-        // const ipfsAPI = require('ipfs-api');
-        // const ipfs = ipfsAPI({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
+        var userJson = {
+            username: this.state.username,
+            password: this.state.password
+        };
+        var ipfsHash = "";
+        const ipfsAPI = require('ipfs-api');
+        const ipfs = ipfsAPI({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
 
-        // var that = this;
-        // ipfs.add([Buffer.from(JSON.stringify(userJson))], {"only-hash": true}, function(err, res){
-        //     if (err) throw err
-        //     ipfsHash = res[0].hash;
-        //     console.log("test hash");
-        //     console.log(ipfsHash);
-        //     if(ipfsHash != 'not-available') {
-        //         var url = 'https://ipfs.io/ipfs/' + ipfsHash;
-        //         console.log('getting user info from', url);
+        var that = this;
+        ipfs.add([Buffer.from(JSON.stringify(userJson))], {"only-hash": true}, function(err, res){
+            if (err) throw err
+            ipfsHash = res[0].hash;
+            console.log("test hash");
+            console.log(ipfsHash);
+            if(ipfsHash != 'not-available') {
+                var url = 'https://ipfs.io/ipfs/' + ipfsHash;
+                console.log('getting user info from', url);
 
-
+            })
                
         //         const authentication = fetch(url).then(response => response.json());
         //         var myPromise = that.MakeQuerablePromise(authentication);
@@ -171,25 +174,26 @@ export default class LoginPage extends React.Component{
         localStorage.setItem("location", "xx");
         localStorage.setItem("email", "zxxc@porkmail.com");
 
-        // var userJson = {
-        //     username: this.state.username,
-        //     password: this.state.password
-        // };
-        // var ipfsHash = "";
-        // const ipfsAPI = require('ipfs-api');
-        // const ipfs = ipfsAPI({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
+        var userJson = {
+            identity: "Supplier",
+            username: this.state.username,
+            password: this.state.password
+        };
+        var ipfsHash = "";
+        const ipfsAPI = require('ipfs-api');
+        const ipfs = ipfsAPI({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
 
-        // var that = this;
-        // ipfs.add([Buffer.from(JSON.stringify(userJson))], {"only-hash": true}, function(err, res){
-        //     if (err) throw err
-        //     ipfsHash = res[0].hash;
-        //     console.log("test hash");
-        //     console.log(ipfsHash);
-        //     if(ipfsHash != 'not-available') {
-        //         var url = 'https://ipfs.io/ipfs/' + ipfsHash;
-        //         console.log('getting user info from', url);
+        var that = this;
+        ipfs.add([Buffer.from(JSON.stringify(userJson))], {"only-hash": true}, function(err, res){
+            if (err) throw err
+            ipfsHash = res[0].hash;
+            console.log("test hash");
+            console.log(ipfsHash);
+            if(ipfsHash != 'not-available') {
+                var url = 'https://ipfs.io/ipfs/' + ipfsHash;
+                console.log('getting user info from', url);
 
-
+            }
                
         //         const authentication = fetch(url).then(response => response.json());
         //         var myPromise = that.MakeQuerablePromise(authentication);
@@ -240,7 +244,7 @@ export default class LoginPage extends React.Component{
         //     }
         // })
 
-    }
+    })}
 
     openUser = (e) => {
         e.preventDefault();
@@ -280,6 +284,13 @@ export default class LoginPage extends React.Component{
         e.preventDefault();
         this.setState({
             password: e.target.value
+        })
+    }
+
+    handlePrivateKeyChange = (e) =>{
+        e.preventDefault();
+        this.setState({
+            private_key: e.target.value
         })
     }
 
@@ -392,12 +403,11 @@ export default class LoginPage extends React.Component{
                         </div>
 
                         <div className="form-group">
-                            <div className="custom-control custom-checkbox">
-                                <input type="checkbox" className="custom-control-input" id="customCheck1" />
-                                <label className="custom-control-label" htmlFor="customCheck1">Remember me</label>
-                            </div>
+                            <label>Private Key</label>
+                            <input type="text" className="form-control" placeholder="Enter private key" value={this.state.private_key} onChange={(e) => this.handlePrivateKeyChange(e)} />
                         </div>
 
+                        
                         <button type="submit" className="btn btn-primary btn-block" onClick={(e) => this.loginUser(e)}>
                             <Link className="nav-link" to={"/user-landing-page"}>Submit</Link>
                         </button>
