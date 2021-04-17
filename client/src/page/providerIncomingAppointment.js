@@ -125,7 +125,7 @@ const ProviderIncomingAppointment = () => {
     const [setupStatus, setSetupStatus] = useState(false);
     const [appointmentList, setAppointmentList] = useState("");
     const [currentLimit, setCurrentLimit] = useState(0);
-    const [appointmentLength, setAppointmentLength] = useState(4);
+    const [appointmentLength, setAppointmentLength] = useState(5);
     const [pageLimit, setPageLimit] = useState(5);
     const [account, setAccount] = useState(localStorage.getItem("eth_address"));
 
@@ -135,10 +135,10 @@ const ProviderIncomingAppointment = () => {
         let networkID = await web3_.eth.net.getId();
         const deployedNetwork = HealthRecord.networks[networkID];
         let contract_ = new web3_.eth.Contract(HealthRecord.abi, deployedNetwork.address);
-        let length = 0;
+        let length = 5;
 
         contract_.methods.getUserAppointmentListLength(account).call({from: account}, function(error, result){
-            setAppointmentLength(result);
+            setAppointmentLength(5);
             setContract(contract_);
             setSetupStatus(true);
 
@@ -162,34 +162,44 @@ const ProviderIncomingAppointment = () => {
 
     const makeRow = async (start) => {
         let temp_list = [];
-        let temp = "";
+        let temp = "a";
         for (let i = start ; i > start - pageLimit; i--){
             if (i < 0){
                 break;
             } 
             
-            try{
-                temp = await contract.methods.getProviderAppointmentList(i, account ).call({from: account}); 
-            }catch(error){
-                console.log("Provider appointment does not exist.");
-            }
+            // try{
+            //     temp = await contract.methods.getProviderAppointmentList(i, account ).call({from: account}); 
+            // }catch(error){
+            //     console.log("Provider appointment does not exist.");
+            // }
             //let temp = {"0": "0x6e70cdAf8049D1FDfAC7f31DD1eeC3517d50E75c", "1": "01-02-21"};
             // 0 = patient address, 1 = date, 2 = encrypted patient info.
+            contract.methods.getProviderAppointmentList(i, account ).call({from: account}, function(error, result){
+                let ethAdd = "0x6e70cdAf8049D1FDfAC7f31DD1eeC3517d50E75c";
+                let date = "01-02-21";
+                let hkid = "M1238123";
+                let name = "Ali";
+                console.log("HELLO " + temp);
 
-            let ethAdd = "0x6e70cdAf8049D1FDfAC7f31DD1eeC3517d50E75c";
-            let date = "01-02-21";
-            let hkid = "M1238123";
-            let name = "Ali";
+
+                if(temp !== ""){
+                    temp_list.push(<AppointmentRow key={i} count={i} ethAdd={ethAdd} date={date} hkid={hkid} name={name} contract={contract} web3={web3}></AppointmentRow>)
+                }
+                setAppointmentList(temp_list);
 
 
-            if(temp !== ""){
-                temp_list.push(<AppointmentRow key={i} count={i} ethAdd={ethAdd} date={date} hkid={hkid} name={name} contract={contract} web3={web3}></AppointmentRow>)
-            }
+            })
+
+
+            
             
         
             
         }
-        setAppointmentList(temp_list);
+
+
+        
 
     }
 
@@ -223,20 +233,20 @@ const ProviderIncomingAppointment = () => {
             makeRow(appointmentLength - 1);
         }
         
-    }, [setupStatus, appointmentList])
+    }, [setupStatus, appointmentLength])
 
     return (
         <div className="auth-inner"> 
-            <form>
-                
-                <h3 >Incoming Appointment</h3>
 
-                <input name="text" className = "search-bar" type="text" placeholder="Search" />
+                
+            <h3 >Incoming Appointment</h3>
 
-                {appointmentList}
+            <input name="text" className = "search-bar" type="text" placeholder="Search" />
+
+            {appointmentList}
                 
                 
-            </form>
+    
 
             <button onClick={clickPrev}>Previous</button>
             <button onClick={clickNext}>Next</button>

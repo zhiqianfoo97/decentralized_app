@@ -223,11 +223,11 @@ const UserHistory = (props) => {
         let appointLength = 0;
         let resultLength_ = 0;
 
-        contract.methods.getUserAppointmentListLength(account).call({from: account}, function(error, result){
+        contract_.methods.getUserAppointmentListLength(account).call({from: account}, function(error, result){
             setAppointmentLength(result);
         });
 
-        contract.methods.getPendingHealthRecordLength(account).call({from: account}, function(error, result){
+        contract_.methods.getPendingHealthRecordLength(account).call({from: account}, function(error, result){
             setResultLength(result);
         });
 

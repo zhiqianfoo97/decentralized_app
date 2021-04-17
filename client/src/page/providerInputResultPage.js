@@ -124,8 +124,6 @@ const ProviderInputResultPage = (props) => {
 
                 <button type="submit" onClick={uploadResult} className="btn btn-primary btn-block result-btn">Confirm</button>
             
-
-                
             </form>
         </div>
 

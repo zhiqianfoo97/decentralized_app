@@ -14,7 +14,7 @@ const LoginPage = () => {
         localStorage.setItem("user_type","user");
         localStorage.setItem("name", "test");
         localStorage.setItem("username", username);
-        localStorage.setItem("eth_address", "0xD1b31cdbAc81cb4E61910A1c8056B83Cb3eA784A");
+        localStorage.setItem("eth_address", "0x501a19d036cD7DA7E353AD194bA08642cD560978");
         localStorage.setItem("logged", true);
         localStorage.setItem("hkid", "m1234123");
 
@@ -25,7 +25,7 @@ const LoginPage = () => {
         localStorage.setItem("user_type","provider");
         localStorage.setItem("name", "test2");
         localStorage.setItem("username", username);
-        localStorage.setItem("eth_address", "0xD1b31cdbAc81cb4E61910A1c8056B83Cb3eA784A");
+        localStorage.setItem("eth_address", "0x501a19d036cD7DA7E353AD194bA08642cD560978");
         localStorage.setItem("location", "xx");
         localStorage.setItem("email", "zxxc@porkmail.com");
 

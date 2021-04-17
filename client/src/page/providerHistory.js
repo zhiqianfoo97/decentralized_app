@@ -31,15 +31,26 @@ const ProviderHistory = (props) => {
         const deployedNetwork = HealthRecord.networks[networkID];
         let contract_ = new web3_.eth.Contract(HealthRecord.abi, deployedNetwork.address);
         let length = 0;
-        try{
-            length = await web3_.methods.getProviderHistoryListLength(account).call({from: account});
-        }catch(error){
-            console.log("Provider history does not exist.");
-        }
+
+        contract_.methods.getProviderHistoryListLength(account).call({from: account}, function(error, result){
+            setHistoryLength(result);
+            setContract(contract_);
+            setSetupStatus(true);
+
+        })
+
+
+        // try{
+        //     length = await web3_.methods.getProviderHistoryListLength(account).call({from: account});
+        // }catch(error){
+        //     console.log("Provider history does not exist.");
+        // }finally{
+        //     setContract(contract_);
+        //     setSetupStatus(true);
+        //     setHistoryLength(length);
+        // }
     
-        setContract(contract_);
-        setSetupStatus(true);
-        setHistoryLength(length);
+        
     }
 
     const setupHistory = async (start) => {
@@ -54,13 +65,16 @@ const ProviderHistory = (props) => {
                 temp = await contract.methods.getProviderHistoryList(i, account ).call({from: account}); 
             }catch(error){
                 console.log("Provider history does not exist.");
+            }finally{
+                if(temp !== ""){
+                    temp_list.push(<HistoryRow key={i} userAddress={temp["0"]} date={temp["1"]}></HistoryRow>)
+                }
+
             }
             //let temp = {"0": "0x6e70cdAf8049D1FDfAC7f31DD1eeC3517d50E75c", "1": "01-02-21"};
             // 0 = patient address, 1 = date
 
-            if(temp !== ""){
-                temp_list.push(<HistoryRow key={i} userAddress={temp["0"]} date={temp["1"]}></HistoryRow>)
-            }
+            
             
         
             
@@ -98,7 +112,7 @@ const ProviderHistory = (props) => {
             setupHistory(historyLength - 1);
         }
         
-    }, [setupStatus])
+    }, [setupStatus, historyLength])
 
        return (
 
