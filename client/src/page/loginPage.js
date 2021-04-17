@@ -80,74 +80,74 @@ export default class LoginPage extends React.Component{
         localStorage.setItem("logged", true);
         localStorage.setItem("hkid", "m1234123");
 
-        var userJson = {
-            username: this.state.username,
-            password: this.state.password
-        };
-        var ipfsHash = "";
-        const ipfsAPI = require('ipfs-api');
-        const ipfs = ipfsAPI({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
+        // var userJson = {
+        //     username: this.state.username,
+        //     password: this.state.password
+        // };
+        // var ipfsHash = "";
+        // const ipfsAPI = require('ipfs-api');
+        // const ipfs = ipfsAPI({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
 
-        var that = this;
-        ipfs.add([Buffer.from(JSON.stringify(userJson))], {"only-hash": true}, function(err, res){
-            if (err) throw err
-            ipfsHash = res[0].hash;
-            console.log("test hash");
-            console.log(ipfsHash);
-            if(ipfsHash != 'not-available') {
-                var url = 'https://ipfs.io/ipfs/' + ipfsHash;
-                console.log('getting user info from', url);
+        // var that = this;
+        // ipfs.add([Buffer.from(JSON.stringify(userJson))], {"only-hash": true}, function(err, res){
+        //     if (err) throw err
+        //     ipfsHash = res[0].hash;
+        //     console.log("test hash");
+        //     console.log(ipfsHash);
+        //     if(ipfsHash != 'not-available') {
+        //         var url = 'https://ipfs.io/ipfs/' + ipfsHash;
+        //         console.log('getting user info from', url);
 
 
                
-                const authentication = fetch(url).then(response => response.json());
-                var myPromise = that.MakeQuerablePromise(authentication);
+        //         const authentication = fetch(url).then(response => response.json());
+        //         var myPromise = that.MakeQuerablePromise(authentication);
                 
-                // console.log("Initial fulfilled:", myPromise.isFulfilled());//false
-                // console.log("Initial rejected:", myPromise.isRejected());//false
-                // console.log("Initial pending:", myPromise.isPending());//true
+        //         // console.log("Initial fulfilled:", myPromise.isFulfilled());//false
+        //         // console.log("Initial rejected:", myPromise.isRejected());//false
+        //         // console.log("Initial pending:", myPromise.isPending());//true
 
-                setTimeout(() => {
-                    if (myPromise.isPending()){
-                        console.log("wrong authentication info")
-                    }else{
+        //         setTimeout(() => {
+        //             if (myPromise.isPending()){
+        //                 console.log("wrong authentication info")
+        //             }else{
                         
-                        console.log("success")
-                        that.setUserRedirect();
+        //                 console.log("success")
+        //                 that.setUserRedirect();
 
                         
-                    }
+        //             }
     
-                }, 2000);
+        //         }, 2000);
                 
-                // myPromise.then(function(data){
-                //     console.log(data); // "Yeah !"
-                //     console.log("Final fulfilled:", myPromise.isFulfilled());//true
-                //     console.log("Final rejected:", myPromise.isRejected());//false
-                //     console.log("Final pending:", myPromise.isPending());//false
-                // });
+        //         // myPromise.then(function(data){
+        //         //     console.log(data); // "Yeah !"
+        //         //     console.log("Final fulfilled:", myPromise.isFulfilled());//true
+        //         //     console.log("Final rejected:", myPromise.isRejected());//false
+        //         //     console.log("Final pending:", myPromise.isPending());//false
+        //         // });
             
             
 
-                // fetch(url)
-                // .then(response => response.json())
-                // .then((jsonData) => {
-                //     // jsonData is parsed json object received from url
-                //     if (jsonData["username"] == userJson.username && jsonData["password"] == userJson.password){
-                //         console.log("authenticated");
-                //         that.setRedirect();
-                //     }
-                //     else{
-                //         console.log("none");
-                //     }
+        //         // fetch(url)
+        //         // .then(response => response.json())
+        //         // .then((jsonData) => {
+        //         //     // jsonData is parsed json object received from url
+        //         //     if (jsonData["username"] == userJson.username && jsonData["password"] == userJson.password){
+        //         //         console.log("authenticated");
+        //         //         that.setRedirect();
+        //         //     }
+        //         //     else{
+        //         //         console.log("none");
+        //         //     }
                     
-                // })
-                // .catch((error) => {
-                //     // handle your errors here
-                //     console.error(error)
-                // })
-            }
-        })
+        //         // })
+        //         // .catch((error) => {
+        //         //     // handle your errors here
+        //         //     console.error(error)
+        //         // })
+        //     }
+        // })
 
 
 
@@ -169,74 +169,74 @@ export default class LoginPage extends React.Component{
         localStorage.setItem("location", "xx");
         localStorage.setItem("email", "zxxc@porkmail.com");
 
-        var userJson = {
-            username: this.state.username,
-            password: this.state.password
-        };
-        var ipfsHash = "";
-        const ipfsAPI = require('ipfs-api');
-        const ipfs = ipfsAPI({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
+        // var userJson = {
+        //     username: this.state.username,
+        //     password: this.state.password
+        // };
+        // var ipfsHash = "";
+        // const ipfsAPI = require('ipfs-api');
+        // const ipfs = ipfsAPI({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
 
-        var that = this;
-        ipfs.add([Buffer.from(JSON.stringify(userJson))], {"only-hash": true}, function(err, res){
-            if (err) throw err
-            ipfsHash = res[0].hash;
-            console.log("test hash");
-            console.log(ipfsHash);
-            if(ipfsHash != 'not-available') {
-                var url = 'https://ipfs.io/ipfs/' + ipfsHash;
-                console.log('getting user info from', url);
+        // var that = this;
+        // ipfs.add([Buffer.from(JSON.stringify(userJson))], {"only-hash": true}, function(err, res){
+        //     if (err) throw err
+        //     ipfsHash = res[0].hash;
+        //     console.log("test hash");
+        //     console.log(ipfsHash);
+        //     if(ipfsHash != 'not-available') {
+        //         var url = 'https://ipfs.io/ipfs/' + ipfsHash;
+        //         console.log('getting user info from', url);
 
 
                
-                const authentication = fetch(url).then(response => response.json());
-                var myPromise = that.MakeQuerablePromise(authentication);
+        //         const authentication = fetch(url).then(response => response.json());
+        //         var myPromise = that.MakeQuerablePromise(authentication);
                 
-                // console.log("Initial fulfilled:", myPromise.isFulfilled());//false
-                // console.log("Initial rejected:", myPromise.isRejected());//false
-                // console.log("Initial pending:", myPromise.isPending());//true
+        //         // console.log("Initial fulfilled:", myPromise.isFulfilled());//false
+        //         // console.log("Initial rejected:", myPromise.isRejected());//false
+        //         // console.log("Initial pending:", myPromise.isPending());//true
 
-                setTimeout(() => {
-                    if (myPromise.isPending()){
-                        console.log("wrong authentication info")
-                    }else{
+        //         setTimeout(() => {
+        //             if (myPromise.isPending()){
+        //                 console.log("wrong authentication info")
+        //             }else{
                         
-                        console.log("success")
-                        that.setSupplierRedirect();
+        //                 console.log("success")
+        //                 that.setSupplierRedirect();
 
                         
-                    }
+        //             }
     
-                }, 2000);
+        //         }, 2000);
                 
-                // myPromise.then(function(data){
-                //     console.log(data); // "Yeah !"
-                //     console.log("Final fulfilled:", myPromise.isFulfilled());//true
-                //     console.log("Final rejected:", myPromise.isRejected());//false
-                //     console.log("Final pending:", myPromise.isPending());//false
-                // });
+        //         // myPromise.then(function(data){
+        //         //     console.log(data); // "Yeah !"
+        //         //     console.log("Final fulfilled:", myPromise.isFulfilled());//true
+        //         //     console.log("Final rejected:", myPromise.isRejected());//false
+        //         //     console.log("Final pending:", myPromise.isPending());//false
+        //         // });
             
             
 
-                // fetch(url)
-                // .then(response => response.json())
-                // .then((jsonData) => {
-                //     // jsonData is parsed json object received from url
-                //     if (jsonData["username"] == userJson.username && jsonData["password"] == userJson.password){
-                //         console.log("authenticated");
-                //         that.setRedirect();
-                //     }
-                //     else{
-                //         console.log("none");
-                //     }
+        //         // fetch(url)
+        //         // .then(response => response.json())
+        //         // .then((jsonData) => {
+        //         //     // jsonData is parsed json object received from url
+        //         //     if (jsonData["username"] == userJson.username && jsonData["password"] == userJson.password){
+        //         //         console.log("authenticated");
+        //         //         that.setRedirect();
+        //         //     }
+        //         //     else{
+        //         //         console.log("none");
+        //         //     }
                     
-                // })
-                // .catch((error) => {
-                //     // handle your errors here
-                //     console.error(error)
-                // })
-            }
-        })
+        //         // })
+        //         // .catch((error) => {
+        //         //     // handle your errors here
+        //         //     console.error(error)
+        //         // })
+        //     }
+        // })
 
     }
 
@@ -397,8 +397,7 @@ export default class LoginPage extends React.Component{
                         </div>
 
                         <button type="submit" className="btn btn-primary btn-block" onClick={(e) => this.loginUser(e)}>
-                            Submit
-                            {/* <Link className="nav-link" to={"/user-landing-page"}>Submit</Link> */}
+                            <Link className="nav-link" to={"/user-landing-page"}>Submit</Link>
                         </button>
                     
                     </div>
@@ -428,7 +427,7 @@ export default class LoginPage extends React.Component{
                         </div>
 
                         <button type="submit" className="btn btn-primary btn-block" onClick={(e) => this.loginProvider(e)}>
-                           Submit
+                            <Link className="nav-link" to={"/provider-landing-page"}>Submit</Link>
                         </button>
                         
                     </div>

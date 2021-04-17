@@ -34,7 +34,7 @@ const ProviderHistory = (props) => {
         let length = 10;
 
         contract_.methods.getProviderHistoryListLength(account).call({from: account}, function(error, result){
-            setHistoryLength(10);
+            setHistoryLength(10);  // change to result
             setContract(contract_);
             setSetupStatus(true);
 
@@ -57,8 +57,10 @@ const ProviderHistory = (props) => {
     const setupHistory = async (start) => {
         let temp_list = [];
         let temp = {"0": "0x6e70cdAf8049D1FDfAC7f31DD1eeC3517d50E75c", "1": "01-02-21"};
-        for (let i = start ; i > start - pageLimit; i--){
+        let continueFlag = true;
+        for (let i = start - 1 ; i > start - pageLimit; i--){
             if (i < 0){
+                continueFlag = false;
                 break;
             } 
             
@@ -89,7 +91,10 @@ const ProviderHistory = (props) => {
         
             
         }
-        setResultRow(temp_list)
+        if(continueFlag){
+            setResultRow(temp_list)
+        }
+        
         
     }
 
@@ -97,7 +102,7 @@ const ProviderHistory = (props) => {
         e.preventDefault();
         let count = currentLimit - 5;
         if (count < 0){
-            count = 0
+            return;
         };
         setupHistory(count);
         setCurrentLimit(count);
@@ -107,7 +112,7 @@ const ProviderHistory = (props) => {
         e.preventDefault();
         let count = currentLimit + 5;
         if (count >= historyLength){
-            count = historyLength - 1;
+            count = historyLength;
         }
         setupHistory(count);
         setCurrentLimit(count);
@@ -120,7 +125,7 @@ const ProviderHistory = (props) => {
 
     useEffect(() =>{
         if(setupStatus){
-            setupHistory(historyLength - 1);
+            setupHistory(historyLength );
         }
         
     }, [setupStatus, historyLength])
@@ -159,7 +164,7 @@ const ProviderHistory = (props) => {
                 <button onClick={clickPrev}>Previous</button>
                 <button onClick={clickNext}>Next</button>
              </div>
-             </div>
+    </div>
              </>
     )
 }

@@ -80,6 +80,7 @@ const AppointmentRow = (props) =>{
 
             <div className={styleState}> 
                 <button onClick={closePayment}>X</button>
+                <div className="auth-inner">
                 <form>
                     <h3 className = "title">Input Result</h3>
 
@@ -106,16 +107,16 @@ const AppointmentRow = (props) =>{
                         </div>
                         <div className = "right-half-container">
                             <div className="form-group">
-                                <input type="text" value={props.name}  className="form-control" placeholder="Enter Name" />
+                                <input type="text" value={props.name}  className="form-control" readOnly placeholder="Enter Name" />
                             </div>
                             <div className="form-group">
-                                <input type="text" value={props.date}  className="form-control" placeholder="Enter Date" />
+                                <input type="text" value={props.date}  className="form-control" readOnly placeholder="Enter Date" />
                             </div>
                             <div className="form-group">
-                                <input type="text" value={props.hkid}  className="form-control" placeholder="Enter HKID"/>
+                                <input type="text" value={props.hkid}  className="form-control" readOnly  placeholder="Enter HKID"/>
                             </div>
                             <div className="form-group ">
-                                <input type="text" value={props.ethAdd}  className="form-control" placeholder="Enter Ethereum address" />
+                                <input type="text" value={props.ethAdd}  className="form-control" readOnly placeholder="Enter Ethereum address" />
                             </div>
                             <div className="form-group">
                                 <input type="text" value={result} className="form-control" placeholder="Enter Test Result" onChange={handleResult} />
@@ -132,6 +133,7 @@ const AppointmentRow = (props) =>{
                     <button type="submit" onClick={uploadResult} className="btn btn-primary btn-block result-btn">Confirm</button>
                 
                 </form>
+                </div>
             </div>
 
         </div>
@@ -187,41 +189,60 @@ const ProviderIncomingAppointment = () => {
     const makeRow = async (start) => {
         let temp_list = [];
         let temp = "a";
-        for (let i = start ; i > start - pageLimit; i--){
+        let continueFlag = true;
+        let ethAdd = "";
+        let date = "";
+        let hkid = "";
+        let name = "";
+        for (let i = start - 1 ; i >= start - pageLimit; i--){
             if (i < 0){
+                continueFlag = false;
                 break;
             } 
             
-            // try{
-            //     temp = await contract.methods.getProviderAppointmentList(i, account ).call({from: account}); 
-            // }catch(error){
-            //     console.log("Provider appointment does not exist.");
-            // }
+            try{
+                temp = await contract.methods.getProviderAppointmentList(i, account ).call({from: account}); 
+            }catch(error){
+                console.log("Provider appointment does not exist.");
+                temp = {"0": "0x6e70cdAf8049D1FDfAC7f31DD1eeC3517d50E75c", "1": "01-02-21"};
+                ethAdd = "0x6e70cdAf8049D1FDfAC7f31DD1eeC3517d50E75c";
+                date = "01-02-21";
+                hkid = "M1238123";
+                name = "Ali";
+
+            }
+            if(temp !== ""){
+                temp_list.push(<AppointmentRow key={i} count={i} ethAdd={ethAdd} date={date} hkid={hkid} name={name} contract={contract} web3={web3}></AppointmentRow>)
+                console.log("que?");
+            }
             //let temp = {"0": "0x6e70cdAf8049D1FDfAC7f31DD1eeC3517d50E75c", "1": "01-02-21"};
             // 0 = patient address, 1 = date, 2 = encrypted patient info.
-            contract.methods.getProviderAppointmentList(i, account ).call({from: account}, function(error, result){
-                let ethAdd = "0x6e70cdAf8049D1FDfAC7f31DD1eeC3517d50E75c";
-                let date = "01-02-21";
-                let hkid = "M1238123";
-                let name = "Ali";
-                console.log("HELLO " + temp);
+            // contract.methods.getProviderAppointmentList(i, account ).call({from: account}, function(error, result){
+            //     let ethAdd = "0x6e70cdAf8049D1FDfAC7f31DD1eeC3517d50E75c";
+            //     let date = "01-02-21";
+            //     let hkid = "M1238123";
+            //     let name = "Ali";
+            //     console.log("HELLO " + temp);
 
 
-                if(temp !== ""){
-                    temp_list.push(<AppointmentRow key={i} count={i} ethAdd={ethAdd} date={date} hkid={hkid} name={name} contract={contract} web3={web3}></AppointmentRow>)
-                    console.log("que?");
-                }
-                setAppointmentList(temp_list);
-                console.log("temp_list = "+ temp_list);
+            //     if(temp !== ""){
+            //         temp_list.push(<AppointmentRow key={i} count={i} ethAdd={ethAdd} date={date} hkid={hkid} name={name} contract={contract} web3={web3}></AppointmentRow>)
+            //         console.log("que?");
+            //     }
+                
+            //     console.log("temp_list = "+ temp_list);
 
 
-            })
+            // })
 
 
             
             
         
             
+        }
+        if(continueFlag){
+            setAppointmentList(temp_list);
         }
 
 
@@ -233,7 +254,7 @@ const ProviderIncomingAppointment = () => {
         e.preventDefault();
         let count = currentLimit - 5;
         if (count < 0){
-            count = 0
+            return;
         };
         makeRow(count);
         setCurrentLimit(count);
@@ -243,7 +264,7 @@ const ProviderIncomingAppointment = () => {
         e.preventDefault();
         let count = currentLimit + 5;
         if (count >= appointmentLength){
-            count = appointmentLength - 1;
+            count = appointmentLength;
         }
         makeRow(count);
         setCurrentLimit(count);
@@ -256,7 +277,7 @@ const ProviderIncomingAppointment = () => {
 
     useEffect(() => {
         if(setupStatus){
-            makeRow(appointmentLength - 1);
+            makeRow(appointmentLength);
         }
         
     }, [setupStatus, appointmentLength])
