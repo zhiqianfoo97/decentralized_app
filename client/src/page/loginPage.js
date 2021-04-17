@@ -4,7 +4,8 @@ import { Redirect } from "react-router-dom";
 export default class LoginPage extends React.Component{
     
     state = {
-        redirect: false,
+        userRedirect: false,
+        supplierRedirect: false,
         showUser: false,
         showProvider: false,
         showAll: true,
@@ -13,33 +14,31 @@ export default class LoginPage extends React.Component{
     }
 
 
-    setRedirect = () => {
+    setUserRedirect = () => {
         this.setState({
-          redirect: true,
+          userRedirect: true,
+        })
+    }
+
+    setSupplierRedirect = () => {
+        this.setState({
+          supplierRedirect: true,
         })
     }
     
-    renderRedirect = () => {
-        if (this.state.redirect) {
+    
+    renderUserRedirect = () => {
+        if (this.state.userRedirect) {
           return <Redirect to={"/user-landing-page"} />
         }
     }
-    
 
-    fetchWithTimeout = (resource, options) => {
-        const { timeout = 8000 } = options;
-        
-        const controller = new AbortController();
-        const id = setTimeout(() => controller.abort(), timeout);
-  
-        const response = fetch(resource, {
-          ...options,
-          signal: controller.signal  
-        });
-        clearTimeout(id);
-  
-        return response;
-      }
+    renderSupplierRedirect = () => {
+        if (this.state.supplierRedirect) {
+          return <Redirect to={"/provider-landing-page"} />
+        }
+    }
+    
 
       MakeQuerablePromise = (promise) => {
         // Don't modify any promise that has been already modified.
@@ -113,7 +112,7 @@ export default class LoginPage extends React.Component{
                     }else{
                         
                         console.log("success")
-                        that.setRedirect();
+                        that.setUserRedirect();
 
                         
                     }
@@ -167,6 +166,75 @@ export default class LoginPage extends React.Component{
         sessionStorage.setItem("username", this.state.username);
         sessionStorage.setItem("address", "temp");
         sessionStorage.setItem("location", "xx");
+
+        var userJson = {
+            username: this.state.username,
+            password: this.state.password
+        };
+        var ipfsHash = "";
+        const ipfsAPI = require('ipfs-api');
+        const ipfs = ipfsAPI({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
+
+        var that = this;
+        ipfs.add([Buffer.from(JSON.stringify(userJson))], {"only-hash": true}, function(err, res){
+            if (err) throw err
+            ipfsHash = res[0].hash;
+            console.log("test hash");
+            console.log(ipfsHash);
+            if(ipfsHash != 'not-available') {
+                var url = 'https://ipfs.io/ipfs/' + ipfsHash;
+                console.log('getting user info from', url);
+
+
+               
+                const authentication = fetch(url).then(response => response.json());
+                var myPromise = that.MakeQuerablePromise(authentication);
+                
+                // console.log("Initial fulfilled:", myPromise.isFulfilled());//false
+                // console.log("Initial rejected:", myPromise.isRejected());//false
+                // console.log("Initial pending:", myPromise.isPending());//true
+
+                setTimeout(() => {
+                    if (myPromise.isPending()){
+                        console.log("wrong authentication info")
+                    }else{
+                        
+                        console.log("success")
+                        that.setSupplierRedirect();
+
+                        
+                    }
+    
+                }, 2000);
+                
+                // myPromise.then(function(data){
+                //     console.log(data); // "Yeah !"
+                //     console.log("Final fulfilled:", myPromise.isFulfilled());//true
+                //     console.log("Final rejected:", myPromise.isRejected());//false
+                //     console.log("Final pending:", myPromise.isPending());//false
+                // });
+            
+            
+
+                // fetch(url)
+                // .then(response => response.json())
+                // .then((jsonData) => {
+                //     // jsonData is parsed json object received from url
+                //     if (jsonData["username"] == userJson.username && jsonData["password"] == userJson.password){
+                //         console.log("authenticated");
+                //         that.setRedirect();
+                //     }
+                //     else{
+                //         console.log("none");
+                //     }
+                    
+                // })
+                // .catch((error) => {
+                //     // handle your errors here
+                //     console.error(error)
+                // })
+            }
+        })
 
     }
 
@@ -327,13 +395,15 @@ export default class LoginPage extends React.Component{
                         </div>
 
                         <button type="submit" className="btn btn-primary btn-block" onClick={(e) => this.loginUser(e)}>
+                            Submit
                             {/* <Link className="nav-link" to={"/user-landing-page"}>Submit</Link> */}
                         </button>
                     
                     </div>
                 
                 : ""}
-                {this.renderRedirect()}
+                {this.renderUserRedirect()}
+                {this.renderSupplierRedirect()}
                 {this.state.showProvider ?
                 
                     <div id="provider-login">
@@ -356,7 +426,7 @@ export default class LoginPage extends React.Component{
                         </div>
 
                         <button type="submit" className="btn btn-primary btn-block" onClick={(e) => this.loginProvider(e)}>
-                            <Link className="nav-link" to={"/provider-landing-page"}>Submit</Link>
+                           Submit
                         </button>
                         
                     </div>

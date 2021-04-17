@@ -2,11 +2,10 @@ import React, { useState }  from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 const SupplierSignUpPage = () => {
     const initialState = {
-        username : "",
+        name : "",
+        address : "",
+        healthcare_provider_number : "",
         password : "",
-        hkid : "",
-        email : "",
-        ethAdd : "",
     };
 
     const [field, setField] = useState(initialState);
@@ -19,12 +18,109 @@ const SupplierSignUpPage = () => {
     }
 
 
-    //need to improve this
-    const signUp = (e) => {
-        e.preventDefault();
-        console.log("Test : " , e.target)
+    // //need to improve this
+    // const signUp = (e) => {
+    //     e.preventDefault();
+    //     console.log("Test : " , e.target)
 
-    }
+    // }
+
+    const ipfsAPI = require('ipfs-api');
+    // // const ipfs = ipfsAPI('localhost', '5001');
+    const ipfs = ipfsAPI({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
+    // ipfs.id(function(err, res) {
+    //     if (err) throw err
+    //     console.log("Connected to IPFS node!", res.id, res.agentVersion, res.protocolVersion);
+    // });
+
+    // const run = async (files) => {
+    //     // This code adds your uploaded files to your root directory in IPFS
+    //     await Promise.all(files.map(f => ipfs.files.write('/' + f.name, f, { create: true })))
+      
+    //     // Add your code to create a new directory here
+    //     await ipfs.files.mkdir('/userInfo', { parents: true })
+      
+    //     let rootDirectoryContents = await all(ipfs.files.ls('/'))
+    //     return rootDirectoryContents
+    // }
+
+    function createUser (e) {
+       e.preventDefault();
+        var name = field.name;
+        var address = field.address;
+        var healthcare_provider_number = field.healthcare_provider_number;
+        var password = field.password;
+        var ipfsHash = "";
+        console.log("creating user on ipfs for", username);
+        var userJsonAuthentication = {
+            name: name,
+            password: password
+        };
+
+        var userJsonInfo = {
+            address: address,
+            healthcare_provider_number: healthcare_provider_number,
+        }
+        
+        
+        console.log("sending info");
+        // const options = {
+        //     mode: 'no-cors',
+        //     method: 'POST',
+        //     headers: {'Content-Type': 'application/json'},
+        //     body: JSON.stringify(userJson)
+        // }
+
+        
+
+        // const response = await fetch('http://localhost:3001/api', options);
+        // const data = await response.text();
+        
+        // fetch('http://localhost:3001/api',{
+        //     method: 'POST',
+        //     headers: {
+        //         'Accept': 'application/json',
+        //         'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify(userJson)
+        // }).then(response => {
+        //         console.log(response)
+        //     })
+        // .catch(error =>{
+        //         console.log(error)
+        // })
+
+        // console.log(JSON.stringify(userJson));
+        
+        ipfs.add([Buffer.from(JSON.stringify(userJsonAuthentication))], function(err, res) {
+            if (err) throw err
+            ipfsHash = res[0].hash
+            console.log(ipfsHash);
+            if(ipfsHash != 'not-available') {
+                var url = 'https://ipfs.io/ipfs/' + ipfsHash;
+                console.log('getting user authentication from', url);
+
+            }
+        });
+
+
+        ipfs.add([Buffer.from(JSON.stringify(userJsonInfo))], function(err, res) {
+            if (err) throw err
+            ipfsHash = res[0].hash
+            console.log(ipfsHash);
+            if(ipfsHash != 'not-available') {
+                var url = 'https://ipfs.io/ipfs/' + ipfsHash;
+                console.log('getting user info from', url);
+
+            }
+        });
+        
+        
+        }
+
+        
+
+
 
     
     return (

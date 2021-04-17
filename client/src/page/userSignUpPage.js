@@ -1,4 +1,4 @@
-import React, { useState }  from "react";
+import React, { useState, useEffect }  from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 const UserSignUpPage = () => {
@@ -8,6 +8,7 @@ const UserSignUpPage = () => {
         hkid : " ",
         ethAdd : " ",
     };
+
 
     const [field, setField] = useState(initialState);
 
@@ -52,37 +53,69 @@ const UserSignUpPage = () => {
         var password = field.password;
         var ipfsHash = "";
         console.log("creating user on ipfs for", username);
-        var userJson = {
+        var userJsonAuthentication = {
             username: username,
-            // ethAdd: ethAdd,
-            // hkid: hkid,
             password: password
         };
-        ipfs.files.stat('/').then(res =>res.text());
-        console.log(ipfs.files.stat('/'));
 
-        // var FileSaver = require('file-saver');
-        // var blob = new Blob([username + ":" + password], {type: "text/plain;charset=utf-8"});
-        // FileSaver.saveAs(blob, "authentication.txt");
-        // ipfs.files.mkdir('/example')
-        // ipfs.files.stat('/example')
+        var userJsonInfo = {
+            ethAdd: ethAdd,
+            hkid: hkid,
+        }
         
-    //     var EMPTY_DIR=ipfs.object new unixfs-dir);
-    // //   $ BAR=$(echo "bar" | ipfs add -q)
-    // //   $ ipfs object patch $EMPTY_DIR add-link foo $BAR
+        
+        console.log("sending info");
+        // const options = {
+        //     mode: 'no-cors',
+        //     method: 'POST',
+        //     headers: {'Content-Type': 'application/json'},
+        //     body: JSON.stringify(userJson)
+        // }
 
         
-        ipfs.add([Buffer.from(JSON.stringify(userJson))], function(err, res) {
+
+        // const response = await fetch('http://localhost:3001/api', options);
+        // const data = await response.text();
+        
+        // fetch('http://localhost:3001/api',{
+        //     method: 'POST',
+        //     headers: {
+        //         'Accept': 'application/json',
+        //         'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify(userJson)
+        // }).then(response => {
+        //         console.log(response)
+        //     })
+        // .catch(error =>{
+        //         console.log(error)
+        // })
+
+        // console.log(JSON.stringify(userJson));
+        
+        ipfs.add([Buffer.from(JSON.stringify(userJsonAuthentication))], function(err, res) {
             if (err) throw err
             ipfsHash = res[0].hash
             console.log(ipfsHash);
-            console.log("creating user on eth for", username, ethAdd, hkid, password);
+            if(ipfsHash != 'not-available') {
+                var url = 'https://ipfs.io/ipfs/' + ipfsHash;
+                console.log('getting user authentication from', url);
+
+            }
+        });
+
+
+        ipfs.add([Buffer.from(JSON.stringify(userJsonInfo))], function(err, res) {
+            if (err) throw err
+            ipfsHash = res[0].hash
+            console.log(ipfsHash);
             if(ipfsHash != 'not-available') {
                 var url = 'https://ipfs.io/ipfs/' + ipfsHash;
                 console.log('getting user info from', url);
 
             }
         });
+        
         
         }
 
