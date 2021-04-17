@@ -53,7 +53,6 @@ const UserResult = (props) => {
     }
 
     return (
-
         <div className="auth-inner">
             <form>
                 <h3 className="title">User Result</h3>
@@ -205,7 +204,6 @@ const ResultRow = (props) => {
     )
 }
 
-
 const AppointmentRow = (props) => {
     return (
         <div className="column_container">
@@ -217,9 +215,6 @@ const AppointmentRow = (props) => {
         </div>
     )
 }
-
-
-
 
 const UserHistory = (props) => {
     const logged = localStorage.getItem("logged");
@@ -248,6 +243,7 @@ const UserHistory = (props) => {
         const web3_ = await getWeb3();
         setWeb3(web3_);
         let networkID = await web3_.eth.net.getId();
+        console.log("NETWORK ID = " + networkID);
         const deployedNetwork = HealthRecord.networks[networkID];
         let contract_ = new web3_.eth.Contract(HealthRecord.abi, deployedNetwork.address);
         let appointLength = 5;
@@ -301,7 +297,7 @@ const UserHistory = (props) => {
             }
 
             try {
-                provInfo = await contract.methods.getProviderInfo(temp["5"]).call({ from: account });
+                provInfo = await contract.methods.getProviderInfo(temp["6"]).call({ from: account });
             } catch (err) {
                 console.log("Provider info err : " + err);
                 provInfo = { "0": "Queen mary", "1": "HKU" };
@@ -367,7 +363,6 @@ const UserHistory = (props) => {
         let count = currentLimit - 5;
         if (count < 0) {
             return;
-            count = 0;
 
         };
         currentClicked ? setupResult(count) : setupAppointment(count);
@@ -408,7 +403,7 @@ const UserHistory = (props) => {
 
     useEffect(() => {
         setup();
-    }, [])
+    }, [setupStatus])
 
     useEffect(() => {
         if (setupStatus) {

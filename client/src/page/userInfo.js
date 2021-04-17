@@ -4,6 +4,7 @@ import getWeb3 from "../getWeb3";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { Redirect } from "react-router-dom";
 
+
 const UserInfo = (props) => {
     const logged = localStorage.getItem("logged");
     var backToLoginPage = false;

@@ -69,7 +69,7 @@ const ProviderHistory = (props) => {
         let temp_list = [];
         let temp = {"0": "0x6e70cdAf8049D1FDfAC7f31DD1eeC3517d50E75c", "1": "01-02-21"};
         let continueFlag = true;
-        for (let i = start - 1 ; i > start - pageLimit; i--){
+        for (let i = start - 1 ; i >= start - pageLimit; i--){
             if (i < 0){
                 continueFlag = false;
                 break;

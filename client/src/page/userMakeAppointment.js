@@ -4,26 +4,38 @@ import PickyDateTime from "react-picky-date-time";
 import Dropdown from 'react-bootstrap/Dropdown';
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { Redirect } from "react-router-dom";
+import getWeb3 from "../getWeb3";
+import HealthRecord from "../contracts/HealthRecord.json";
+
 
 const UserMakeAppointment = () => {
     const logged = localStorage.getItem("logged");
     var backToLoginPage = false;
     const [showPickyDateTime, setShowPickyDateTime] = useState(true);
-    const [date, setDate] = useState('19');
-    const [month, setMonth] = useState('04');
+    const [date, setDate] = useState('30');
+    const [month, setMonth] = useState('01');
     const [year, setYear] = useState('2021');
     const [hour, setHour] = useState('03');
     const [minute, setMinute] = useState('10');
     const [second, setSecond] = useState('40');
     const [meridiem, setMeridiem] = useState('PM');
     const [center, setCenter] = useState("Choose a center");
+    const [web3, setWeb3] = useState(null);
+    const [contract, setContract] = useState(null);
+    const [setupStatus, setSetupStatus] = useState(false);
+    const [hospitalList, setHospitalList] = useState("");
+    const [hospitalLength, setHospitalLength] = useState(0);
+    const [hospitalEthAdd, setHospitalEthAdd] = useState("");
+    const [hospitalLocation, setHospitalLocation] = useState("");
+
+    const EthCrypto = require('eth-crypto');
 
     const logOut = () => {
         localStorage.clear();
     }
 
     const onUnauthorised = () => {
-       backToLoginPage = true;
+        backToLoginPage = true;
     }
 
     const onYearPicked = (res) => {
@@ -102,8 +114,136 @@ const UserMakeAppointment = () => {
         setShowPickyDateTime(false);
     };
 
-  
 
+    const setup = async () => {
+        const web3_ = await getWeb3();
+        setWeb3(web3_);
+        let networkID = await web3_.eth.net.getId();
+        const deployedNetwork = HealthRecord.networks[networkID];
+        let contract_ = new web3_.eth.Contract(HealthRecord.abi, deployedNetwork.address);
+        let listLength = contract_.methods.getHospitalListLength().call({ from: localStorage.getItem("eth_address") });
+        setHospitalLength(5);
+        setContract(contract_);
+        setSetupStatus(true);
+    }
+
+
+    const setupAppointmentRow = async (start) => {
+        let temp_list = [];
+        let temp = "";
+        let promise = "";
+        for (let i = start - 1; i >= 0; i--) {
+            if (i < 0) {
+                break;
+            }
+
+            promise = contract.methods.getHospitalList(i).call({ from: localStorage.getItem("eth_address") }, function (error, result) {
+                temp = result;
+            }).then(onfulFilled => {
+                if (temp !== "") {
+                    temp_list.push(<Dropdown.Item href="#/action-3"
+                        onClick={() => {
+                            setCenter(temp["1"]);
+                            setHospitalEthAdd(temp["0"]);
+                            setHospitalLocation(temp["2"]);
+                        }}>{temp["1"]}</Dropdown.Item>)
+
+                }
+            }, onRejected => {
+                temp = { "0": "0xF170e89d6Fe3F7a44E9549544473546b4E5AE42F", "1": "HKU", "2": "POK FU LAM" };
+                if (temp !== "") {
+                    temp_list.push(<Dropdown.Item href="#/action-3" key={i}
+                        onClick={() => {
+
+                            setCenter(temp["1"]);
+                            setHospitalEthAdd(temp["0"]);
+                            setHospitalLocation(temp["2"]);
+                        }}>{temp["1"]}</Dropdown.Item>)
+
+                }
+            })
+
+        }
+        promise.then((value) => {
+            setHospitalList(temp_list);
+        }
+        )
+
+
+    }
+
+
+    const makeAppointment = async (e) => {
+        e.preventDefault();
+        let timePicked = `${date}/${month}/${year} ${hour}:${minute}:${second} ${meridiem}`
+        let userInfo = { "name": localStorage.getItem("name"), "hkid": localStorage.getItem("hkid") };
+        await EthCrypto.encryptWithPublicKey(
+            localStorage.getItem("public_key"), // publicKey
+            JSON.stringify(userInfo) // message
+        ).then(function (result) {
+            const to_string = EthCrypto.cipher.stringify(result);
+
+            contract.methods.userMakeAppointment(center, hospitalLocation, timePicked, hospitalEthAdd, to_string).call({
+                from: localStorage.getItem("eth_address")
+            }, function (error, result) {
+
+                alert("Success!");
+                window.location.reload();
+
+
+            });
+
+        });
+
+
+
+    }
+
+    //mark for remove
+    const testETH = async (e) => {
+        e.preventDefault();
+        var json = {};
+        var jsonMsg = { "name": "Ali", "hkid": "M12341(A)" };
+
+        const pkey = EthCrypto.publicKeyByPrivateKey(
+            '6a496db574cdffdc83164c8129d62e0214771d5cbfcc43bb410b3519b75cbb9d'
+        )
+
+        var encrypted = await EthCrypto.encryptWithPublicKey(
+            pkey, // publicKey
+            JSON.stringify(jsonMsg) // message
+        ).then((value) => {
+            json = value
+            console.log("JSON? = " + json);
+        })
+
+        const to_string = EthCrypto.cipher.stringify(json);
+        console.log("strng json = " + to_string);
+        const back_to_json = EthCrypto.cipher.parse(to_string);
+
+        var message = await EthCrypto.decryptWithPrivateKey(
+            '6a496db574cdffdc83164c8129d62e0214771d5cbfcc43bb410b3519b75cbb9d', // privateKey
+            back_to_json
+
+        ).then(async (message) => {
+            let temp = await web3.eth.getAccounts();
+            console.log("ACC = " + temp);
+            console.log("MSG? =" + JSON.parse(message)["hkid"]);
+        })
+    }
+
+
+    useEffect(() => {
+        setup();
+
+    }, [setupStatus])
+
+    useEffect(() => {
+        if (setupStatus) {
+            setupAppointmentRow(hospitalLength);
+        }
+
+    }, [setupStatus, hospitalLength])
 
     return (
         <>
@@ -146,9 +286,7 @@ const UserMakeAppointment = () => {
                                             </Dropdown.Toggle>
 
                                             <Dropdown.Menu>
-                                                <Dropdown.Item href="#/action-1" onClick={() => setCenter("Queen's Mary Hospital")}>Queen's Mary Hospital</Dropdown.Item>
-                                                <Dropdown.Item href="#/action-2" onClick={() => setCenter("Queen's Steven Hospital")}>Queen's Steven Hospital</Dropdown.Item>
-                                                <Dropdown.Item href="#/action-3" onClick={() => setCenter("Queen's James Hospital")}>Queen's James Hospital</Dropdown.Item>
+                                                {hospitalList}
                                             </Dropdown.Menu>
                                         </Dropdown>
                                     </div>
@@ -200,7 +338,10 @@ const UserMakeAppointment = () => {
                         </div>
                     </div>
                 </> : onUnauthorised()}
-            {backToLoginPage ? <Redirect to={"/sign-in"} />: ""}
+            {backToLoginPage ? <Redirect to={"/sign-in"} /> : ""}
+
+
+
         </>
 
     )

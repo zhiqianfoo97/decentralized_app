@@ -13,7 +13,8 @@ import Login from './page/loginPage';
 import UserSignUp from './page/userSignUpPage';
 import SupplierSignUp from './page/supplierSignUpPage';
 import Register from './page/registerUser';
-import UserMakeAppointment from './page/userMakeAppointment'
+import UserMakeAppointment from './page/userMakeAppointment';
+import AdminAddProvider from './page/adminAddProvider';
 import getWeb3 from "./getWeb3";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -43,6 +44,7 @@ function App() {
             <Route path="/provider-appointment-info" component={ProviderAppointmentInfo} />
             <Route path="/provider-input-result-page" component={ProviderInputResultPage} />
             <Route path="/provider-landing-page" component={ProviderLandingPage} />
+            <Route path="/admin-page" component={AdminAddProvider}/>
           </Switch>
         
       </div>

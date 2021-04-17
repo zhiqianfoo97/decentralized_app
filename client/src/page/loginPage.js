@@ -78,9 +78,11 @@ export default class LoginPage extends React.Component {
         localStorage.setItem("user_type", "user");
         localStorage.setItem("name", "test");
         localStorage.setItem("username", this.state.username);
-        localStorage.setItem("eth_address", "0x501a19d036cD7DA7E353AD194bA08642cD560978");
+        localStorage.setItem("eth_address", "0x9545cE434c9743936dB8B0C7330254409458D076");
         localStorage.setItem("logged", true);
         localStorage.setItem("hkid", "m1234123");
+        localStorage.setItem("public_key", "");
+        localStorage.setItem("private_key", "");
         localStorage.setItem("private_key", this.state.private_key);
 
         var userJson = {
@@ -168,7 +170,7 @@ export default class LoginPage extends React.Component {
         localStorage.setItem("user_type", "provider");
         localStorage.setItem("name", "test2");
         localStorage.setItem("username", this.state.username);
-        localStorage.setItem("eth_address", "0x501a19d036cD7DA7E353AD194bA08642cD560978");
+        localStorage.setItem("eth_address", "0x9545cE434c9743936dB8B0C7330254409458D076");
         localStorage.setItem("location", "xx");
         localStorage.setItem("email", "zxxc@porkmail.com");
 
@@ -241,9 +243,8 @@ export default class LoginPage extends React.Component {
         //         //     console.error(error)
         //         // })
             })
-        // })
+        }
 
-    }
 
     openUser = (e) => {
         e.preventDefault();
@@ -361,7 +362,7 @@ export default class LoginPage extends React.Component {
 
                 <div className="auth-wrapper">
                     <div className="auth-inner">
-                        {this.state.showAll ? "" : <button id="back-button" onClick={(e) => this.closeAll(e)}> Back </button>}
+                        {this.state.showAll ? "" : <button id="no-link-back-button" onClick={(e) => this.closeAll(e)}> Back </button>}
                         <form>
                             <h3>Sign In As</h3>
 

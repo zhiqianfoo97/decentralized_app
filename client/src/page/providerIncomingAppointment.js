@@ -50,14 +50,10 @@ const AppointmentRow = (props) => {
     //       <Link className="navbar-brand" to={"/sign-in"}>Stay Home</Link>
     //       <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
     //           <ul className="navbar-nav ml-auto">
-
     //               <li className="nav-item">
-
     //               <Link className="nav-link" to={"/sign-in"}>Log Out</Link>
     //               </li>
-
     //           </ul>
-
     //       </div>
     //       </div>
     //   </nav>
@@ -65,9 +61,7 @@ const AppointmentRow = (props) => {
     // <div className="auth-wrapper">
     //     <div className="auth-inner"> 
     //         <form>
-
     //             <h3 >Incoming Appointment</h3>
-
     // }
 
 
@@ -157,6 +151,8 @@ const ProviderIncomingAppointment = () => {
     const [pageLimit, setPageLimit] = useState(5);
     const [account, setAccount] = useState(localStorage.getItem("eth_address"));
 
+    const EthCrypto = require('eth-crypto');
+
     const logOut = () => {
         localStorage.clear();
     }
@@ -196,35 +192,117 @@ const ProviderIncomingAppointment = () => {
 
     }
 
+    // const getData = async (i, account) =>{
+    //     temp = await contract.methods.getProviderAppointmentList(i, account ).call({from: account}); 
+
+    //     return(
+    //         <AppointmentRow key={i} count={i} ethAdd={ethAdd} date={date} hkid={hkid} name={name} contract={contract} web3={web3}></AppointmentRow>
+    //     )
+    // }
+
     const makeRow = async (start) => {
         let temp_list = [];
-        let temp = "a";
         let continueFlag = true;
+        var temp;
         let ethAdd = "";
         let date = "";
         let hkid = "";
         let name = "";
+        var promise;
         for (let i = start - 1; i >= start - pageLimit; i--) {
             if (i < 0) {
                 continueFlag = false;
                 break;
             }
 
-            try {
-                temp = await contract.methods.getProviderAppointmentList(i, account).call({ from: account });
-            } catch (error) {
-                console.log("Provider appointment does not exist.");
-                temp = { "0": "0x6e70cdAf8049D1FDfAC7f31DD1eeC3517d50E75c", "1": "01-02-21" };
-                ethAdd = "0x6e70cdAf8049D1FDfAC7f31DD1eeC3517d50E75c";
-                date = "01-02-21";
-                hkid = "M1238123";
-                name = "Ali";
+            // try{
+            //     promise = new Promise(function(resolve,reject){
+            //          contract.methods.getProviderAppointmentList(i, account ).call({from: account}, function(error, result){
+            //             console.log(error);
+            //             temp = result;
+            //         }); 
+            //     }).then(function(temp){
+            //         temp = "A";
+            //          if(temp !== ""){
+            //             temp_list.push(<AppointmentRow key={i} count={i} ethAdd={ethAdd} date={date} hkid={hkid} name={name} contract={contract} web3={web3}></AppointmentRow>)
+            //             console.log("que?");
+            //         }
+            //     }) 
 
-            }
-            if (temp !== "") {
-                temp_list.push(<AppointmentRow key={i} count={i} ethAdd={ethAdd} date={date} hkid={hkid} name={name} contract={contract} web3={web3}></AppointmentRow>)
-                console.log("que?");
-            }
+            //     // temp = await contract.methods.getProviderAppointmentList(i, account ).call({from: account}); 
+            //     // temp.then(function(temp){
+            //     //     if(temp !== ""){
+            //     //         temp_list.push(<AppointmentRow key={i} count={i} ethAdd={ethAdd} date={date} hkid={hkid} name={name} contract={contract} web3={web3}></AppointmentRow>)
+            //     //         console.log("que?");
+            //     //     }
+            //     // })
+            // }catch(error){
+            //     console.log("Provider appointment does not exist.");
+            //     temp = "a";
+            //     promise = new Promise(function(resolve,reject){
+            //         setTimeout(resolve, 500);
+            //     }).then(function(){
+            //          ethAdd = "dsfsdfsdf";
+            //          date = "341ad";
+            //          hkid = "3234324";
+            //          name= "fck";
+            //          if(temp !== ""){
+            //             temp_list.push(<AppointmentRow key={i} count={i} ethAdd={ethAdd} date={date} hkid={hkid} name={name} contract={contract} web3={web3}></AppointmentRow>)
+            //             console.log("que?");
+            //         }
+            //     }) 
+
+
+            // }finally{
+            //     // temp.then((temp)=>{
+            //     //     if(temp !== ""){
+            //     //         temp_list.push(<AppointmentRow key={i} count={i} ethAdd={temp["ethAdd"]} date={date} hkid={hkid} name={name} contract={contract} web3={web3}></AppointmentRow>)
+            //     //         console.log("que?");
+            //     //     }
+            //     // })
+            //     console.log("fck u");
+            // }
+
+            // const back_to_json = EthCrypto.cipher.parse(to_string);
+
+            // var message = await EthCrypto.decryptWithPrivateKey(
+            //     identity.privateKey, // privateKey
+            //     back_to_json
+
+            // ).then((message) =>{
+            //     console.log(message);
+            // })
+
+
+            promise = contract.methods.getProviderAppointmentList(i, account).call({ from: account }, function (error, result) {
+                temp = result; //patient add, date, encrypted info
+            }).then(async onfulFilled => {
+                if (temp !== "") {
+                    const back_to_json = EthCrypto.cipher.parse(temp["2"]);
+                    var message = await EthCrypto.decryptWithPrivateKey(
+                        localStorage.getItem("private_key"), // privateKey
+                        back_to_json
+
+                    ).then((message) => {
+                        let parsedMessage = JSON.parse(message);
+                        temp_list.push(<AppointmentRow key={i} count={i} ethAdd={temp["0"]} date={temp["1"]} hkid={parsedMessage["hkid"]} name={parsedMessage["name"]} contract={contract} web3={web3}></AppointmentRow>)
+                    })
+
+                    // temp_list.push(<AppointmentRow key={i} count={i} ethAdd={ethAdd} date={date} hkid={hkid} name={name} contract={contract} web3={web3}></AppointmentRow>)
+                    //  console.log("que?");
+                }
+            }, onRejected => {
+                console.log("fck");
+                console.log("Inside");
+                temp = "A";
+                ethAdd = "sam very handsome";
+                if (temp !== "") {
+                    temp_list.push(<AppointmentRow key={i} count={i} ethAdd={ethAdd} date={date} hkid={hkid} name={name} contract={contract} web3={web3}></AppointmentRow>)
+                    console.log("que?");
+                }
+            })
+
+
             //let temp = {"0": "0x6e70cdAf8049D1FDfAC7f31DD1eeC3517d50E75c", "1": "01-02-21"};
             // 0 = patient address, 1 = date, 2 = encrypted patient info.
             // contract.methods.getProviderAppointmentList(i, account ).call({from: account}, function(error, result){
@@ -251,12 +329,11 @@ const ProviderIncomingAppointment = () => {
 
 
         }
-        if (continueFlag) {
-            setAppointmentList(temp_list);
-        }
-
-
-
+        promise.then((value) => {
+            if (continueFlag) {
+                setAppointmentList(temp_list);
+            }
+        })
 
     }
 
@@ -294,48 +371,44 @@ const ProviderIncomingAppointment = () => {
 
     return (
         <>
-        {logged? 
-        <>
-            <nav className="navbar navbar-expand-lg navbar-light fixed-top">
-                <div className="container">
+            {logged ?
+                <>
+                    <nav className="navbar navbar-expand-lg navbar-light fixed-top">
+                        <div className="container">
 
-                    <Link className="navbar-brand" to={"/sign-in"}>Stay Home</Link>
-                    <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
-                        <ul className="navbar-nav ml-auto">
+                            <Link className="navbar-brand" to={"/sign-in"}>Stay Home</Link>
+                            <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
+                                <ul className="navbar-nav ml-auto">
 
-                            <li className="nav-item">
+                                    <li className="nav-item">
 
-                                <Link className="nav-link" to={"/sign-in"} onClick={() => logOut()}>Log Out</Link>
-                            </li>
+                                        <Link className="nav-link" to={"/sign-in"} onClick={() => logOut()}>Log Out</Link>
+                                    </li>
 
-                        </ul>
+                                </ul>
 
+                            </div>
+                        </div>
+                    </nav>
+
+                    <div className="auth-wrapper">
+                        <div className="auth-inner">
+                            <form>
+
+                                <h3 >Incoming Appointment</h3>
+
+                                {appointmentList}
+
+
+                                <div className="bottom_buttons">
+                                    <button className="btn btn-primary btn-block" onClick={clickPrev} style={{ width: "20%", marginTop: "8px" }}>Previous</button>
+                                    <button className="btn btn-primary btn-block" onClick={clickNext} style={{ width: "20%" }}>Next</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                </div>
-            </nav>
-
-            <div className="auth-wrapper">
-                <div className="auth-inner">
-                    <button id="back-button">
-                        <Link className="nav-link" to={"/provider-landing-page"} style={{ color: "black" }} >Back</Link>
-                    </button>
-
-                    <h3 >Incoming Appointments</h3>
-
-
-
-                    {appointmentList}
-
-
-
-                    <div className="bottom_buttons">
-                        <button className="btn btn-primary btn-block" onClick={clickPrev} style={{ width: "20%", marginTop: "8px" }}>Previous</button>
-                        <button className="btn btn-primary btn-block" onClick={clickNext} style={{ width: "20%" }}>Next</button>
-                    </div>
-                </div>
-            </div>
-        </> : onUnauthorised()}
-        {backToLoginPage ? <Redirect to={"/sign-in"} />: ""}
+                </> : onUnauthorised()}
+            {backToLoginPage ? <Redirect to={"/sign-in"} /> : ""}
         </>
 
     )

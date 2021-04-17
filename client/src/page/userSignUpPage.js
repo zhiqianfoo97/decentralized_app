@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import getWeb3 from "../getWeb3";
+import HealthRecord from "../contracts/HealthRecord.json";
 import EthCrypto from 'eth-crypto';
 import { createPortal } from "react-dom";
 
@@ -24,12 +26,20 @@ const UserSignUpPage = () => {
     }
 
 
-    // //need to improve this
-    // const signUp = (e) => {
-    //     e.preventDefault();
-    //     console.log("Test : " , e.target)
+    const [web3, setWeb3] = useState(null);
+    const [contract, setContract] = useState(null);
+    const [setupStatus, setSetupStatus] = useState(false);
 
-    // }
+    const setup = async () => {
+        const web3_ = await getWeb3();
+        setWeb3(web3_);
+        let networkID = await web3_.eth.net.getId();
+        const deployedNetwork = HealthRecord.networks[networkID];
+        let contract_ = new web3_.eth.Contract(HealthRecord.abi, deployedNetwork.address);
+        setContract(contract_);
+        setSetupStatus(true);
+    }
+
     const ipfsAPI = require('ipfs-api');
     // // const ipfs = ipfsAPI('localhost', '5001');
     const ipfs = ipfsAPI({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
@@ -184,9 +194,23 @@ const UserSignUpPage = () => {
 
 
         });
+        
+        
+        }
+    
+    const registerToEthereum = () =>{
+
+        contract.methods.registerUser(field.eth_address).call({from: field.eth_address}, function(error, result){
+            console.log("hehe");
+
+        })
 
 
     }
+        
+    useEffect(()=>{
+        setup()
+    }, [])
 
 
 
