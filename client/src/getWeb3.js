@@ -1,7 +1,7 @@
 const Web3 = require('web3');
 
 const getWeb3 = () =>{
-  return (new Web3(Web3.givenProvider || 'http://127.0.0.1:7545'))
+  return (new Web3(Web3.givenProvider || 'http://127.0.0.1:8545'))
 };
 
 // const getWeb3 = () =>

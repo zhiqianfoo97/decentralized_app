@@ -48,12 +48,14 @@ body, html, .App, #root, .auth-wrapper {
 }
 
 .auth-inner {
-  width: 450px;
+  min-width: 550px;
+  max-width: 800px;
   margin: auto;
-  
+  max-height: 570px;
+  overflow: auto;
   background: #ffffff;
   box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
-  padding: 30px 55px 10px 55px;
+  padding: 30px 55px;
   border-radius: 15px;
   transition: all .3s;
 }
@@ -222,7 +224,7 @@ body, html, .App, #root, .auth-wrapper {
   position:absolute;
   top:50%;
   left:50%;
-  background-color: green;
+ /* background-color: green;*/
   width: 500px;
   height: 500px;
   margin-left:-250px;   /* negative half of width above */
@@ -93939,4 +93941,37 @@ video {
 .loginButton{
   padding: 0.9rem 1rem !important;
   color: #007bff !important;
+}
+
+.modalCloseButton{
+  float: right;
+  position: absolute;
+  top: 24px;
+  right: -35px;
+  padding: 1px;
+}
+
+.modal-overlay{
+  background-color:black;
+}
+
+.modal-overlay-none{
+  display: none;
+}
+
+#canvasjs-react-chart-container-0, #canvasjs-react-chart-container-1, #canvasjs-react-chart-container-2, #canvasjs-react-chart-container-3,  #canvasjs-react-chart-container-4,  #canvasjs-react-chart-container-5,  #canvasjs-react-chart-container-6,  #canvasjs-react-chart-container-7,  #canvasjs-react-chart-container-8,  #canvasjs-react-chart-container-9,  #canvasjs-react-chart-container-10,  #canvasjs-react-chart-container-11,  #canvasjs-react-chart-container-12,  #canvasjs-react-chart-container-13,  #canvasjs-react-chart-container-14,  #canvasjs-react-chart-container-15{
+  width: 500px !important;
+  position: absolute !important;
+  height: 400px !important;
+  top: 204px !important;
+  right: 220px !important;
+}
+
+.canvasjs-chart-canvas{
+  width: 500px !important;
+  height: 400px !important;
+}
+
+.input-padding{
+  height: 38px
 }

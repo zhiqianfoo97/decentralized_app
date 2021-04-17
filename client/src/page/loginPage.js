@@ -1,10 +1,7 @@
 import React, { useState}  from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-<<<<<<< HEAD
-
-const LoginPage = () => {
-=======
 import { Redirect } from "react-router-dom";
+
 export default class LoginPage extends React.Component{
     
     state = {
@@ -15,6 +12,7 @@ export default class LoginPage extends React.Component{
         showAll: true,
         username: '',
         password: '',
+        private_key:'',
     }
 
 
@@ -23,7 +21,6 @@ export default class LoginPage extends React.Component{
           userRedirect: true,
         })
     }
->>>>>>> 9c24233acae948092530839a2d1b86b6c28030a9
 
     setSupplierRedirect = () => {
         this.setState({
@@ -78,20 +75,13 @@ export default class LoginPage extends React.Component{
 
     loginUser = (e)=>{
         e.preventDefault();
-<<<<<<< HEAD
         localStorage.setItem("user_type","user");
         localStorage.setItem("name", "test");
-        localStorage.setItem("username", username);
+        localStorage.setItem("username", this.state.username);
         localStorage.setItem("eth_address", "0x501a19d036cD7DA7E353AD194bA08642cD560978");
         localStorage.setItem("logged", true);
         localStorage.setItem("hkid", "m1234123");
-=======
-        sessionStorage.setItem("user_type","user");
-        sessionStorage.setItem("name", "test");
-        sessionStorage.setItem("username", this.state.username);
-        sessionStorage.setItem("address", "temp");
-        sessionStorage.setItem("logged", true);
->>>>>>> 9c24233acae948092530839a2d1b86b6c28030a9
+        localStorage.setItem("private_key", this.state.private_key);
 
         var userJson = {
             username: this.state.username,
@@ -175,22 +165,15 @@ export default class LoginPage extends React.Component{
 
     loginProvider = (e) => {
         e.preventDefault();
-<<<<<<< HEAD
         localStorage.setItem("user_type","provider");
         localStorage.setItem("name", "test2");
-        localStorage.setItem("username", username);
+        localStorage.setItem("username", this.state.username);
         localStorage.setItem("eth_address", "0x501a19d036cD7DA7E353AD194bA08642cD560978");
         localStorage.setItem("location", "xx");
         localStorage.setItem("email", "zxxc@porkmail.com");
-=======
-        sessionStorage.setItem("user_type","provider");
-        sessionStorage.setItem("name", "test");
-        sessionStorage.setItem("username", this.state.username);
-        sessionStorage.setItem("address", "temp");
-        sessionStorage.setItem("location", "xx");
->>>>>>> 9c24233acae948092530839a2d1b86b6c28030a9
 
         var userJson = {
+            identity: "Supplier",
             username: this.state.username,
             password: this.state.password
         };
@@ -299,6 +282,13 @@ export default class LoginPage extends React.Component{
         e.preventDefault();
         this.setState({
             password: e.target.value
+        })
+    }
+
+    handlePrivateKeyChange = (e) =>{
+        e.preventDefault();
+        this.setState({
+            private_key: e.target.value
         })
     }
 
@@ -411,12 +401,11 @@ export default class LoginPage extends React.Component{
                         </div>
 
                         <div className="form-group">
-                            <div className="custom-control custom-checkbox">
-                                <input type="checkbox" className="custom-control-input" id="customCheck1" />
-                                <label className="custom-control-label" htmlFor="customCheck1">Remember me</label>
-                            </div>
+                            <label>Private Key</label>
+                            <input type="text" className="form-control" placeholder="Enter private key" value={this.state.private_key} onChange={(e) => this.handlePrivateKeyChange(e)} />
                         </div>
 
+                        
                         <button type="submit" className="btn btn-primary btn-block" onClick={(e) => this.loginUser(e)}>
                             Submit
                             {/* <Link className="nav-link" to={"/user-landing-page"}>Submit</Link> */}

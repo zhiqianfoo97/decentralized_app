@@ -2,14 +2,14 @@ import React, { useState }  from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 const SupplierSignUpPage = () => {
     const initialState = {
+        username: "",
         name : "",
         address : "",
         healthcare_provider_number : "",
         password : "",
-        hcare_num : "",
-        email : "",
         eth_address : "",
         location: "",
+        public_key: "",
     };
 
     const [field, setField] = useState(initialState);
@@ -50,20 +50,31 @@ const SupplierSignUpPage = () => {
 
     function createUser (e) {
        e.preventDefault();
+        var username = field.username;
         var name = field.name;
         var address = field.address;
         var healthcare_provider_number = field.healthcare_provider_number;
         var password = field.password;
+        var eth_address = field.eth_address;
+        var location = field.location;
+        var public_key = public_key;
         var ipfsHash = "";
-        console.log("creating user on ipfs for", username);
+
+
+        console.log("creating user on ipfs for", name);
         var userJsonAuthentication = {
-            name: name,
+            identity: "Supplier",
+            username: username,
             password: password
         };
 
         var userJsonInfo = {
+            name: name,
             address: address,
             healthcare_provider_number: healthcare_provider_number,
+            eth_address: eth_address,
+            location: location,
+            public_key: public_key
         }
         
         
@@ -154,10 +165,15 @@ const SupplierSignUpPage = () => {
         <div className="auth-inner"> 
             <form>
                 <h3>New Supplier</h3>
+                
+                <div className="form-group">
+                    <label>Username</label>
+                    <input type="text" className="form-control" value={field.username} placeholder="Enter username" onChange={(e) => changeValue('username', e.target.value)}/>
+                </div>
 
                 <div className="form-group">
                     <label>Name</label>
-                    <input type="text" className="form-control" value={field.username} placeholder="Enter name" onChange={(e) => changeValue('username', e.target.value)}/>
+                    <input type="text" className="form-control" value={field.username} placeholder="Enter name of institution" onChange={(e) => changeValue('name', e.target.value)}/>
                 </div>
 
                 <div className="form-group">
@@ -171,11 +187,6 @@ const SupplierSignUpPage = () => {
                 </div>
 
                 <div className="form-group">
-                    <label>Email</label>
-                    <input type="text" className="form-control" value={field.email} placeholder="Enter email" onChange={(e) => changeValue('email', e.target.value)} />
-                </div>
-
-                <div className="form-group">
                     <label>Location</label>
                     <input type="text" className="form-control" value={field.location} placeholder="Enter location" onChange={(e) => changeValue('location', e.target.value)} />
                 </div>
@@ -185,7 +196,12 @@ const SupplierSignUpPage = () => {
                     <input type="password" className="form-control" value={field.password} placeholder="Enter password" onChange={(e) => changeValue('password', e.target.value)}/>
                 </div>
 
-                <button type="submit" className="btn btn-primary btn-block" onClick={signUp}>Sign Up</button>
+                <div className="form-group">
+                    <label>public key</label>
+                    <input type="text" className="form-control" value={field.email} placeholder="Enter public key" onChange={(e) => changeValue('public_key', e.target.value)} />
+                </div>
+
+                <button type="submit" className="btn btn-primary btn-block" onClick={createUser}>Sign Up</button>
                 <p className="forgot-password text-right">
                     {/* Already registered? <Link className="nav-link" to={"/sign-in"}>Sign in</Link> */}
                     Registration will be subjected to manual review.
