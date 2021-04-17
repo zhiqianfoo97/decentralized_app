@@ -185,8 +185,10 @@ const ProviderIncomingAppointment = () => {
 
                 if(temp !== ""){
                     temp_list.push(<AppointmentRow key={i} count={i} ethAdd={ethAdd} date={date} hkid={hkid} name={name} contract={contract} web3={web3}></AppointmentRow>)
+                    console.log("que?");
                 }
                 setAppointmentList(temp_list);
+                console.log("temp_list = "+ temp_list);
 
 
             })

@@ -19,7 +19,7 @@ const ProviderHistory = (props) => {
     const [setupStatus, setSetupStatus] = useState(false);
     const [resultRow, setResultRow] = useState("");
     const [currentLimit, setCurrentLimit] = useState(0);
-    const [historyLength, setHistoryLength] = useState(6);
+    const [historyLength, setHistoryLength] = useState(10);
     const [web3, setWeb3] = useState(null);
     const [contract, setContract] = useState(null);
     const [account, setAccount] = useState(localStorage.getItem("eth_address"));
@@ -30,10 +30,10 @@ const ProviderHistory = (props) => {
         let networkID = await web3_.eth.net.getId();
         const deployedNetwork = HealthRecord.networks[networkID];
         let contract_ = new web3_.eth.Contract(HealthRecord.abi, deployedNetwork.address);
-        let length = 0;
+        let length = 10;
 
         contract_.methods.getProviderHistoryListLength(account).call({from: account}, function(error, result){
-            setHistoryLength(result);
+            setHistoryLength(10);
             setContract(contract_);
             setSetupStatus(true);
 
@@ -55,7 +55,7 @@ const ProviderHistory = (props) => {
 
     const setupHistory = async (start) => {
         let temp_list = [];
-        let temp = "";
+        let temp = {"0": "0x6e70cdAf8049D1FDfAC7f31DD1eeC3517d50E75c", "1": "01-02-21"};
         for (let i = start ; i > start - pageLimit; i--){
             if (i < 0){
                 break;
@@ -68,18 +68,28 @@ const ProviderHistory = (props) => {
             }finally{
                 if(temp !== ""){
                     temp_list.push(<HistoryRow key={i} userAddress={temp["0"]} date={temp["1"]}></HistoryRow>)
-                }
-
             }
+                
+            }
+
+            
             //let temp = {"0": "0x6e70cdAf8049D1FDfAC7f31DD1eeC3517d50E75c", "1": "01-02-21"};
             // 0 = patient address, 1 = date
 
-            
+            // contract.methods.getProviderHistoryList(i, account ).call({from: account}, function(error, result){
+            //     if(temp !== ""){
+            //         temp_list.push(<HistoryRow key={i} userAddress={temp["0"]} date={temp["1"]}></HistoryRow>)
+            //     }
+            //     //setResultRow(temp_list);
+
+
+            // })
             
         
             
         }
-        setResultRow(temp_list);
+        setResultRow(temp_list)
+        
     }
 
     const clickNext = (e) => {
@@ -118,7 +128,7 @@ const ProviderHistory = (props) => {
 
             <div className="auth-inner"> 
                 <form>
-                    <h3 >History</h3>
+                    <h3>History</h3>
 
                     {resultRow}
 
