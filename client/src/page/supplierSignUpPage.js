@@ -2,12 +2,12 @@ import React, { useState }  from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 const SupplierSignUpPage = () => {
     const initialState = {
+        username: "",
         name : "",
         address : "",
         healthcare_provider_number : "",
         password : "",
-        hcare_num : "",
-        email : "",
+        email: "",
         eth_address : "",
         location: "",
     };
@@ -50,6 +50,7 @@ const SupplierSignUpPage = () => {
 
     function createUser (e) {
        e.preventDefault();
+        var username = field.username;
         var name = field.name;
         var address = field.address;
         var healthcare_provider_number = field.healthcare_provider_number;
@@ -156,8 +157,13 @@ const SupplierSignUpPage = () => {
                 <h3>New Supplier</h3>
 
                 <div className="form-group">
-                    <label>Name</label>
+                    <label>Username</label>
                     <input type="text" className="form-control" value={field.username} placeholder="Enter name" onChange={(e) => changeValue('username', e.target.value)}/>
+                </div>
+
+                <div className="form-group">
+                    <label>Name</label>
+                    <input type="text" className="form-control" value={field.username} placeholder="Enter name" onChange={(e) => changeValue('name', e.target.value)}/>
                 </div>
 
                 <div className="form-group">
@@ -167,7 +173,7 @@ const SupplierSignUpPage = () => {
 
                 <div className="form-group">
                     <label>Healthcare Provider Number</label>
-                    <input type="text" className="form-control" value={field.hcare_num} placeholder="Enter healthcare provider no." onChange={(e) => changeValue('hcare_num', e.target.value)} />
+                    <input type="text" className="form-control" value={field.hcare_num} placeholder="Enter healthcare provider no." onChange={(e) => changeValue('healthcare_provider_number', e.target.value)} />
                 </div>
 
                 <div className="form-group">
@@ -185,15 +191,15 @@ const SupplierSignUpPage = () => {
                     <input type="password" className="form-control" value={field.password} placeholder="Enter password" onChange={(e) => changeValue('password', e.target.value)}/>
                 </div>
 
-                <button type="submit" className="btn btn-primary btn-block" onClick={signUp}>Sign Up</button>
+                <button type="submit" className="btn btn-primary btn-block" >Sign Up</button>
                 <p className="forgot-password text-right">
                     {/* Already registered? <Link className="nav-link" to={"/sign-in"}>Sign in</Link> */}
                     Registration will be subjected to manual review.
                 </p>
             </form>
         </div>
-        </div>
-        </>
+    </div>
+    </>
     );
 
 }

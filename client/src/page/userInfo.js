@@ -1,12 +1,9 @@
 import React, { useState, useEffect }  from "react";
 import qrcode from '../qrcode.png';
-<<<<<<< HEAD
 import { QRCode } from 'react-qr-svg';
 import getWeb3 from "../getWeb3";
-
-=======
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
->>>>>>> 9c24233acae948092530839a2d1b86b6c28030a9
+
 const UserInfo = (props) => {
 
     const [balance, setBalance] = useState(0);

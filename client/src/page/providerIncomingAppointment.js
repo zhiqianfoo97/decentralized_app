@@ -39,6 +39,7 @@ const AppointmentRow = (props) =>{
             console.log(error);
             alert(error);
         }
+    }
     // return (
         
     //   <>
@@ -130,11 +131,8 @@ const AppointmentRow = (props) =>{
 
                     <button type="submit" onClick={uploadResult} className="btn btn-primary btn-block result-btn">Confirm</button>
                 
-
-                    
                 </form>
             </div>
-
 
         </div>
 
@@ -279,8 +277,7 @@ const ProviderIncomingAppointment = () => {
             <button onClick={clickPrev}>Previous</button>
             <button onClick={clickNext}>Next</button>
         </div>
-</div>
-</>
+
     )
     
 

@@ -3,18 +3,11 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 const UserSignUpPage = () => {
     const initialState = {
-<<<<<<< HEAD
         username : "",
         password : "",
         hkid : "",
         email : "",
         eth_address : "",
-=======
-        username : " ",
-        password : " ",
-        hkid : " ",
-        ethAdd : " ",
->>>>>>> 9c24233acae948092530839a2d1b86b6c28030a9
     };
 
 
@@ -162,38 +155,22 @@ const UserSignUpPage = () => {
 
                 <div className="form-group">
                     <label>Username</label>
-<<<<<<< HEAD
                     <input type="text" value={field.username} className="form-control" placeholder="Enter username" onChange={(e) => changeValue('username', e.target.value)}/>
-=======
-                    <input type="text" className="form-control" placeholder="Enter username"  onChange={(e) => changeValue('username', e.target.value)}/>
->>>>>>> 9c24233acae948092530839a2d1b86b6c28030a9
                 </div>
 
                 <div className="form-group">
                     <label>Ethereum Address</label>
-<<<<<<< HEAD
                     <input type="text" value={field.eth_address} className="form-control" placeholder="Enter ethereum address" onChange={(e) => changeValue('eth_address', e.target.value)}/>
-=======
-                    <input type="text" className="form-control" placeholder="Enter ethereum address" onChange={(e) => changeValue('ethAdd', e.target.value)} />
->>>>>>> 9c24233acae948092530839a2d1b86b6c28030a9
                 </div>
 
                 <div className="form-group">
                     <label>HKID / Passport Number</label>
-<<<<<<< HEAD
                     <input type="text" value={field.hkid} className="form-control" placeholder="Enter hkid or passport no." onChange={(e) => changeValue('hkid', e.target.value)} />
-=======
-                    <input type="text" className="form-control" placeholder="Enter hkid or passport no."  onChange={(e) => changeValue('hkid', e.target.value)}/>
->>>>>>> 9c24233acae948092530839a2d1b86b6c28030a9
                 </div>
 
                 <div className="form-group">
                     <label>Password</label>
-<<<<<<< HEAD
                     <input type="password" value={field.password} className="form-control" placeholder="Enter password" onChange={(e) => changeValue('password', e.target.value)}/>
-=======
-                    <input type="password" className="form-control" placeholder="Enter password"  onChange={(e) => changeValue('password', e.target.value)}/>
->>>>>>> 9c24233acae948092530839a2d1b86b6c28030a9
                 </div>
 
                 <button type="submit" className="btn btn-primary btn-block" onClick = {createUser}>Sign Up</button>

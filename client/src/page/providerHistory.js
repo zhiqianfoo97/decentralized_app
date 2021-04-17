@@ -1,7 +1,7 @@
-<<<<<<< HEAD
 import React, { useState, useEffect }  from "react";
 import getWeb3 from "../getWeb3";
 import HealthRecord from "../contracts/HealthRecord.json";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 const HistoryRow = (props) => {
     return(
@@ -15,10 +15,6 @@ const HistoryRow = (props) => {
 }
 
 
-=======
-import React, { useState }  from "react";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
->>>>>>> 9c24233acae948092530839a2d1b86b6c28030a9
 const ProviderHistory = (props) => {
     const [pageLimit, setPageLimit] = useState(5);
     const [setupStatus, setSetupStatus] = useState(false);
