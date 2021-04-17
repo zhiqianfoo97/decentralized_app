@@ -7,6 +7,10 @@ const SupplierSignUpPage = () => {
         address : "",
         healthcare_provider_number : "",
         password : "",
+<<<<<<< HEAD
+=======
+        email: "",
+>>>>>>> 3f8125866501d292012f00318b721e40900920d5
         eth_address : "",
         location: "",
         public_key: "",
@@ -172,8 +176,13 @@ const SupplierSignUpPage = () => {
                 </div>
 
                 <div className="form-group">
+                    <label>Username</label>
+                    <input type="text" className="form-control" value={field.username} placeholder="Enter name" onChange={(e) => changeValue('username', e.target.value)}/>
+                </div>
+
+                <div className="form-group">
                     <label>Name</label>
-                    <input type="text" className="form-control" value={field.username} placeholder="Enter name of institution" onChange={(e) => changeValue('name', e.target.value)}/>
+                    <input type="text" className="form-control" value={field.username} placeholder="Enter name" onChange={(e) => changeValue('name', e.target.value)}/>
                 </div>
 
                 <div className="form-group">
@@ -183,7 +192,7 @@ const SupplierSignUpPage = () => {
 
                 <div className="form-group">
                     <label>Healthcare Provider Number</label>
-                    <input type="text" className="form-control" value={field.hcare_num} placeholder="Enter healthcare provider no." onChange={(e) => changeValue('hcare_num', e.target.value)} />
+                    <input type="text" className="form-control" value={field.hcare_num} placeholder="Enter healthcare provider no." onChange={(e) => changeValue('healthcare_provider_number', e.target.value)} />
                 </div>
 
                 <div className="form-group">
@@ -208,8 +217,8 @@ const SupplierSignUpPage = () => {
                 </p>
             </form>
         </div>
-        </div>
-        </>
+    </div>
+    </>
     );
 
 }

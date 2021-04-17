@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React, { useState, useEffect } from "react";
+=======
+import React, { useState, useEffect }  from "react";
+>>>>>>> 3f8125866501d292012f00318b721e40900920d5
 import getWeb3 from "../getWeb3";
 import HealthRecord from "../contracts/HealthRecord.json";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
@@ -14,6 +18,10 @@ const HistoryRow = (props) => {
     )
 }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 3f8125866501d292012f00318b721e40900920d5
 const ProviderHistory = (props) => {
     const [pageLimit, setPageLimit] = useState(5);
     const [setupStatus, setSetupStatus] = useState(false);
@@ -32,8 +40,13 @@ const ProviderHistory = (props) => {
         let contract_ = new web3_.eth.Contract(HealthRecord.abi, deployedNetwork.address);
         let length = 10;
 
+<<<<<<< HEAD
         contract_.methods.getProviderHistoryListLength(account).call({ from: account }, function (error, result) {
             setHistoryLength(10);
+=======
+        contract_.methods.getProviderHistoryListLength(account).call({from: account}, function(error, result){
+            setHistoryLength(10);  // change to result
+>>>>>>> 3f8125866501d292012f00318b721e40900920d5
             setContract(contract_);
             setSetupStatus(true);
 
@@ -55,9 +68,17 @@ const ProviderHistory = (props) => {
 
     const setupHistory = async (start) => {
         let temp_list = [];
+<<<<<<< HEAD
         let temp = { "0": "0x6e70cdAf8049D1FDfAC7f31DD1eeC3517d50E75c", "1": "01-02-21" };
         for (let i = start; i > start - pageLimit; i--) {
             if (i < 0) {
+=======
+        let temp = {"0": "0x6e70cdAf8049D1FDfAC7f31DD1eeC3517d50E75c", "1": "01-02-21"};
+        let continueFlag = true;
+        for (let i = start - 1 ; i > start - pageLimit; i--){
+            if (i < 0){
+                continueFlag = false;
+>>>>>>> 3f8125866501d292012f00318b721e40900920d5
                 break;
             }
 
@@ -88,15 +109,23 @@ const ProviderHistory = (props) => {
 
 
         }
+<<<<<<< HEAD
         setResultRow(temp_list)
 
+=======
+        if(continueFlag){
+            setResultRow(temp_list)
+        }
+        
+        
+>>>>>>> 3f8125866501d292012f00318b721e40900920d5
     }
 
     const clickNext = (e) => {
         e.preventDefault();
         let count = currentLimit - 5;
-        if (count < 0) {
-            count = 0
+        if (count < 0){
+            return;
         };
         setupHistory(count);
         setCurrentLimit(count);
@@ -105,8 +134,8 @@ const ProviderHistory = (props) => {
     const clickPrev = (e) => {
         e.preventDefault();
         let count = currentLimit + 5;
-        if (count >= historyLength) {
-            count = historyLength - 1;
+        if (count >= historyLength){
+            count = historyLength;
         }
         setupHistory(count);
         setCurrentLimit(count);
@@ -117,9 +146,9 @@ const ProviderHistory = (props) => {
         setup();
     }, [setupStatus])
 
-    useEffect(() => {
-        if (setupStatus) {
-            setupHistory(historyLength - 1);
+    useEffect(() =>{
+        if(setupStatus){
+            setupHistory(historyLength );
         }
 
     }, [setupStatus, historyLength])

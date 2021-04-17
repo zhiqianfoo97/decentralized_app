@@ -235,11 +235,11 @@ const UserHistory = (props) => {
         let appointLength = 5;
         let resultLength_ = 5;
 
-        contract_.methods.getUserAppointmentListLength(account).call({ from: account }, function (error, result) {
+        contract_.methods.getUserAppointmentListLength(account).call({from: account}, function(error, result){
             setAppointmentLength(5);
         });
 
-        contract_.methods.getPendingHealthRecordLength(account).call({ from: account }, function (error, result) {
+        contract_.methods.getPendingHealthRecordLength(account).call({from: account}, function(error, result){
             setResultLength(5);
         });
 
@@ -267,21 +267,26 @@ const UserHistory = (props) => {
         let temp_list = [];
         let temp = "999";
         let provInfo = "";
-        for (let i = start; i > start - pageLimit; i--) {
-            if (i < 0) {
+        let continueFlag = true;
+        for (let i = start -1 ; i >= start - pageLimit; i--){
+            if (i < 0){
+                continueFlag = false;
                 break;
             }
 
-            try {
-                temp = await contract.methods.getPendingHealthRecord(i, account).call({ from: account });
-            } catch (err) {
+
+            try{
+                temp = await contract.methods.getPendingHealthRecord(i, account ).call({from: account}); 
+            }catch(err){
                 console.log("Health record info err : " + err);
+                temp = {"0": "pos", "1": "01-02-21", "2" : "Queen mary", "3": "Tsim sha tsui" ,"4":"1", "5": false, "6" : "0x6e70cdAf8049D1FDfAC7f31DD1eeC3517d50E75c"};
             }
 
             try {
                 provInfo = await contract.methods.getProviderInfo(temp["5"]).call({ from: account });
             } catch (err) {
                 console.log("Provider info err : " + err);
+                provInfo = {"0" :"Queen mary", "1":"HKU"};
             }
             //let temp = await contract.methods.getPendingHealthRecord(i, account ).call({from: account}); 
             temp = { "0": "pos", "1": "01-02-21", "2": "Queen mary", "3": "Tsim sha tsui", "4": "1", "5": false, "6": "0x6e70cdAf8049D1FDfAC7f31DD1eeC3517d50E75c" };
@@ -298,14 +303,19 @@ const UserHistory = (props) => {
             }
 
         }
-        setResultList(temp_list);
+        if(continueFlag){
+            setResultList(temp_list);
+        }
+        
     }
 
     const setupAppointment = async (start) => {
         let temp_list = [];
         let temp = "";
-        for (let i = start; i > start - pageLimit; i--) {
-            if (i < 0) {
+        let continueFlag = true;
+        for (let i = start - 1 ; i >= start - pageLimit; i--){
+            if (i < 0){
+                continueFlag = false;
                 break;
             }
 
@@ -326,7 +336,10 @@ const UserHistory = (props) => {
 
 
         }
-        setAppointmentList(temp_list);
+        if(continueFlag){
+            setAppointmentList(temp_list);
+        }
+        
 
     }
 
@@ -334,9 +347,10 @@ const UserHistory = (props) => {
     const clickNext = (e) => {
         e.preventDefault();
         let count = currentLimit - 5;
-        if (count < 0) {
+        if (count < 0){
+            return;
             count = 0;
-            //  return;
+            
         };
         currentClicked ? setupResult(count) : setupAppointment(count);
 
@@ -347,14 +361,14 @@ const UserHistory = (props) => {
         e.preventDefault();
         let count = currentLimit + 5;
 
-        if (currentClicked) {
-            if (count >= resultLength) {
-                count = resultLength - 1;
+        if(currentClicked){
+            if (count >= resultLength){
+                count = resultLength ;
             }
             setupResult(count)
-        } else {
-            if (count >= appointmentLength) {
-                count = appointmentLength - 1;
+        }else{
+            if (count >= appointmentLength){
+                count = appointmentLength ;
             }
             setupAppointment(count);
 
@@ -376,13 +390,12 @@ const UserHistory = (props) => {
 
     useEffect(() => {
         setup();
+    }, [])
 
-    }, [setupStatus])
-
-    useEffect(() => {
-        if (setupStatus) {
-            setupAppointment(appointmentLength - 1);
-            setupResult(resultLength - 1);
+    useEffect( () => {
+        if(setupStatus){
+            setupAppointment(appointmentLength);
+            setupResult(resultLength);
         }
 
     }, [appointmentLength, setupStatus, resultLength])
