@@ -59,6 +59,7 @@ const UserSignUpPage = () => {
 
     //     let rootDirectoryContents = await all(ipfs.files.ls('/'))
     //     return rootDirectoryContents
+
     // }
 
     const MakeQuerablePromise = (promise) => {
@@ -127,58 +128,6 @@ const UserSignUpPage = () => {
 
         console.log("sending info");
 
-        // let temp_1 = "";
-        // let temp_2 = "";
-
-
-        // await ipfs.add([Buffer.from(JSON.stringify(userJsonAuthentication))], async function (err, res) {
-        //     if (err) throw err
-        //     ipfsHash = (res[0].hash);
-
-        //     if (ipfsHash != 'not-available') {
-        //         var url = 'https://ipfs.io/ipfs/' + ipfsHash;
-        //         console.log('getting user authentication from', url);
-
-        //     }
-
-        //     await EthCrypto.encryptWithPublicKey(
-        //         public_key, // publicKey
-        //         ipfsHash // message
-        //     ).then((result) => {
-        //         temp_1 = EthCrypto.cipher.stringify(result);
-        //         //updateUserInfo(EthCrypto.cipher.stringify(result));
-        //         console.log("USERPASSHASH DONE : " + result);
-        //     });
-
-
-        // });
-
-
-        // await ipfs.add([Buffer.from(JSON.stringify(userJsonInfo))], async function (err, res) {
-        //     if (err) throw err
-        //     ipfsHash = (res[0].hash);
-
-        //     if (ipfsHash != 'not-available') {
-        //         var url = 'https://ipfs.io/ipfs/' + ipfsHash;
-        //         console.log('getting user authentication from', url);
-
-
-        //     }
-
-        //     await EthCrypto.encryptWithPublicKey(
-        //         public_key, // publicKey
-        //         ipfsHash // message
-        //     ).then((result) => {
-        //         temp_2 = EthCrypto.cipher.stringify(result);
-        //         // updateUserInfo_2(EthCrypto.cipher.stringify(result));
-        //         console.log("USERINFOHASH DONE : " + result);
-        //     });
-
-
-        // })
-
-        // setTimeout(() => {
-
         //     console.log("USERPASSHASH = " + temp_1);
         //     console.log("USERINFOHASH = " + temp_2);
         //     contract.methods.putLoginInfo(temp_1, temp_2).call({ from: field.eth_address }, function (error, result) {
@@ -224,10 +173,10 @@ const UserSignUpPage = () => {
 
             //var json = {}
 
-            const userAuthentication = new Promise(async(resolve,reject) =>{
+            const userAuthentication = new Promise(async (resolve, reject) => {
                 await EthCrypto.encryptWithPublicKey(
-                public_key, // publicKey
-                ipfsHash // message
+                    public_key, // publicKey
+                    ipfsHash // message
                 ).then((value) => {
                     temp_1 = value;
                     resolve(value)
@@ -244,10 +193,11 @@ const UserSignUpPage = () => {
             console.log(ipfsHash);
             if (ipfsHash != 'not-available') {
                 var url = 'https://ipfs.io/ipfs/' + ipfsHash;
-                console.log('getting user info from', url);
+                console.log('getting user authentication from', url);
 
             }
-            const infoAuthentication = new Promise(async(resolve,reject) =>{
+
+            const infoAuthentication = new Promise(async (resolve, reject) => {
                 await EthCrypto.encryptWithPublicKey(
                     public_key, // publicKey
                     ipfsHash // message
@@ -259,42 +209,161 @@ const UserSignUpPage = () => {
 
             secondPromise = MakeQuerablePromise(infoAuthentication);
 
-        });
-        setTimeout(() => {
-            console.log("Outside timeout1");
-            console.log(firstPromise.isPending());
-            console.log(firstPromise.isFulfilled());
-            console.log(firstPromise.isRejected());
-            console.log("Outside timeout2");
-            console.log(secondPromise.isPending());
-            console.log(secondPromise.isFulfilled());
-            console.log(secondPromise.isRejected());
-            if (firstPromise.isFulfilled() && secondPromise.isFulfilled()) {
-                console.log("Inside timeout");
-                
+
+            setTimeout(() => {
+                console.log("Outside timeout1");
+                console.log(firstPromise.isPending());
+                console.log(firstPromise.isFulfilled());
+                console.log(firstPromise.isRejected());
+                console.log("Outside timeout2");
+                console.log(secondPromise.isPending());
+                console.log(secondPromise.isFulfilled());
+                console.log(secondPromise.isRejected());
+                if (firstPromise.isFulfilled() && secondPromise.isFulfilled()) {
+                    console.log("Inside timeout");
+
                     temp_1 = EthCrypto.cipher.stringify(temp_1);
-              
-                
+
+
                     temp_2 = EthCrypto.cipher.stringify(temp_2);
-            
 
-                console.log(field.eth_address);
-                contract.methods.registerUser(field.eth_address, public_key ,temp_1, temp_2 ).send({ from: field.eth_address, gas: 3000000  }, function (error, result) {
-                    console.log(result);
-
-                })
-
-                alert("Done!");
-
-            }
-        }, 2000);
+                    console.log(temp_1);
+                    console.log(temp_2);
 
 
+                    console.log(field.eth_address);
+                    contract.methods.registerUser(field.eth_address, public_key, temp_1, temp_2).send({ from: field.eth_address, gas: 3000000 }, function (error, result) {
+                        console.log(result);
+
+                    })
+
+                    alert("Done!");
+
+                }
+            }, 2000);
+        })
 
 
 
 
+
+        // const to_string = EthCrypto.cipher.stringify(json);
+        // const back_to_json = EthCrypto.cipher.parse(to_string);
+
+        // var message = await EthCrypto.decryptWithPrivateKey(
+        //     identity.privateKey, // privateKey
+        //     back_to_json
+
+        // ).then((message) =>{
+        //     console.log(message);
+        // })
+        // setTimeout(() => {
+        //     console.log("Initial fulfilled:", myPromise.isFulfilled());//false
+        //     console.log("Initial rejected:", myPromise.isRejected());//false
+        //     console.log("Initial pending:", myPromise.isPending());//true
+
+        // }, 2000);
+
+
+        // const infoAuthentication = new Promise(async (resolve, reject) => {
+        //     await EthCrypto.encryptWithPublicKey(
+        //         public_key, // publicKey
+        //         ipfsHash // message
+        //     ).then((value) => {
+        //         temp_2 = value;
+        //         resolve(value)
+        //     })
+        // })
+
+        // secondPromise = MakeQuerablePromise(infoAuthentication);
+
+
+        // setTimeout(() => {
+        //     console.log("Outside timeout1");
+        //     console.log(firstPromise.isPending());
+        //     console.log(firstPromise.isFulfilled());
+        //     console.log(firstPromise.isRejected());
+        //     console.log("Outside timeout2");
+        //     console.log(secondPromise.isPending());
+        //     console.log(secondPromise.isFulfilled());
+        //     console.log(secondPromise.isRejected());
+        //     if (firstPromise.isFulfilled() && secondPromise.isFulfilled()) {
+        //         console.log("Inside timeout");
+
+        //         temp_1 = EthCrypto.cipher.stringify(temp_1);
+
+
+        //         temp_2 = EthCrypto.cipher.stringify(temp_2);
+
+        //         console.log(temp_1);
+        //         console.log(temp_2);
+
+
+        //         console.log(field.eth_address);
+        //         contract.methods.registerUser(field.eth_address, public_key, temp_1, temp_2).send({ from: field.eth_address, gas: 3000000 }, function (error, result) {
+        //             console.log(result);
+
+        //         })
+
+        //         alert("Done!");
+
+        //     }
+        // }, 2000);
+    };
+
+
+    //     ipfs.add([Buffer.from(JSON.stringify(userJsonInfo))], async function (err, res) {
+    //         if (err) throw err
+    //         ipfsHash = res[0].hash
+    //         console.log(ipfsHash);
+    //         if (ipfsHash != 'not-available') {
+    //             var url = 'https://ipfs.io/ipfs/' + ipfsHash;
+    //             console.log('getting user info from', url);
+
+    //         }
+    //         const identity = EthCrypto.createIdentity();
+    //         /* > {
+    //             address: '0x3f243FdacE01Cfd9719f7359c94BA11361f32471',
+    //             privateKey: '0x107be946709e41b7895eea9f2dacf998a0a9124acbb786f0fd1a826101581a07',
+    //             publicKey: 'bf1cc3154424dc22191941d9f4f50b063a2b663a2337e5548abea633c1d06ece...'
+    //         } */
+    //         var json = {}
+    //         var encrypted = new Promises((resolve, reject) => {
+    //             await EthCrypto.encryptWithPublicKey(
+    //                 identity.publicKey, // publicKey
+    //                 ipfsHash // message
+    //             ).then((value) => {
+    //                 console.log(value)
+    //             })
+    //           });
+    //         // const to_string = EthCrypto.cipher.stringify(json);
+    //         // const back_to_json = EthCrypto.cipher.parse(to_string);
+
+    //         // var message = await EthCrypto.decryptWithPrivateKey(
+    //         //     identity.privateKey, // privateKey
+    //         //     back_to_json
+
+    //         // ).then((message) =>{
+    //         //     console.log(message);
+    //         // })
+
+
+
+    //     });
+
+
+
+
+    const registerToEthereum = () => {
+
+        contract.methods.registerUser(field.eth_address).call({ from: field.eth_address }, function (error, result) {
+            console.log("hehe");
+
+
+
+        })
     }
+
 
 
     useEffect(() => {
@@ -358,7 +427,10 @@ const UserSignUpPage = () => {
 
                         <div className="form-group">
                             <label>Private Key</label>
-                            <input type="text" value={field.private_key} className="form-control" placeholder="Enter public key" onChange={(e) => changeValue('private_key', e.target.value)} />
+                            <input type="text" value={field.private_key} className="form-control" placeholder="Enter private key" onChange={(e) => changeValue('private_key', e.target.value)} />
+                            <p className="forgot-password text-right">
+                            Private key is used to generate public key in order to encrypt data, and it will not be sent over the network
+                        </p>
                         </div>
 
                         <button type="submit" className="btn btn-primary btn-block" onClick={createUser}>Sign Up</button>
@@ -372,8 +444,8 @@ const UserSignUpPage = () => {
     );
 
 
-}
 
+}
 
 
 export default UserSignUpPage;

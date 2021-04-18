@@ -30,6 +30,11 @@ export default class LoginPage extends React.Component {
         this.setState({ web3: web3_, contract: contract_ });
     }
 
+    setAuthenticationMessage = () => {
+        this.setState({
+            authenticationMessage: "Incorrect username or password!"
+        })
+    }
 
     setUserRedirect = () => {
         this.setState({
@@ -103,29 +108,31 @@ export default class LoginPage extends React.Component {
 
         var contract_ = this.state.contract;
 
-        console.log("UserJSON USERNAME = " + userJson.username);
-        console.log("UserJSON PASSWORD = " + userJson.password);
-        console.log("PRIVATE KEY = " + infoJson.pvKey);
         var ipfsHash = "";
         const ipfsAPI = require('ipfs-api');
         const ipfs = ipfsAPI({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
         var that = this;
         var pbKey_ = "";
         const pK = EthCrypto.publicKeyByPrivateKey(infoJson.pvKey);
-        console.log("PUBLIC KEY = " + pK);
+  
         const address_ = EthCrypto.publicKey.toAddress(pK);
         var result_holder = "";
-        console.log("ETH ADDRESS = " + address_);
+
+
+
 
 
         contract_.methods.getUserEncrypted(address_).call({ from: address_ }, async function (error, result) {
             //0 = login, 1 = personal
             result_holder = result;
             console.log("RESULT? = " + result["0"]);
+            console.log("REUSLT2 ? = " + result["1"]);
             var ipfsHash = await EthCrypto.decryptWithPrivateKey(
                 infoJson.pvKey,
                 result_holder["0"]
             );
+
+
             let url = 'https://ipfs.io/ipfs/' + ipfsHash;
             const authentication = fetch(url).then(response => response.json());
             var myPromise = that.MakeQuerablePromise(authentication);
@@ -139,13 +146,19 @@ export default class LoginPage extends React.Component {
                     myPromise.then(async function (data) {
                         console.log("data username = " + data.username); // "Yeah !"
                         console.log("data password = " + data.password);
+                        console.log("RESUET 2 = " + result_holder["1"]);
+
+                        console.log("PVKEY = " + infoJson.pvKey);
+                        console.log("encrypted hash " + result_holder["1"]);
+
 
 
                         if ((data.username === userJson.username) && (data.password === userJson.password)) {
                             console.log("IN two");
                             // contract_.methods.getLoginInfo(encryptedString).call({ from: user_add_ }, async function (error, result) {
-                            let jsonInfo_ = await EthCrypto.decryptWithPrivateKey(infoJson.pvKey, result_holder["1"]);
-
+                            var jsonInfo_ = await EthCrypto.decryptWithPrivateKey(infoJson.pvKey, result_holder["1"]);
+                            // await EthCrypto.decryptWithPrivateKey(infoJson.pvKey, result_holder["1"]).then((jsonInfo_) => {
+                            console.log("JSON INFO =" + jsonInfo_);
                             let url2 = 'https://ipfs.io/ipfs/' + jsonInfo_;
                             const authentication2 = fetch(url2).then(response => response.json());
                             var myPromise2 = that.MakeQuerablePromise(authentication2);
@@ -174,6 +187,7 @@ export default class LoginPage extends React.Component {
                                     })
                                 }
                             }, 2000)
+                            //})  
 
                         }
 
@@ -186,14 +200,37 @@ export default class LoginPage extends React.Component {
         })
 
 
+        // const authentication = fetch(url).then(response => response.json());
+        // var myPromise = that.MakeQuerablePromise(authentication);
+
+
+        // setTimeout(() => {
+        //     if (myPromise.isPending()) {
+        //         console.log("wrong authentication info")
+        //         that.setAuthenticationMessage()
+
+        //     } else {
+        //         console.log("success")
+        //         localStorage.setItem("logged", true);
+        //         that.setUserRedirect();
+
+
+        //     }
+
+        // }, 2000);
+
 
 
     }
 
 
 
-    loginProvider = (e) => {
 
+
+
+
+    loginProvider = (e) => {
+        e.preventDefault();
         var userJson = {
             username: this.state.username,
             password: this.state.password
@@ -219,9 +256,11 @@ export default class LoginPage extends React.Component {
         const address_ = EthCrypto.publicKey.toAddress(pK);
         var result_holder = "";
         console.log("ETH ADDRESS = " + address_);
+        contract_.methods.getProviderEncryptedLogin(address_).call({ from: address_ }, async (error, result) => {
 
-        contract_.methods.getProviderEncryptedLogin(address_).call({ from: address_ }, async function (error, result) {
-            // 0
+            if(error){
+                alert(error);
+            }
             result_holder = result;
             console.log("RESULT? = " + result);
             var ipfsHash = await EthCrypto.decryptWithPrivateKey(
@@ -231,8 +270,7 @@ export default class LoginPage extends React.Component {
             let url = 'https://ipfs.io/ipfs/' + ipfsHash;
             const authentication = fetch(url).then(response => response.json());
             var myPromise = that.MakeQuerablePromise(authentication);
-
-            setTimeout(() => {
+            setTimeout(() => {  
                 if (myPromise.isPending()) {
                     console.log("wrong authentication info")
                 } else {
@@ -256,11 +294,12 @@ export default class LoginPage extends React.Component {
                                 localStorage.setItem("public_key", pK);
                                 localStorage.setItem("private_key", infoJson.pvKey);
                                 that.setSupplierRedirect();
-
                             })
 
-                        }else{
+                        } else {
+                            alert("Incorrect input.");
                             window.location.reload();
+
                         }
 
                     });
@@ -271,166 +310,166 @@ export default class LoginPage extends React.Component {
 
         })
 
+    };
+
+
+
+    openUser = (e) => {
+        e.preventDefault();
+        this.setState({
+            showAll: false,
+            showUser: true
+        })
+
+    }
+
+    openProvider = (e) => {
+        e.preventDefault();
+        this.setState({
+            showAll: false,
+            showProvider: true
+        })
+
+    }
+
+    closeAll = (e) => {
+        e.preventDefault();
+        this.setState({
+            showUser: false,
+            showProvider: false,
+            showAll: true
+        })
+    }
+
+    handleUserChanges = (e) => {
+        e.preventDefault();
+        this.setState({
+            username: e.target.value
+        })
+    }
+
+    handlePasswordChanges = (e) => {
+        e.preventDefault();
+        this.setState({
+            password: e.target.value
+        })
+    }
+
+    handlePrivateKeyChange = (e) => {
+        e.preventDefault();
+        this.setState({
+            pvKey: e.target.value
+        })
     }
 
 
+    render() {
+        return (
+            <>
+                <nav className="navbar navbar-expand-lg navbar-light fixed-top">
+                    <div className="container">
 
-openUser = (e) => {
-    e.preventDefault();
-    this.setState({
-        showAll: false,
-        showUser: true
-    })
+                        <Link className="navbar-brand" to={"/sign-in"}>Stay Home</Link>
+                        <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
+                            <ul className="navbar-nav ml-auto">
 
-}
+                                <li className="nav-item">
 
-openProvider = (e) => {
-    e.preventDefault();
-    this.setState({
-        showAll: false,
-        showProvider: true
-    })
+                                    <Link className="nav-link" to={"/sign-in"}>Login</Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to={"/register"}>Sign up</Link>
+                                </li>
 
-}
+                            </ul>
 
-closeAll = (e) => {
-    e.preventDefault();
-    this.setState({
-        showUser: false,
-        showProvider: false,
-        showAll: true
-    })
-}
+                        </div>
+                    </div>
+                </nav>
 
-handleUserChanges = (e) => {
-    e.preventDefault();
-    this.setState({
-        username: e.target.value
-    })
-}
-
-handlePasswordChanges = (e) => {
-    e.preventDefault();
-    this.setState({
-        password: e.target.value
-    })
-}
-
-handlePrivateKeyChange = (e) => {
-    e.preventDefault();
-    this.setState({
-        pvKey: e.target.value
-    })
-}
+                <div className="auth-wrapper">
+                    <div className="auth-inner">
+                        {this.state.showAll ? "" : <button id="back-button" onClick={(e) => this.closeAll(e)}> Back </button>}
+                        <form>
+                            <h3>Sign In As</h3>
 
 
-render() {
-    return (
-        <>
-            <nav className="navbar navbar-expand-lg navbar-light fixed-top">
-                <div className="container">
+                            {this.state.showAll ?
+                                <div >
+                                    <button type="submit" className="btn custom-button btn-block loginButton" onClick={(e) => this.openUser(e)} >
+                                        User
+                        </button>
 
-                    <Link className="navbar-brand" to={"/sign-in"}>Stay Home</Link>
-                    <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
-                        <ul className="navbar-nav ml-auto">
+                                    <button type="submit" className="btn custom-button btn-block loginButton" onClick={(e) => this.openProvider(e)}>
+                                        Provider
+                        </button>
 
-                            <li className="nav-item">
+                                </div>
+                                : ""}
 
-                                <Link className="nav-link" to={"/sign-in"}>Login</Link>
-                            </li>
-                            <li className="nav-item">
-                                <Link className="nav-link" to={"/register"}>Sign up</Link>
-                            </li>
 
-                        </ul>
+                            {this.state.showUser ?
 
+                                <div id="user-login">
+                                    <h3>User</h3>
+                                    <div className="form-group">
+                                        <label>Username</label>
+                                        <input type="username" className="form-control" placeholder="Enter username" value={this.state.username} onChange={(e) => this.handleUserChanges(e)} />
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label>Password</label>
+                                        <input type="password" className="form-control" placeholder="Enter password" value={this.state.password} onChange={(e) => this.handlePasswordChanges(e)} />
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label>Private Key</label>
+                                        <input type="text" className="form-control" placeholder="Enter private key" value={this.state.pvKey} onChange={(e) => this.handlePrivateKeyChange(e)} />
+                                        <p className="forgot-password">Private key is only for encryption purposes and is never sent over network.</p>
+                                    </div>
+
+
+                                    <button type="submit" className="btn btn-primary btn-block" onClick={(e) => this.loginUser(e)}>
+                                        Submit
+                                </button>
+
+                                </div>
+
+                                : ""}
+                            {this.renderUserRedirect()}
+                            {this.renderSupplierRedirect()}
+                            {this.state.showProvider ?
+
+                                <div id="provider-login">
+                                    <h3>Provider</h3>
+                                    <div className="form-group">
+                                        <label>Username</label>
+                                        <input type="username" className="form-control" placeholder="Enter username" value={this.state.username} onChange={(e) => this.handleUserChanges(e)} />
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label>Password</label>
+                                        <input type="password" className="form-control" placeholder="Enter password" value={this.state.password} onChange={(e) => this.handlePasswordChanges(e)} />
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label>Private Key</label>
+                                        <input type="text" className="form-control" placeholder="Enter private key" value={this.state.pvKey} onChange={(e) => this.handlePrivateKeyChange(e)} />
+                                        <p className="forgot-password">Private key is only for encryption purposes and is never sent over network.</p>
+                                    </div>
+
+                                    <button type="submit" className="btn btn-primary btn-block" onClick={(e) => this.loginProvider(e)}>
+                                        Submit
+                                </button>
+
+                                </div>
+                                : ""}
+
+                        </form>
                     </div>
                 </div>
-            </nav>
+            </>
 
-            <div className="auth-wrapper">
-                <div className="auth-inner">
-                    {this.state.showAll ? "" : <button id="back-button" onClick={(e) => this.closeAll(e)}> Back </button>}
-                    <form>
-                        <h3>Sign In As</h3>
-
-
-                        {this.state.showAll ?
-                            <div >
-                                <button type="submit" className="btn custom-button btn-block loginButton" onClick={(e) => this.openUser(e)} >
-                                    User
-                        </button>
-
-                                <button type="submit" className="btn custom-button btn-block loginButton" onClick={(e) => this.openProvider(e)}>
-                                    Supplier
-                        </button>
-
-                            </div>
-                            : ""}
-
-
-                        {this.state.showUser ?
-
-                            <div id="user-login">
-                                <h3>User</h3>
-                                <div className="form-group">
-                                    <label>Username</label>
-                                    <input type="username" className="form-control" placeholder="Enter username" value={this.state.username} onChange={(e) => this.handleUserChanges(e)} />
-                                </div>
-
-                                <div className="form-group">
-                                    <label>Password</label>
-                                    <input type="password" className="form-control" placeholder="Enter password" value={this.state.password} onChange={(e) => this.handlePasswordChanges(e)} />
-                                </div>
-
-                                <div className="form-group">
-                                    <label>Private Key</label>
-                                    <input type="text" className="form-control" placeholder="Enter private key" value={this.state.pvKey} onChange={(e) => this.handlePrivateKeyChange(e)} />
-                                    <p className="forgot-password">Private key is only for encryption purposes and is never sent over network.</p>
-                                </div>
-
-
-                                <button type="submit" className="btn btn-primary btn-block" onClick={(e) => this.loginUser(e)}>
-                                    Submit
-                                </button>
-
-                            </div>
-
-                            : ""}
-                        {this.renderUserRedirect()}
-                        {this.renderSupplierRedirect()}
-                        {this.state.showProvider ?
-
-                            <div id="provider-login">
-                                <h3>Provider</h3>
-                                <div className="form-group">
-                                    <label>Username</label>
-                                    <input type="username" className="form-control" placeholder="Enter username" value={this.state.username} onChange={(e) => this.handleUserChanges(e)} />
-                                </div>
-
-                                <div className="form-group">
-                                    <label>Password</label>
-                                    <input type="password" className="form-control" placeholder="Enter password" value={this.state.password} onChange={(e) => this.handlePasswordChanges(e)} />
-                                </div>
-
-                                <div className="form-group">
-                                    <label>Private Key</label>
-                                    <input type="text" className="form-control" placeholder="Enter private key" value={this.state.pvKey} onChange={(e) => this.handlePrivateKeyChange(e)} />
-                                    <p className="forgot-password">Private key is only for encryption purposes and is never sent over network.</p>
-                                </div>
-
-                                <button type="submit" className="btn btn-primary btn-block" onClick={(e) => this.loginProvider(e)}>
-                                    Submit
-                                </button>
-
-                            </div>
-                            : ""}
-
-                    </form>
-                </div>
-            </div>
-        </>
-
-    );
-}
+        );
+    }
 }

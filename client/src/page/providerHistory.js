@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect }  from "react";
 import getWeb3 from "../getWeb3";
 import HealthRecord from "../contracts/HealthRecord.json";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 
 const HistoryRow = (props) => {
     return (
         <div className="column_container">
             <div className="form-group border-bottom">
-                <label>Ethereum Address: {props.userAddress} </label>
+                <label>Ethereum Address: {props.userAddress} </label><br></br>
                 <label>Date: {props.date} </label> <br></br>
             </div>
         </div>
@@ -15,6 +16,8 @@ const HistoryRow = (props) => {
 }
 
 const ProviderHistory = (props) => {
+    const providerLogged = localStorage.getItem("providerLogged");
+    var backToLoginPage = false;
     const [pageLimit, setPageLimit] = useState(5);
     const [setupStatus, setSetupStatus] = useState(false);
     const [resultRow, setResultRow] = useState("");
@@ -23,6 +26,15 @@ const ProviderHistory = (props) => {
     const [web3, setWeb3] = useState(null);
     const [contract, setContract] = useState(null);
     const [account, setAccount] = useState(localStorage.getItem("eth_address"));
+
+
+    const logOut = () => {
+        localStorage.clear();
+    }
+
+    const onUnauthorised = () => {
+        backToLoginPage = true;
+    }
 
     const setup = async () => {
         const web3_ = await getWeb3();
@@ -40,40 +52,16 @@ const ProviderHistory = (props) => {
         })
 
 
-        // try{
-        //     length = await web3_.methods.getProviderHistoryListLength(account).call({from: account});
-        // }catch(error){
-        //     console.log("Provider history does not exist.");
-        // }finally{
-        //     setContract(contract_);
-        //     setSetupStatus(true);
-        //     setHistoryLength(length);
-        // }
-
 
     }
 
-    const setupHistory = async (start) => {
+    const setupHistory = (start) => {
         let temp_list = [];
-        //let temp = {"0": "0x6e70cdAf8049D1FDfAC7f31DD1eeC3517d50E75c", "1": "01-02-21"};
-        let temp = "";
-        let continueFlag = true;
+        console.log(start);
         for (let i = start - 1 ; i >= start - pageLimit; i--){
             if (i < 0){
-                continueFlag = false;
                 break;
             }
-
-            // try {
-            //     temp = await contract.methods.getProviderHistoryList(i, account).call({ from: account });
-            // } catch (error) {
-            //     console.log("Provider history does not exist.");
-            // } finally {
-            //     if (temp !== "") {
-            //         temp_list.push(<HistoryRow key={i} userAddress={temp["0"]} date={temp["1"]}></HistoryRow>)
-            //     }
-
-            // }
 
             contract.methods.getProviderHistoryList(i, account).call({ from: account }, (err, result) =>{
 
@@ -82,24 +70,17 @@ const ProviderHistory = (props) => {
                 }
             })
 
-            //let temp = {"0": "0x6e70cdAf8049D1FDfAC7f31DD1eeC3517d50E75c", "1": "01-02-21"};
-            // 0 = patient address, 1 = date
-
-            // contract.methods.getProviderHistoryList(i, account ).call({from: account}, function(error, result){
-            //     if(temp !== ""){
-            //         temp_list.push(<HistoryRow key={i} userAddress={temp["0"]} date={temp["1"]}></HistoryRow>)
-            //     }
-            //     //setResultRow(temp_list);
-
-
-            // })
 
 
 
         }
-        if(continueFlag){
+
+        setTimeout(()=>{
+
             setResultRow(temp_list)
-        }
+        }, 1500)
+        
+
         
         
     }
@@ -140,6 +121,8 @@ const ProviderHistory = (props) => {
     return (
 
         <>
+        {providerLogged?
+        <>
             <nav className="navbar navbar-expand-lg navbar-light fixed-top">
                 <div className="container">
 
@@ -149,7 +132,7 @@ const ProviderHistory = (props) => {
 
                             <li className="nav-item">
 
-                                <Link className="nav-link" to={"/sign-in"}>Log Out</Link>
+                                <Link className="nav-link" to={"/sign-in"} onClick={() => logOut()}>Log Out</Link>
                             </li>
 
                         </ul>
@@ -170,11 +153,15 @@ const ProviderHistory = (props) => {
 
 
                     </form>
-
-                    <button onClick={clickPrev}>Previous</button>
-                    <button onClick={clickNext}>Next</button>
+                    <div className="bottom_buttons">
+                    <button className="btn btn-primary btn-block" onClick={clickPrev} style={{ width: "20%", marginTop: "8px" }}>Previous</button>
+                    <button className="btn btn-primary btn-block" onClick={clickNext} style={{ width: "20%"}}>Next</button>
+                    </div>
                 </div>
             </div>
+            </> :onUnauthorised()}
+            {backToLoginPage ? <Redirect to={"/sign-in"} />: ""}
+
         </>
     )
 }

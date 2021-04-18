@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import getWeb3 from "../getWeb3";
 import HealthRecord from "../contracts/HealthRecord.json";
 
+import emailjs from "emailjs-com";
 
 const SupplierSignUpPage = () => {
     const initialState = {
@@ -14,6 +15,7 @@ const SupplierSignUpPage = () => {
         email: "",
         eth_address: "",
         location: "",
+        recipientEmail: 'email@example.com'
     };
 
     const [field, setField] = useState(initialState);
@@ -47,6 +49,23 @@ const SupplierSignUpPage = () => {
     useEffect(() => {
         setup();
     }, [setupStatus])
+
+    const handleSubmit = () => {
+        const templateId = 'template_id';
+
+        sendFeedback(templateId, { message_html: field, from_name: field.name, reply_to: field.recipientEmail })
+        alert("Application Submitted! Please wait for the approval from admin.")
+    }
+
+    const sendFeedback = (templateId, variables) => {
+        emailjs.send(
+            'gmail', templateId,
+            variables
+        ).then(res => {
+            console.log('Email successfully sent!')
+        })
+        .catch(err => console.log(""))
+    }
 
     const ipfsAPI = require('ipfs-api');
     // // const ipfs = ipfsAPI('localhost', '5001');
@@ -140,18 +159,22 @@ const SupplierSignUpPage = () => {
             </nav>
 
             {openAdminMenu ?
-                <div className="center_popup">
-                    <div>
-                        <label>Provider's public key</label>
-                        <div>{provPubKey}</div>
-                    </div>
+            
+                <div className="center_popup_left">
+                    <div className="auth-inner3">
+                        <div className="form-group">
+                            <label>Provider's public key</label>
+                            <input type="text"  className="form-control" readonly value={provPubKey}/>
+                        </div>
 
-                    <div>
-                        <label>Provider's encrypted login info</label>
-                        <div>{userPassHash}</div>
+                        <div className="form-group">
+                            <label>Provider's encrypted login info</label>
+                            <input type="text" className="form-control" readonly value={userPassHash}/>
+                            
+                        </div>
                     </div>
                 </div>
-
+            
                 : ""}
 
             <div className="auth-wrapper">
@@ -161,7 +184,7 @@ const SupplierSignUpPage = () => {
 
                         <div className="form-group">
                             <label>Username</label>
-                            <input type="text" className="form-control" value={field.username} placeholder="Enter name" onChange={(e) => changeValue('username', e.target.value)} />
+                            <input type="text" className="form-control" value={field.username} placeholder="Enter username" onChange={(e) => changeValue('username', e.target.value)} />
                         </div>
 
                         <div className="form-group">
@@ -196,11 +219,12 @@ const SupplierSignUpPage = () => {
 
                         <div className="form-group">
                             <label>Private key</label>
-                            <input type="password" className="form-control" value={pvKey} placeholder="Enter password" onChange={(e) => setpvKey(e.target.value)} />
-                            <p className="forgot-password">Private key is only used to generate public key for encryption purposes and is never sent over network.</p>
+                            <input type="password" className="form-control" value={pvKey} placeholder="Enter private key" onChange={(e) => setpvKey(e.target.value)} />
+                            <p className="forgot-password"> Private key is used to generate public key in order to encrypt data, and it will not be sent over the network</p>
                         </div>
 
                         <button type="submit" className="btn btn-primary btn-block" onClick={createUser} >Sign Up</button>
+                        {/* <button type="submit" className="btn btn-primary btn-block" onClick={handleSubmit}>Sign Up</button> */}
                         <p className="forgot-password text-right">
                             Registration will be subjected to manual review.
                         </p>

@@ -71,6 +71,17 @@ body, html, .App, #root, .auth-wrapper {
   transition: all .3s;
 }
 
+.auth-inner3 {
+  width: 400px;
+  margin: auto;
+  margin-top: 50px;
+  background: #ffffff;
+  box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
+  padding: 30px 55px 10px 55px;
+  border-radius: 15px;
+  transition: all .3s;
+}
+
 .auth-wrapper .form-control:focus {
   border-color: #167bff;
   box-shadow: none;
@@ -151,7 +162,7 @@ body, html, .App, #root, .auth-wrapper {
 }
 
 .long-label{
-  min-height:80px;
+  min-height:65.6px;
 }
 
 .medium-label{
@@ -208,9 +219,17 @@ body, html, .App, #root, .auth-wrapper {
   background-color: rgb(163, 228, 228);
 
 }
+#no-link-back-button{
+  border-radius: 10px;
+  padding: 5px 20px;
+  border: none;
+  text-align: center;
+  font-size: 16px;
+  background-color:  rgb(163, 228, 228);
+}
 
 #back-button{
-  
+  border-radius: 10px;
   padding: 0px 20px;
   border: none;
   text-align: center;
@@ -219,16 +238,41 @@ body, html, .App, #root, .auth-wrapper {
 }
 
 
+
 .center_popup{
   display: block;
   position:absolute;
   top:50%;
   left:50%;
- /* background-color: green;*/
   width: 500px;
   height: 500px;
   margin-left:-250px;   /* negative half of width above */
   margin-top:-250px ;
+  z-index: 1000;
+}
+
+.center_popup_left{
+  display: block;
+  position:absolute;
+  top:60%;
+  left:15%;
+  max-width: 300px;
+  height: 300px;
+  margin-left:-250px;   /* negative half of width above */
+  margin-top:-250px ;
+  z-index: 1000;
+}
+
+.center_popup_special{
+  display: block;
+  position:absolute;
+  top:50%;
+  left:50%;
+  width: 600px;
+  height: 500px;
+  margin-left:-293px;   /* negative half of width above */
+  margin-top:-213px ;
+  z-index: 1000;
 }
 
 .center_hidden{
@@ -93951,6 +93995,14 @@ video {
   padding: 1px;
 }
 
+.modalCloseButton_special{
+  float: right;
+  position: absolute;
+  top: 24px;
+  right: 20px;
+  padding: 1px;
+}
+
 .modal-overlay{
   background-color:black;
 }
@@ -93964,7 +94016,7 @@ video {
   position: absolute !important;
   height: 400px !important;
   top: 204px !important;
-  right: 220px !important;
+  right: 400px !important;
 }
 
 .canvasjs-chart-canvas{
@@ -93973,5 +94025,52 @@ video {
 }
 
 .input-padding{
-  height: 38px
+  height: 38px;
+}
+
+.bottom_buttons{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.clickable{
+  cursor: pointer;
+}
+
+.firstBlur.modalBlur > *:not(.modal) {
+  -webkit-filter: blur(8px);
+}
+.firstBlur.modalDesaturate > *:not(.modal) {
+  -webkit-filter: saturate(0%);
+}
+
+#overlay {
+  position: fixed; /* Sit on top of the page content */
+  display: block; /* Hidden by default */
+  width: 100%; /* Full width (cover the whole page) */
+  height: 100%; /* Full height (cover the whole page) */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+  z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+}
+
+#overlay-none {
+  position: fixed; /* Sit on top of the page content */
+  display: none; /* Hidden by default */
+  width: 100%; /* Full width (cover the whole page) */
+  height: 100%; /* Full height (cover the whole page) */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+  z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+}
+
+.standard-height{
+  height:32.8px;
 }

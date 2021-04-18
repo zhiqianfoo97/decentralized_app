@@ -48,7 +48,7 @@ const AdminAddProvider = () => {
 
     const toHospital = (e) => {
         e.preventDefault();
-        contract.methods.registerHospital(field.eth_address, field.location, field.name, field.public_key, field.encrypted).send({ from: {adminAddress} , gas: 3000000 }, function (error, result) {
+        contract.methods.registerHospital(field.eth_address, field.location, field.name, field.public_key, field.encrypted).send({ from: adminAddress , gas: 3000000 }, function (error, result) {
             if (error) {
                 
                 window.alert("Error.");
@@ -58,7 +58,7 @@ const AdminAddProvider = () => {
     }
     const toKiosk = (e) => {
         e.preventDefault();
-        contract.methods.registerKiosk(field.eth_address, field.location, field.name, field.public_key,  field.encrypted).send({ from: {adminAddress} , gas: 3000000 }, function (error, result) {
+        contract.methods.registerKiosk(field.eth_address, field.location, field.name, field.public_key,  field.encrypted).send({ from: adminAddress , gas: 3000000 }, function (error, result) {
             if (error) {
                 alert("Error.");
             }
@@ -87,6 +87,11 @@ const AdminAddProvider = () => {
         setShowUser(false);
         setShowProvider(false);
 
+    }
+
+    const dummyAdd = (e) =>{
+        e.preventDefault();
+        console.log(adminAddress);
     }
 
     useEffect(() => {

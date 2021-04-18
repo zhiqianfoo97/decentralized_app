@@ -221,7 +221,7 @@ contract HealthRecord{
     //add transaction 
     function addPendingHealthRecord(string memory testResult_, string memory date_, string memory placeName_ ,string memory place_ , address endUser, uint256 amount_) public{
         require(provider[msg.sender].isActive == true );
-        UserResult memory resultData = UserResult(testResult_,placeName_, date_, place_);
+        UserResult memory resultData = UserResult(testResult_, date_, placeName_, place_);
         PendingTransaction memory pendingResult_ = PendingTransaction(resultData, false, amount_, msg.sender);
         users[endUser].pendingResult.push(pendingResult_);
         provider[msg.sender].historyList.push(History(endUser, date_));
