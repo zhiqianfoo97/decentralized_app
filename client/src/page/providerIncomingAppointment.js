@@ -140,7 +140,7 @@ const AppointmentRow = (props) => {
 
 
 const ProviderIncomingAppointment = () => {
-    const logged = localStorage.getItem("logged");
+    const providerLogged = localStorage.getItem("providerLogged");
     var backToLoginPage = false;
     const [web3, setWeb3] = useState(null);
     const [contract, setContract] = useState(null);
@@ -371,7 +371,7 @@ const ProviderIncomingAppointment = () => {
 
     return (
         <>
-            {logged ?
+            {providerLogged ?
                 <>
                     <nav className="navbar navbar-expand-lg navbar-light fixed-top">
                         <div className="container">

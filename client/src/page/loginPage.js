@@ -13,8 +13,14 @@ export default class LoginPage extends React.Component {
         username: '',
         password: '',
         private_key: '',
+        authenticationMessage: '',
     }
 
+    setAuthenticationMessage = () => {
+        this.setState({
+            authenticationMessage: "Incorrect username or password!"
+        })
+    }
 
     setUserRedirect = () => {
         this.setState({
@@ -102,22 +108,23 @@ export default class LoginPage extends React.Component {
             if (ipfsHash != 'not-available') {
                 var url = 'https://ipfs.io/ipfs/' + ipfsHash;
                 console.log('getting user info from', url);
-                that.setUserRedirect()
-            }
-        
+
+
+
 
                 const authentication = fetch(url).then(response => response.json());
                 var myPromise = that.MakeQuerablePromise(authentication);
 
-        //         // console.log("Initial fulfilled:", myPromise.isFulfilled());//false
-        //         // console.log("Initial rejected:", myPromise.isRejected());//false
-        //         // console.log("Initial pending:", myPromise.isPending());//true
+                //         // console.log("Initial fulfilled:", myPromise.isFulfilled());//false
+                //         // console.log("Initial rejected:", myPromise.isRejected());//false
+                //         // console.log("Initial pending:", myPromise.isPending());//true
 
                 setTimeout(() => {
-                    if (myPromise.isPending()){
+                    if (myPromise.isPending()) {
                         console.log("wrong authentication info")
+                        that.setAuthenticationMessage()
 
-                    }else{
+                    } else {
                         console.log("success")
                         localStorage.setItem("logged", true);
                         that.setUserRedirect();
@@ -127,33 +134,35 @@ export default class LoginPage extends React.Component {
 
                 }, 2000);
 
-        //         // myPromise.then(function(data){
-        //         //     console.log(data); // "Yeah !"
-        //         //     console.log("Final fulfilled:", myPromise.isFulfilled());//true
-        //         //     console.log("Final rejected:", myPromise.isRejected());//false
-        //         //     console.log("Final pending:", myPromise.isPending());//false
-        //         // });
+            }
+
+            //         // myPromise.then(function(data){
+            //         //     console.log(data); // "Yeah !"
+            //         //     console.log("Final fulfilled:", myPromise.isFulfilled());//true
+            //         //     console.log("Final rejected:", myPromise.isRejected());//false
+            //         //     console.log("Final pending:", myPromise.isPending());//false
+            //         // });
 
 
 
-        //         // fetch(url)
-        //         // .then(response => response.json())
-        //         // .then((jsonData) => {
-        //         //     // jsonData is parsed json object received from url
-        //         //     if (jsonData["username"] == userJson.username && jsonData["password"] == userJson.password){
-        //         //         console.log("authenticated");
-        //         //         that.setRedirect();
-        //         //     }
-        //         //     else{
-        //         //         console.log("none");
-        //         //     }
+            //         // fetch(url)
+            //         // .then(response => response.json())
+            //         // .then((jsonData) => {
+            //         //     // jsonData is parsed json object received from url
+            //         //     if (jsonData["username"] == userJson.username && jsonData["password"] == userJson.password){
+            //         //         console.log("authenticated");
+            //         //         that.setRedirect();
+            //         //     }
+            //         //     else{
+            //         //         console.log("none");
+            //         //     }
 
-        //         // })
-        //         // .catch((error) => {
-        //         //     // handle your errors here
-        //         //     console.error(error)
-        //         // })
-            })
+            //         // })
+            //         // .catch((error) => {
+            //         //     // handle your errors here
+            //         //     console.error(error)
+            //         // })
+        })
 
 
 
@@ -194,56 +203,57 @@ export default class LoginPage extends React.Component {
                 console.log('getting user info from', url);
 
             }
-        
-
-                const authentication = fetch(url).then(response => response.json());
-                var myPromise = that.MakeQuerablePromise(authentication);
-
-        //         // console.log("Initial fulfilled:", myPromise.isFulfilled());//false
-        //         // console.log("Initial rejected:", myPromise.isRejected());//false
-        //         // console.log("Initial pending:", myPromise.isPending());//true
-
-                setTimeout(() => {
-                    if (myPromise.isPending()){
-                        console.log("wrong authentication info")
-                    }else{
-
-                        console.log("success")
-                        that.setSupplierRedirect();
 
 
-                    }
+            const authentication = fetch(url).then(response => response.json());
+            var myPromise = that.MakeQuerablePromise(authentication);
 
-                }, 2000);
+            //         // console.log("Initial fulfilled:", myPromise.isFulfilled());//false
+            //         // console.log("Initial rejected:", myPromise.isRejected());//false
+            //         // console.log("Initial pending:", myPromise.isPending());//true
 
-        //         // myPromise.then(function(data){
-        //         //     console.log(data); // "Yeah !"
-        //         //     console.log("Final fulfilled:", myPromise.isFulfilled());//true
-        //         //     console.log("Final rejected:", myPromise.isRejected());//false
-        //         //     console.log("Final pending:", myPromise.isPending());//false
-        //         // });
+            setTimeout(() => {
+                if (myPromise.isPending()) {
+                    console.log("wrong authentication info")
+                    that.setAuthenticationMessage()
+                } else {
+
+                    console.log("success")
+                    that.setSupplierRedirect();
+
+
+                }
+
+            }, 2000);
+
+            //         // myPromise.then(function(data){
+            //         //     console.log(data); // "Yeah !"
+            //         //     console.log("Final fulfilled:", myPromise.isFulfilled());//true
+            //         //     console.log("Final rejected:", myPromise.isRejected());//false
+            //         //     console.log("Final pending:", myPromise.isPending());//false
+            //         // });
 
 
 
-        //         // fetch(url)
-        //         // .then(response => response.json())
-        //         // .then((jsonData) => {
-        //         //     // jsonData is parsed json object received from url
-        //         //     if (jsonData["username"] == userJson.username && jsonData["password"] == userJson.password){
-        //         //         console.log("authenticated");
-        //         //         that.setRedirect();
-        //         //     }
-        //         //     else{
-        //         //         console.log("none");
-        //         //     }
+            //         // fetch(url)
+            //         // .then(response => response.json())
+            //         // .then((jsonData) => {
+            //         //     // jsonData is parsed json object received from url
+            //         //     if (jsonData["username"] == userJson.username && jsonData["password"] == userJson.password){
+            //         //         console.log("authenticated");
+            //         //         that.setRedirect();
+            //         //     }
+            //         //     else{
+            //         //         console.log("none");
+            //         //     }
 
-        //         // })
-        //         // .catch((error) => {
-        //         //     // handle your errors here
-        //         //     console.error(error)
-        //         // })
-            })
-        }
+            //         // })
+            //         // .catch((error) => {
+            //         //     // handle your errors here
+            //         //     console.error(error)
+            //         // })
+        })
+    }
 
 
     openUser = (e) => {
@@ -267,9 +277,15 @@ export default class LoginPage extends React.Component {
     closeAll = (e) => {
         e.preventDefault();
         this.setState({
+            userRedirect: false,
+            supplierRedirect: false,
             showUser: false,
             showProvider: false,
-            showAll: true
+            showAll: true,
+            username: '',
+            password: '',
+            private_key: '',
+            authenticationMessage: '',
         })
     }
 
@@ -407,9 +423,14 @@ export default class LoginPage extends React.Component {
                                         <input type="text" className="form-control" placeholder="Enter private key" value={this.state.private_key} onChange={(e) => this.handlePrivateKeyChange(e)} />
                                     </div>
 
+                                    <div style={{ marginBottom: "20px" }}>
+                                        <small style={{ color: "red" }}>
+                                            {this.state.authenticationMessage}
+                                        </small>
+                                    </div>
 
                                     <button type="submit" className="btn btn-primary btn-block" onClick={(e) => this.loginUser(e)}>
-                                        <Link className="nav-link" to={"/user-landing-page"}>Submit</Link>
+                                        Submit
                                     </button>
 
                                 </div>
@@ -431,15 +452,15 @@ export default class LoginPage extends React.Component {
                                         <input type="password" className="form-control" placeholder="Enter password" value={this.state.password} onChange={(e) => this.handlePasswordChanges(e)} />
                                     </div>
 
-                                    <div className="form-group">
-                                        <div className="custom-control custom-checkbox">
-                                            <input type="checkbox" className="custom-control-input" id="customCheck1" />
-                                            <label className="custom-control-label" htmlFor="customCheck1">Remember me</label>
-                                        </div>
+
+                                    <div style={{ marginBottom: "20px" }}>
+                                        <small style={{ color: "red" }}>
+                                            {this.state.authenticationMessage}
+                                        </small>
                                     </div>
 
                                     <button type="submit" className="btn btn-primary btn-block" onClick={(e) => this.loginProvider(e)}>
-                                        <Link className="nav-link" to={"/provider-landing-page"}>Submit</Link>
+                                        Submit
                                     </button>
 
                                 </div>

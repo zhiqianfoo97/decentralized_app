@@ -16,7 +16,7 @@ const HistoryRow = (props) => {
 }
 
 const ProviderHistory = (props) => {
-    const logged = localStorage.getItem("logged");
+    const providerLogged = localStorage.getItem("providerLogged");
     var backToLoginPage = false;
     const [pageLimit, setPageLimit] = useState(5);
     const [setupStatus, setSetupStatus] = useState(false);
@@ -144,7 +144,7 @@ const ProviderHistory = (props) => {
     return (
 
         <>
-        {logged?
+        {providerLogged?
         <>
             <nav className="navbar navbar-expand-lg navbar-light fixed-top">
                 <div className="container">

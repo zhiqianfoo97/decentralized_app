@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { Redirect } from "react-router-dom";
 
 const ProviderInputResultPage = (props) => {
-    const logged = localStorage.getItem("logged");
+    const providerLogged = localStorage.getItem("providerLogged");
     var backToLoginPage = false;
     const [pressed, setPressed] = useState(false);
     const [name, setName] = useState("");
@@ -86,7 +86,7 @@ const ProviderInputResultPage = (props) => {
     return (
 
         <>
-        {logged?
+        {providerLogged?
         <>
             <nav className="navbar navbar-expand-lg navbar-light fixed-top">
                 <div className="container">

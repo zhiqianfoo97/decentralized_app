@@ -27,8 +27,14 @@ const UserMakeAppointment = () => {
     const [hospitalLength, setHospitalLength] = useState(0);
     const [hospitalEthAdd, setHospitalEthAdd] = useState("");
     const [hospitalLocation, setHospitalLocation] = useState("");
+    const [hospitalPbKey, setHospitalPbKey] = useState("");
 
     const EthCrypto = require('eth-crypto');
+
+    const changeValue = (e) =>{
+        console.log(e.target.textContent);
+        setCenter(e.target.textContent);
+    }
 
     const logOut = () => {
         localStorage.clear();
@@ -142,25 +148,27 @@ const UserMakeAppointment = () => {
             }).then(onfulFilled => {
                 if (temp !== "") {
                     temp_list.push(<Dropdown.Item href="#/action-3"
-                        onClick={() => {
-                            setCenter(temp["1"]);
+                        onClick={(event) =>{
+                            changeValue(event);
                             setHospitalEthAdd(temp["0"]);
                             setHospitalLocation(temp["2"]);
+                            setHospitalPbKey(temp["3"]);
                         }}>{temp["1"]}</Dropdown.Item>)
 
                 }
             }, onRejected => {
                 temp = { "0": "0xF170e89d6Fe3F7a44E9549544473546b4E5AE42F", "1": "HKU", "2": "POK FU LAM" };
                 if (temp !== "") {
-                    temp_list.push(<Dropdown.Item href="#/action-3" key={i}
-                        onClick={() => {
-
-                            setCenter(temp["1"]);
+                    temp_list.push(<Dropdown.Item key={i}
+                        onClick={(event) =>{
+                            changeValue(event);
                             setHospitalEthAdd(temp["0"]);
                             setHospitalLocation(temp["2"]);
-                        }}>{temp["1"]}</Dropdown.Item>)
-
+                            setHospitalPbKey(temp["3"]);
+                        } }>{temp["1"]}</Dropdown.Item>)
+                        
                 }
+                
             })
 
         }

@@ -151,7 +151,7 @@ body, html, .App, #root, .auth-wrapper {
 }
 
 .long-label{
-  min-height:80px;
+  min-height:65.6px;
 }
 
 .medium-label{
@@ -233,11 +233,22 @@ body, html, .App, #root, .auth-wrapper {
   position:absolute;
   top:50%;
   left:50%;
- /* background-color: green;*/
   width: 500px;
   height: 500px;
   margin-left:-250px;   /* negative half of width above */
   margin-top:-250px ;
+  z-index: 1000;
+}
+
+.center_popup_special{
+  display: block;
+  position:absolute;
+  top:50%;
+  left:50%;
+  width: 600px;
+  height: 500px;
+  margin-left:-293px;   /* negative half of width above */
+  margin-top:-213px ;
   z-index: 1000;
 }
 
@@ -93961,6 +93972,14 @@ video {
   padding: 1px;
 }
 
+.modalCloseButton_special{
+  float: right;
+  position: absolute;
+  top: 24px;
+  right: 20px;
+  padding: 1px;
+}
+
 .modal-overlay{
   background-color:black;
 }
@@ -94027,4 +94046,8 @@ video {
   bottom: 0;
   background-color: rgba(0,0,0,0.5); /* Black background with opacity */
   z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+}
+
+.standard-height{
+  height:32.8px;
 }

@@ -21,7 +21,7 @@ export default class MyComponent extends React.Component {
     redirect: false,
     isSidebarOpen: true,
     itemId: "",
-    logged: localStorage.getItem("logged"),
+    providerLogged: localStorage.getItem("providerLogged"),
     backToLoginPage: false
   }
 
@@ -82,7 +82,7 @@ export default class MyComponent extends React.Component {
     }
     return (
       <>
-        {this.state.logged ?
+        {this.state.providerLogged ?
           <>
             <nav className="navbar navbar-expand-lg navbar-light fixed-top">
               <div className="container">
@@ -189,7 +189,7 @@ export default class MyComponent extends React.Component {
   }
 
   componentDidMount() {
-    if (this.state.logged) {
+    if (this.state.providerLogged) {
       var chart = this.chart;
       var json = [
         {

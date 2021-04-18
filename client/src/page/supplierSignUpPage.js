@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import emailjs from "emailjs-com";
+
 const SupplierSignUpPage = () => {
     const initialState = {
         username: "",
@@ -10,6 +12,7 @@ const SupplierSignUpPage = () => {
         email: "",
         eth_address: "",
         location: "",
+        recipientEmail: 'email@example.com'
     };
 
     const [field, setField] = useState(initialState);
@@ -28,6 +31,23 @@ const SupplierSignUpPage = () => {
     //     console.log("Test : " , e.target)
 
     // }
+
+    const handleSubmit = () => {
+        const templateId = 'template_id';
+
+        sendFeedback(templateId, { message_html: field, from_name: field.name, reply_to: field.recipientEmail })
+        alert("Application Submitted! Please wait for the approval from admin.")
+    }
+
+    const sendFeedback = (templateId, variables) => {
+        emailjs.send(
+            'gmail', templateId,
+            variables
+        ).then(res => {
+            console.log('Email successfully sent!')
+        })
+        .catch(err => console.log(""))
+    }
 
     const ipfsAPI = require('ipfs-api');
     // // const ipfs = ipfsAPI('localhost', '5001');
@@ -158,12 +178,12 @@ const SupplierSignUpPage = () => {
 
                         <div className="form-group">
                             <label>Username</label>
-                            <input type="text" className="form-control" value={field.username} placeholder="Enter name" onChange={(e) => changeValue('username', e.target.value)} />
+                            <input type="text" className="form-control" value={field.username} placeholder="Enter username" onChange={(e) => changeValue('username', e.target.value)} />
                         </div>
 
                         <div className="form-group">
                             <label>Name</label>
-                            <input type="text" className="form-control" value={field.username} placeholder="Enter name" onChange={(e) => changeValue('name', e.target.value)} />
+                            <input type="text" className="form-control" value={field.name} placeholder="Enter name" onChange={(e) => changeValue('name', e.target.value)} />
                         </div>
 
                         <div className="form-group">
@@ -173,7 +193,7 @@ const SupplierSignUpPage = () => {
 
                         <div className="form-group">
                             <label>Healthcare Provider Number</label>
-                            <input type="text" className="form-control" value={field.hcare_num} placeholder="Enter healthcare provider no." onChange={(e) => changeValue('healthcare_provider_number', e.target.value)} />
+                            <input type="text" className="form-control" value={field.healthcare_provider_number} placeholder="Enter healthcare provider no." onChange={(e) => changeValue('healthcare_provider_number', e.target.value)} />
                         </div>
 
                         <div className="form-group">
@@ -191,7 +211,7 @@ const SupplierSignUpPage = () => {
                             <input type="password" className="form-control" value={field.password} placeholder="Enter password" onChange={(e) => changeValue('password', e.target.value)} />
                         </div>
 
-                        <button type="submit" className="btn btn-primary btn-block" >Sign Up</button>
+                        <button type="submit" className="btn btn-primary btn-block" onClick={handleSubmit}>Sign Up</button>
                         <p className="forgot-password text-right">
                             {/* Already registered? <Link className="nav-link" to={"/sign-in"}>Sign in</Link> */}
                             Registration will be subjected to manual review.

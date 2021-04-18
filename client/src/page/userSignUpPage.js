@@ -57,7 +57,38 @@ const UserSignUpPage = () => {
 
     //     let rootDirectoryContents = await all(ipfs.files.ls('/'))
     //     return rootDirectoryContents
+
     // }
+
+
+    function MakeQuerablePromise(promise) {
+        // Don't modify any promise that has been already modified.
+        if (promise.isResolved) return promise;
+
+        // Set initial state
+        var isPending = true;
+        var isRejected = false;
+        var isFulfilled = false;
+
+        // Observe the promise, saving the fulfillment in a closure scope.
+        var result = promise.then(
+            function (v) {
+                isFulfilled = true;
+                isPending = false;
+                return v;
+            },
+            function (e) {
+                isRejected = true;
+                isPending = false;
+                throw e;
+            }
+        );
+
+        result.isFulfilled = function () { return isFulfilled; };
+        result.isPending = function () { return isPending; };
+        result.isRejected = function () { return isRejected; };
+        return result;
+    }
 
     function createUser(e) {
         e.preventDefault();
@@ -84,33 +115,6 @@ const UserSignUpPage = () => {
 
 
         console.log("sending info");
-        // const options = {
-        //     mode: 'no-cors',
-        //     method: 'POST',
-        //     headers: {'Content-Type': 'application/json'},
-        //     body: JSON.stringify(userJson)
-        // }
-
-
-
-        // const response = await fetch('http://localhost:3001/api', options);
-        // const data = await response.text();
-
-        // fetch('http://localhost:3001/api',{
-        //     method: 'POST',
-        //     headers: {
-        //         'Accept': 'application/json',
-        //         'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify(userJson)
-        // }).then(response => {
-        //         console.log(response)
-        //     })
-        // .catch(error =>{
-        //         console.log(error)
-        // })
-
-        // console.log(JSON.stringify(userJson));
 
 
         // node
@@ -132,83 +136,95 @@ const UserSignUpPage = () => {
                 publicKey: 'bf1cc3154424dc22191941d9f4f50b063a2b663a2337e5548abea633c1d06ece...'
             } */
             var json = {}
-            var encrypted = await EthCrypto.encryptWithPublicKey(
-                identity.publicKey, // publicKey
-                ipfsHash // message
-            ).then((value) => {
-                json = value
-                console.log(json);
-            })
-
-            const to_string = EthCrypto.cipher.stringify(json);
-            const back_to_json = EthCrypto.cipher.parse(to_string);
-
-            var message = await EthCrypto.decryptWithPrivateKey(
-                identity.privateKey, // privateKey
-                back_to_json
-                
-            ).then((message) =>{
-                console.log(message);
-            })
-           
 
 
-        });
+            const encrypted = new Promise(async (resolve, reject) => {
+                await EthCrypto.encryptWithPublicKey(
+                    identity.publicKey, // publicKey
+                    ipfsHash // message
+                ).then((value) => {
+                    resolve(value)
+                })
+            }).then((value) => console.log(value))
+            var myPromise = MakeQuerablePromise(encrypted);
+            console.log(encrypted);
 
 
-        ipfs.add([Buffer.from(JSON.stringify(userJsonInfo))], async function (err, res) {
-            if (err) throw err
-            ipfsHash = res[0].hash
-            console.log(ipfsHash);
-            if (ipfsHash != 'not-available') {
-                var url = 'https://ipfs.io/ipfs/' + ipfsHash;
-                console.log('getting user info from', url);
+            // const to_string = EthCrypto.cipher.stringify(json);
+            // const back_to_json = EthCrypto.cipher.parse(to_string);
 
-            }    
-            const identity = EthCrypto.createIdentity();
-            /* > {
-                address: '0x3f243FdacE01Cfd9719f7359c94BA11361f32471',
-                privateKey: '0x107be946709e41b7895eea9f2dacf998a0a9124acbb786f0fd1a826101581a07',
-                publicKey: 'bf1cc3154424dc22191941d9f4f50b063a2b663a2337e5548abea633c1d06ece...'
-            } */
-            var json = {}
-            var encrypted = await EthCrypto.encryptWithPublicKey(
-                identity.publicKey, // publicKey
-                ipfsHash // message
-            ).then((value) => {
-                json = value
-                console.log(json);
-            })
+            // var message = await EthCrypto.decryptWithPrivateKey(
+            //     identity.privateKey, // privateKey
+            //     back_to_json
 
-            const to_string = EthCrypto.cipher.stringify(json);
-            const back_to_json = EthCrypto.cipher.parse(to_string);
+            // ).then((message) =>{
+            //     console.log(message);
+            // })
+            setTimeout(() => {
+                console.log("Initial fulfilled:", myPromise.isFulfilled());//false
+                console.log("Initial rejected:", myPromise.isRejected());//false
+                console.log("Initial pending:", myPromise.isPending());//true
 
-            var message = await EthCrypto.decryptWithPrivateKey(
-                identity.privateKey, // privateKey
-                back_to_json
-                
-            ).then((message) =>{
-                console.log(message);
-            })
-           
+            }, 2000);
+
 
 
         });
-        
-        
-        }
-    
-    const registerToEthereum = () =>{
 
-        contract.methods.registerUser(field.eth_address).call({from: field.eth_address}, function(error, result){
+
+        //     ipfs.add([Buffer.from(JSON.stringify(userJsonInfo))], async function (err, res) {
+        //         if (err) throw err
+        //         ipfsHash = res[0].hash
+        //         console.log(ipfsHash);
+        //         if (ipfsHash != 'not-available') {
+        //             var url = 'https://ipfs.io/ipfs/' + ipfsHash;
+        //             console.log('getting user info from', url);
+
+        //         }
+        //         const identity = EthCrypto.createIdentity();
+        //         /* > {
+        //             address: '0x3f243FdacE01Cfd9719f7359c94BA11361f32471',
+        //             privateKey: '0x107be946709e41b7895eea9f2dacf998a0a9124acbb786f0fd1a826101581a07',
+        //             publicKey: 'bf1cc3154424dc22191941d9f4f50b063a2b663a2337e5548abea633c1d06ece...'
+        //         } */
+        //         var json = {}
+        //         var encrypted = new Promises((resolve, reject) => {
+        //             await EthCrypto.encryptWithPublicKey(
+        //                 identity.publicKey, // publicKey
+        //                 ipfsHash // message
+        //             ).then((value) => {
+        //                 console.log(value)
+        //             })
+        //           });
+        //         // const to_string = EthCrypto.cipher.stringify(json);
+        //         // const back_to_json = EthCrypto.cipher.parse(to_string);
+
+        //         // var message = await EthCrypto.decryptWithPrivateKey(
+        //         //     identity.privateKey, // privateKey
+        //         //     back_to_json
+
+        //         // ).then((message) =>{
+        //         //     console.log(message);
+        //         // })
+
+
+
+        //     });
+    }
+
+
+
+    const registerToEthereum = () => {
+
+        contract.methods.registerUser(field.eth_address).call({ from: field.eth_address }, function (error, result) {
             console.log("hehe");
 
         })
 
 
     }
-        
-    useEffect(()=>{
+
+    useEffect(() => {
         setup()
     }, [])
 

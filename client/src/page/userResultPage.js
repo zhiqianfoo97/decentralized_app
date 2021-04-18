@@ -2,21 +2,25 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import getWeb3 from "../getWeb3";
 import HealthRecord from "../contracts/HealthRecord.json";
+import { Redirect } from "react-router-dom";
 
 const UserResult = (props) => {
 
     const [styleState, setStyleState] = useState("center_hidden");
+    const [overlay, setOverlay] = useState("overlay-none");
     const [payText, setPayText] = useState("Pay");
     const [payStatus, setPayStatus] = useState(false);
 
     const openPayment = (e) => {
         e.preventDefault();
-        setStyleState("center_popup");
+        setStyleState("center_popup_special");
+        setOverlay("overlay");
     }
 
     const closePayment = (e) => {
         e.preventDefault();
         setStyleState("center_hidden");
+        setOverlay("overlay-none");
     }
 
     const makePayment = async (count_) => (e) => {
@@ -47,6 +51,9 @@ const UserResult = (props) => {
     return (
         <div className="auth-inner">
             <form>
+                <button id="back-button">
+                    <Link className="nav-link" to={"/user-landing-page"} style={{ color: "black" }} >Back</Link>
+                </button>
                 <h3 className="title">User Result</h3>
 
                 <div className="split-container">
@@ -68,19 +75,19 @@ const UserResult = (props) => {
                         </div>
                     </div>
                     <div className="right-half-container">
-                        <div className="form-group">
+                        <div className="form-group standard-height">
                             <label>{props.provLocation}</label>
                         </div>
-                        <div className="form-group">
+                        <div className="form-group standard-height">
                             <label>{props.date}</label>
                         </div>
-                        <div className="form-group">
+                        <div className="form-group standard-height">
                             <label>{props.name}</label>
                         </div>
-                        <div className="form-group">
+                        <div className="form-group standard-height">
                             <label>{props.hkid}</label>
                         </div>
-                        <div className="form-group">
+                        <div className="form-group standard-height">
                             <label>{props.paidStat ? props.result : "****"}</label>
                         </div>
                     </div>
@@ -99,50 +106,51 @@ const UserResult = (props) => {
 
             {props.paidStat ? "" :
 
+                <div id={overlay}>
+                    <div className={styleState}>
+                        <button onClick={closePayment} className="modalCloseButton_special">X</button>
+                        <div className="auth-inner">
 
-                <div className={styleState}>
-                    <button onClick={closePayment}>X</button>
-                    <div className="auth-inner">
+                            <form>
+                                <h3 className="title">User Payment</h3>
 
-                        <form>
-                            <h3 className="title">User Payment</h3>
+                                <div className="split-container">
+                                    <div className="left-half-container">
+                                        <div className="form-group standard-height">
+                                            <label>Provider Name: </label>
+                                        </div>
+                                        <div className="form-group long-label">
+                                            <label>Provider Ethereum Address: </label>
+                                        </div>
+                                        <div className="form-group standard-height">
+                                            <label>Provider Location: </label>
+                                        </div>
+                                        <div className="form-group standard-height">
+                                            <label>Ether Payable: </label>
+                                        </div>
+                                    </div>
+                                    <div className="right-half-container">
+                                        <div className="form-group standard-height">
+                                            <label>{props.provName}</label>
+                                        </div>
+                                        <div className="form-group long-label">
+                                            <label>{props.payableTo}</label>
+                                        </div>
+                                        <div className="form-group standard-height">
+                                            <label>{props.provLocation}</label>
+                                        </div>
+                                        <div className="form-group standard-height">
+                                            <label>{props.amount}</label>
+                                        </div>
+                                    </div>
 
-                            <div className="split-container">
-                                <div className="left-half-container">
-                                    <div className="form-group">
-                                        <label>Provider Name: </label>
-                                    </div>
-                                    <div className="form-group long-label">
-                                        <label>Provider Ethereum Address: </label>
-                                    </div>
-                                    <div className="form-group">
-                                        <label>Provider Location: </label>
-                                    </div>
-                                    <div className="form-group">
-                                        <label>Ether Payable: </label>
-                                    </div>
                                 </div>
-                                <div className="right-half-container">
-                                    <div className="form-group">
-                                        <label>{props.provName}</label>
-                                    </div>
-                                    <div className="form-group long-label">
-                                        <label>{props.payableTo}</label>
-                                    </div>
-                                    <div className="form-group">
-                                        <label>{props.provLocation}</label>
-                                    </div>
-                                    <div className="form-group">
-                                        <label>{props.amount}</label>
-                                    </div>
-                                </div>
 
-                            </div>
+                                <button type="submit" className="btn btn-primary btn-block result-btn" onClick={makePayment}>{payText}</button>
 
-                            <button type="submit" className="btn btn-primary btn-block result-btn" onClick={makePayment}>{payText}</button>
+                            </form>
 
-                        </form>
-
+                        </div>
                     </div>
                 </div>
             }
@@ -153,21 +161,31 @@ const UserResult = (props) => {
 }
 
 const UserResultPage = (props) => {
-
+    const logged = localStorage.getItem("logged");
+    var backToLoginPage = false;
     const [setupStatus, setSetupStatus] = useState(false);
-    const [web3 , setWeb3] = useState(null);
+    const [web3, setWeb3] = useState(null);
     const [contract, setContract] = useState(null);
     const [account, setAccount] = useState(localStorage.getItem("eth_address"));
     const [resultArray, setResultArray] = useState("");
     const [provInfo, setProvInfo] = useState("");
 
 
+
+    const logOut = () => {
+        localStorage.clear();
+    }
+
+    const onUnauthorised = () => {
+        backToLoginPage = true;
+    }
+
     const setup = async () => {
         const web3_ = await getWeb3();
         let networkID = await web3_.eth.net.getId();
         const deployedNetwork = HealthRecord.networks[networkID];
         let contract_ = new web3_.eth.Contract(HealthRecord.abi, deployedNetwork.address);
-        let length_ = await contract_.methods.getPendingHealthRecordLength(account).call({from: account});
+        let length_ = await contract_.methods.getPendingHealthRecordLength(account).call({ from: account });
         let temp = await contract_.methods.getPendingHealthRecord(length_, account).call({ from: account });
         let provInfo_ = await contract_.methods.getProviderInfo(temp["6"]).call({ from: account });
         //let temp =   { "0": "pos", "1": "01-02-21", "2": "Queen mary", "3": "Tsim sha tsui", "4": "1", "5": false, "6": "0x6e70cdAf8049D1FDfAC7f31DD1eeC3517d50E75c" };
@@ -179,42 +197,48 @@ const UserResultPage = (props) => {
 
 
     useEffect(() => {
-
-        setup();
+        if (logged) {
+            setup();
+        }
 
 
     }, [resultArray, setupStatus]);
 
 
 
+
     return (
         <>
-            <nav className="navbar navbar-expand-lg navbar-light fixed-top">
-                <div className="container">
+            {logged ?
+                <>
+                    <nav className="navbar navbar-expand-lg navbar-light fixed-top">
+                        <div className="container">
 
-                    <Link className="navbar-brand" to={"/sign-in"}>Stay Home</Link>
-                    <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
-                        <ul className="navbar-nav ml-auto">
+                            <Link className="navbar-brand" to={"/sign-in"}>Stay Home</Link>
+                            <div className="collapse navbar-collapse" id="navbarTogglerDemo02">
+                                <ul className="navbar-nav ml-auto">
 
-                            <li className="nav-item">
+                                    <li className="nav-item">
 
-                                <Link className="nav-link" to={"/sign-in"}>Log Out</Link>
-                            </li>
+                                        <Link className="nav-link" to={"/sign-in"} onClick={() => logOut()}>Log Out</Link>
+                                    </li>
 
-                        </ul>
+                                </ul>
+
+                            </div>
+                        </div>
+                    </nav>
+
+                    <div className="auth-wrapper">
+                        <UserResult paidStat={resultArray["5"]} date={resultArray["1"]} amount={resultArray["4"]} provName={provInfo["0"]}
+                            payableTo={resultArray["6"]} provLocation={provInfo["1"]}
+                            name={localStorage.getItem("name")} hkid={localStorage.getItem("hkid")}
+                            web3={web3} account={account} contract={contract}
+                        ></UserResult>
 
                     </div>
-                </div>
-            </nav>
-
-            <div className="auth-wrapper">
-                <UserResult paidStat={resultArray["5"]} date={resultArray["1"]} amount={resultArray["4"]} provName={provInfo["0"]}
-                    payableTo={resultArray["6"]} provLocation={provInfo["1"]}
-                    name={localStorage.getItem("name")} hkid={localStorage.getItem("hkid")}
-                    web3={web3} account={account} contract={contract}
-                ></UserResult>
-                
-            </div>
+                </> : onUnauthorised()}
+            {backToLoginPage ? <Redirect to={"/sign-in"} /> : ""}
         </>
     );
 
