@@ -56,14 +56,19 @@ const ProviderInputResultPage = (props) => {
 
     const uploadResult = async (e) => {
         e.preventDefault();
-        try {
-            await contract.methods.addPendingHealthRecord(result, date, localStorage.getItem("name"), localStorage.getItem("location"), ethAdd, etherAmt);
-            alert("Success!");
-            window.location.reload();
-        } catch (error) {
-            console.log(error);
-            alert(error);
-        }
+        // try {
+            //await contract.methods.addPendingHealthRecord(result, date, localStorage.getItem("name"), localStorage.getItem("location"), ethAdd, etherAmt).send({from: localStorage.get("eth_address")});
+        contract.methods.addPendingHealthRecord(result, date, localStorage.getItem("name"), localStorage.getItem("location"), ethAdd, etherAmt).send({from: localStorage.getItem("eth_address"), gas:3000000}, (err, result) => {
+            if(err){
+                alert(err);
+
+            }else{
+                alert("Success!");
+                window.location.reload();
+            }
+
+        })
+
 
     }
 

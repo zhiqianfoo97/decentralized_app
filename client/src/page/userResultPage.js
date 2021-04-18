@@ -32,7 +32,7 @@ const UserResult = (props) => {
             }).on('confirmation', function (confirmationNumber, receipt) {
                 setPayText("Paid");
 
-                props.contract.methods.updatePendingHealthRecord(props.account, true, count_).call({ from: props.account }).then(function (result) {
+                props.contract.methods.updatePendingHealthRecord(props.account, true, count_).send({ from: props.account , gas:3000000}).then(function (result) {
                     window.location.reload();
                 });
 
@@ -155,11 +155,12 @@ const UserResult = (props) => {
 const UserResultPage = (props) => {
 
     const [setupStatus, setSetupStatus] = useState(false);
-    const [web3 , setWeb3] = useState(null);
+    const [web3, setWeb3] = useState(null);
     const [contract, setContract] = useState(null);
     const [account, setAccount] = useState(localStorage.getItem("eth_address"));
     const [resultArray, setResultArray] = useState("");
     const [provInfo, setProvInfo] = useState("");
+    const [noResult, setNoResult] = useState(true);
 
 
     const setup = async () => {
@@ -167,13 +168,32 @@ const UserResultPage = (props) => {
         let networkID = await web3_.eth.net.getId();
         const deployedNetwork = HealthRecord.networks[networkID];
         let contract_ = new web3_.eth.Contract(HealthRecord.abi, deployedNetwork.address);
-        let length_ = await contract_.methods.getPendingHealthRecordLength(account).call({from: account});
-        let temp = await contract_.methods.getPendingHealthRecord(length_, account).call({ from: account });
-        let provInfo_ = await contract_.methods.getProviderInfo(temp["6"]).call({ from: account });
+        contract_.methods.getPendingHealthRecordLength(account).call({ from: account }, (err, result) => {
+            if (result > 0) {
+                setNoResult(false);
+
+                contract_.methods.getPendingHealthRecord(result - 1, account).call({ from: account }, (err2, result2) => {
+                    let temp = result2;
+                    console.log(temp);
+                    contract_.methods.getProviderInfo(temp["6"]).call({ from: account }, (err3, result3) => {
+                        setProvInfo(result3);
+                        setResultArray(temp);
+
+                    });
+
+                })
+            } else {
+                setProvInfo("");
+                setResultArray("");
+            }
+
+        });
+
+
+        // let temp = await contract_.methods.getPendingHealthRecord(length_, account).call({ from: account });
+        // let provInfo_ = await contract_.methods.getProviderInfo(temp["6"]).call({ from: account });
         //let temp =   { "0": "pos", "1": "01-02-21", "2": "Queen mary", "3": "Tsim sha tsui", "4": "1", "5": false, "6": "0x6e70cdAf8049D1FDfAC7f31DD1eeC3517d50E75c" };
         //let provInfo_ = { "0": "Queen mary", "1": "HKU" };;
-        setProvInfo(provInfo_);
-        setResultArray(temp);
         setSetupStatus(true);
     }
 
@@ -183,7 +203,7 @@ const UserResultPage = (props) => {
         setup();
 
 
-    }, [resultArray, setupStatus]);
+    },[]);
 
 
 
@@ -208,12 +228,18 @@ const UserResultPage = (props) => {
             </nav>
 
             <div className="auth-wrapper">
-                <UserResult paidStat={resultArray["5"]} date={resultArray["1"]} amount={resultArray["4"]} provName={provInfo["0"]}
-                    payableTo={resultArray["6"]} provLocation={provInfo["1"]}
-                    name={localStorage.getItem("name")} hkid={localStorage.getItem("hkid")}
-                    web3={web3} account={account} contract={contract}
-                ></UserResult>
-                
+                {noResult ? 
+                    <div className="auth-inner" style={{textAlign:"center"}}>
+                        No result available.
+                    </div>
+                :
+                    <UserResult paidStat={resultArray["5"]} date={resultArray["1"]} amount={resultArray["4"]} provName={provInfo["0"]}
+                        payableTo={resultArray["6"]} provLocation={provInfo["1"]}
+                        name={localStorage.getItem("name")} hkid={localStorage.getItem("hkid")}
+                        web3={web3} account={account} contract={contract}
+                        result={resultArray["0"]}
+                    ></UserResult>
+                }
             </div>
         </>
     );

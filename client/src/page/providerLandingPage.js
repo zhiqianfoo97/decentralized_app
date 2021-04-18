@@ -116,7 +116,8 @@ export default class MyComponent extends React.Component {
 
               <div className="flex items-center justify-center text-center py-6">
                 <span className="mx-2 text-2xl font-semibold text-black">
-                  {sessionStorage.getItem("name")}
+                  {localStorage.getItem("name")}
+                 
                 </span>
               </div>
               <div className="flex items-center justify-center text-center mb-3 " >

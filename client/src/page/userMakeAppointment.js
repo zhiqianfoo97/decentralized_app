@@ -25,10 +25,9 @@ const UserMakeAppointment = () => {
     const [hospitalLength, setHospitalLength] = useState(0);
     const [hospitalEthAdd, setHospitalEthAdd] = useState("");
     const [hospitalLocation, setHospitalLocation] = useState("");
+    const [hospitalPbKey, setHospitalPbKey] = useState("");
 
     const EthCrypto = require('eth-crypto');
-
-
 
 
     const onYearPicked = (res) => {
@@ -114,13 +113,13 @@ const UserMakeAppointment = () => {
         let networkID = await web3_.eth.net.getId();
         const deployedNetwork = HealthRecord.networks[networkID];
         let contract_ = new web3_.eth.Contract(HealthRecord.abi, deployedNetwork.address);
-        let listLength = contract_.methods.getHospitalListLength().call({ from: localStorage.getItem("eth_address") });
-        setHospitalLength(5);
+        let listLength = await contract_.methods.getHospitalListLength().call({ from: localStorage.getItem("eth_address") });
+        setHospitalLength(listLength);
         setContract(contract_);
         setSetupStatus(true);
     }
 
-    
+
     const setupAppointmentRow = async (start) => {
         let temp_list = [];
         let temp = "";
@@ -130,56 +129,79 @@ const UserMakeAppointment = () => {
                 break;
             }
 
-            promise = contract.methods.getHospitalList(i).call({ from: localStorage.getItem("eth_address") }, function (error, result) {
+            // promise = contract.methods.getHospitalList(i).call({ from: localStorage.getItem("eth_address") }, function (error, result) {
+            //     temp = result;
+            // }).then(onfulFilled => {
+            //     if (temp !== "") {
+
+            //         temp_list.push(<Dropdown.Item href="#/action-1" key={i}
+            //             onClick={() => {
+            //                 setCenter(temp["1"]);
+            //                 setHospitalEthAdd(temp["0"]);
+            //                 setHospitalLocation(temp["2"]);
+            //             }}>{temp["1"]}</Dropdown.Item>)
+
+            //     }
+            // }, onRejected => {
+            //     // temp = { "0": "0xF170e89d6Fe3F7a44E9549544473546b4E5AE42F", "1": "HKU", "2": "POK FU LAM" };
+            //     // if (temp !== "") {
+            //     //     temp_list.push(<Dropdown.Item href="#/action-3" key={i}
+            //     //         onClick={() => {
+
+            //     //             setCenter(temp["1"]);
+            //     //             setHospitalEthAdd(temp["0"]);
+            //     //             setHospitalLocation(temp["2"]);
+            //     //         }}>{temp["1"]}</Dropdown.Item>)
+
+            //     // }
+            //     console.log("nooo");
+            // })
+            contract.methods.getHospitalList(i).call({ from: localStorage.getItem("eth_address") }, function (error, result) {
                 temp = result;
-            }).then(onfulFilled => {
+                console.log(result);
                 if (temp !== "") {
-                    temp_list.push(<Dropdown.Item href="#/action-3"
+                    temp_list.push(<Dropdown.Item href="#/action-1" key={i}
                         onClick={() => {
                             setCenter(temp["1"]);
                             setHospitalEthAdd(temp["0"]);
                             setHospitalLocation(temp["2"]);
+                            setHospitalPbKey(temp["3"]);
                         }}>{temp["1"]}</Dropdown.Item>)
 
                 }
-            }, onRejected => {
-                temp = {"0": "0xF170e89d6Fe3F7a44E9549544473546b4E5AE42F", "1": "HKU", "2":"POK FU LAM"};
-                if (temp !== "") {
-                    temp_list.push(<Dropdown.Item href="#/action-3" key={i}
-                        onClick={() => {
-                            
-                            setCenter(temp["1"]);
-                            setHospitalEthAdd(temp["0"]);
-                            setHospitalLocation(temp["2"]);
-                        }}>{temp["1"]}</Dropdown.Item>)
 
-                }
             })
 
+
         }
-        promise.then((value) => {
-                setHospitalList(temp_list);
-            }
-        )
+        //promise.then((value) => {
+        setHospitalList(temp_list);
+        //}
+        //)
 
 
     }
 
 
-    const makeAppointment = async (e) =>{
+    const putCenter=(name) =>{
+        setCenter(name);
+    }
+
+    const makeAppointment = async (e) => {
         e.preventDefault();
-        let timePicked =`${date}/${month}/${year} ${hour}:${minute}:${second} ${meridiem}`
-        let userInfo = {"name":localStorage.getItem("name"), "hkid":localStorage.getItem("hkid")};
+        let timePicked = `${date}/${month}/${year} ${hour}:${minute}:${second} ${meridiem}`
+        let userInfo = { "name": localStorage.getItem("name"), "hkid": localStorage.getItem("hkid") };
         await EthCrypto.encryptWithPublicKey(
             localStorage.getItem("public_key"), // publicKey
             JSON.stringify(userInfo) // message
-        ).then(function(result){
+        ).then(function (result) {
             const to_string = EthCrypto.cipher.stringify(result);
 
-            contract.methods.userMakeAppointment(center, hospitalLocation, timePicked, hospitalEthAdd, to_string ).call({
-                from: localStorage.getItem("eth_address")
-            }, function(error, result){
-                
+            contract.methods.userMakeAppointment(center, hospitalLocation, timePicked, hospitalEthAdd, to_string).send({
+                from: localStorage.getItem("eth_address"),
+                gas: 3000000
+            }, function (error, result) {
+
                 alert("Success!");
                 window.location.reload();
 
@@ -187,44 +209,8 @@ const UserMakeAppointment = () => {
             });
 
         });
-        
-
 
     }
-
-        //mark for remove
-    const testETH = async (e) =>{
-        e.preventDefault();
-        var json = {};
-        var jsonMsg = {"name":"Ali", "hkid":"M12341(A)"};
-
-        const pkey = EthCrypto.publicKeyByPrivateKey(
-            '6a496db574cdffdc83164c8129d62e0214771d5cbfcc43bb410b3519b75cbb9d'
-        )
-
-        var encrypted = await EthCrypto.encryptWithPublicKey(
-            pkey, // publicKey
-            JSON.stringify(jsonMsg) // message
-        ).then((value) => {
-            json = value
-            console.log("JSON? = " + json);
-        })
-
-        const to_string = EthCrypto.cipher.stringify(json);
-        console.log("strng json = " + to_string);
-        const back_to_json = EthCrypto.cipher.parse(to_string);
-
-        var message = await EthCrypto.decryptWithPrivateKey(
-            '6a496db574cdffdc83164c8129d62e0214771d5cbfcc43bb410b3519b75cbb9d', // privateKey
-            back_to_json
-            
-        ).then(async (message) =>{
-            let temp = await web3.eth.getAccounts();
-            console.log("ACC = " + temp);
-            console.log("MSG? =" + JSON.parse(message)["hkid"]);
-        })
-    }
-
 
     useEffect(() => {
         setup();
@@ -247,7 +233,7 @@ const UserMakeAppointment = () => {
                     <div className="row_container" style={{ marginBottom: '20px' }}>
                         <div className="center_title">
                             Select a Center:
-                    </div>
+                        </div>
                         <div className="center_item">
                             <Dropdown>
                                 <Dropdown.Toggle variant="light" id="dropdown-basic">
@@ -297,7 +283,7 @@ const UserMakeAppointment = () => {
                         onClearTime={res => onClearTime(res)}
                     />
                     <div className="btn-wrapper">
-                        <button type="submit" onClick={testETH} className="btn btn-primary mt-4">Make Appointment</button>
+                        <button type="submit" onClick={makeAppointment} className="btn btn-primary mt-4">Make Appointment</button>
                     </div>
 
 

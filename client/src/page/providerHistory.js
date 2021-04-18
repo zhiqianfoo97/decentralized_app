@@ -30,10 +30,10 @@ const ProviderHistory = (props) => {
         let networkID = await web3_.eth.net.getId();
         const deployedNetwork = HealthRecord.networks[networkID];
         let contract_ = new web3_.eth.Contract(HealthRecord.abi, deployedNetwork.address);
-        let length = 10;
+        let length = 0;
 
         contract_.methods.getProviderHistoryListLength(account).call({from: account}, function(error, result){
-            setHistoryLength(10);  // change to result
+            setHistoryLength(result);  // change to result
             setContract(contract_);
             setSetupStatus(true);
 
@@ -55,7 +55,8 @@ const ProviderHistory = (props) => {
 
     const setupHistory = async (start) => {
         let temp_list = [];
-        let temp = {"0": "0x6e70cdAf8049D1FDfAC7f31DD1eeC3517d50E75c", "1": "01-02-21"};
+        //let temp = {"0": "0x6e70cdAf8049D1FDfAC7f31DD1eeC3517d50E75c", "1": "01-02-21"};
+        let temp = "";
         let continueFlag = true;
         for (let i = start - 1 ; i >= start - pageLimit; i--){
             if (i < 0){
@@ -63,17 +64,23 @@ const ProviderHistory = (props) => {
                 break;
             }
 
-            try {
-                temp = await contract.methods.getProviderHistoryList(i, account).call({ from: account });
-            } catch (error) {
-                console.log("Provider history does not exist.");
-            } finally {
-                if (temp !== "") {
-                    temp_list.push(<HistoryRow key={i} userAddress={temp["0"]} date={temp["1"]}></HistoryRow>)
+            // try {
+            //     temp = await contract.methods.getProviderHistoryList(i, account).call({ from: account });
+            // } catch (error) {
+            //     console.log("Provider history does not exist.");
+            // } finally {
+            //     if (temp !== "") {
+            //         temp_list.push(<HistoryRow key={i} userAddress={temp["0"]} date={temp["1"]}></HistoryRow>)
+            //     }
+
+            // }
+
+            contract.methods.getProviderHistoryList(i, account).call({ from: account }, (err, result) =>{
+
+                if (result !== "") {
+                    temp_list.push(<HistoryRow key={i} userAddress={result["0"]} date={result["1"]}></HistoryRow>)
                 }
-
-            }
-
+            })
 
             //let temp = {"0": "0x6e70cdAf8049D1FDfAC7f31DD1eeC3517d50E75c", "1": "01-02-21"};
             // 0 = patient address, 1 = date
@@ -115,6 +122,7 @@ const ProviderHistory = (props) => {
         }
         setupHistory(count);
         setCurrentLimit(count);
+        console.log(historyLength);
 
     }
 

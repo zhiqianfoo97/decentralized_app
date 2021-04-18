@@ -1,5 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import getWeb3 from "../getWeb3";
+import HealthRecord from "../contracts/HealthRecord.json";
+
+
 const SupplierSignUpPage = () => {
     const initialState = {
         username: "",
@@ -13,6 +17,13 @@ const SupplierSignUpPage = () => {
     };
 
     const [field, setField] = useState(initialState);
+    const [pvKey, setpvKey] = useState("");
+    const [setupStatus, setSetupStatus] = useState(false);
+    const [web3, setWeb3] = useState(null);
+    const [contract, setContract] = useState(null);
+    const [userPassHash, setUserPassHash] = useState("");
+    const [provPubKey, setProvPubKey] = useState("");
+
 
     const changeValue = (comp, val) => {
         setField({
@@ -22,12 +33,20 @@ const SupplierSignUpPage = () => {
     }
 
 
-    // //need to improve this
-    // const signUp = (e) => {
-    //     e.preventDefault();
-    //     console.log("Test : " , e.target)
+    const setup = async () => {
+        const web3_ = await getWeb3();
+        setWeb3(web3_);
+        let networkID = await web3_.eth.net.getId();
+        const deployedNetwork = HealthRecord.networks[networkID];
+        let contract_ = new web3_.eth.Contract(HealthRecord.abi, deployedNetwork.address);
 
-    // }
+        setContract(contract_);
+        setSetupStatus(true);
+    }
+
+    useEffect(() => {
+        setup();
+    }, [setupStatus])
 
     const ipfsAPI = require('ipfs-api');
     // // const ipfs = ipfsAPI('localhost', '5001');
@@ -48,7 +67,7 @@ const SupplierSignUpPage = () => {
     //     return rootDirectoryContents
     // }
 
-    function createUser(e) {
+    async function createUser(e) {
         e.preventDefault();
         var username = field.username;
         var name = field.name;
@@ -56,77 +75,46 @@ const SupplierSignUpPage = () => {
         var healthcare_provider_number = field.healthcare_provider_number;
         var password = field.password;
         var ipfsHash = "";
+        const EthCrypto = require('eth-crypto');
+        const public_key = EthCrypto.publicKeyByPrivateKey(pvKey);
+        setProvPubKey(public_key);
+
         console.log("creating user on ipfs for", username);
         var userJsonAuthentication = {
-            name: name,
+            username: username,
             password: password
         };
 
         var userJsonInfo = {
-            address: address,
-            healthcare_provider_number: healthcare_provider_number,
+            public_key: public_key
         }
 
 
         console.log("sending info");
-        // const options = {
-        //     mode: 'no-cors',
-        //     method: 'POST',
-        //     headers: {'Content-Type': 'application/json'},
-        //     body: JSON.stringify(userJson)
-        // }
 
 
-
-        // const response = await fetch('http://localhost:3001/api', options);
-        // const data = await response.text();
-
-        // fetch('http://localhost:3001/api',{
-        //     method: 'POST',
-        //     headers: {
-        //         'Accept': 'application/json',
-        //         'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify(userJson)
-        // }).then(response => {
-        //         console.log(response)
-        //     })
-        // .catch(error =>{
-        //         console.log(error)
-        // })
-
-        // console.log(JSON.stringify(userJson));
-
-        ipfs.add([Buffer.from(JSON.stringify(userJsonAuthentication))], function (err, res) {
+        ipfs.add([Buffer.from(JSON.stringify(userJsonAuthentication))], async function (err, res) {
             if (err) throw err
-            ipfsHash = res[0].hash
-            console.log(ipfsHash);
+            ipfsHash = (res[0].hash);
+
             if (ipfsHash != 'not-available') {
                 var url = 'https://ipfs.io/ipfs/' + ipfsHash;
                 console.log('getting user authentication from', url);
 
             }
+
+            var encrypted = await EthCrypto.encryptWithPublicKey(
+                public_key, // publicKey
+                ipfsHash // message
+            );
+
+            setUserPassHash(EthCrypto.cipher.stringify(encrypted));
+            setOpenAdminMenu(true);
         });
-
-
-        ipfs.add([Buffer.from(JSON.stringify(userJsonInfo))], function (err, res) {
-            if (err) throw err
-            ipfsHash = res[0].hash
-            console.log(ipfsHash);
-            if (ipfsHash != 'not-available') {
-                var url = 'https://ipfs.io/ipfs/' + ipfsHash;
-                console.log('getting user info from', url);
-
-            }
-        });
-
 
     }
 
-
-
-
-
+    const [openAdminMenu, setOpenAdminMenu] = useState(false);
 
     return (
         <>
@@ -151,10 +139,25 @@ const SupplierSignUpPage = () => {
                 </div>
             </nav>
 
+            {openAdminMenu ?
+                <div className="center_popup">
+                    <div>
+                        <label>Provider's public key</label>
+                        <div>{provPubKey}</div>
+                    </div>
+
+                    <div>
+                        <label>Provider's encrypted login info</label>
+                        <div>{userPassHash}</div>
+                    </div>
+                </div>
+
+                : ""}
+
             <div className="auth-wrapper">
                 <div className="auth-inner">
                     <form>
-                        <h3>New Supplier</h3>
+                        <h3>New Provider</h3>
 
                         <div className="form-group">
                             <label>Username</label>
@@ -163,7 +166,7 @@ const SupplierSignUpPage = () => {
 
                         <div className="form-group">
                             <label>Name</label>
-                            <input type="text" className="form-control" value={field.username} placeholder="Enter name" onChange={(e) => changeValue('name', e.target.value)} />
+                            <input type="text" className="form-control" value={field.name} placeholder="Enter name" onChange={(e) => changeValue('name', e.target.value)} />
                         </div>
 
                         <div className="form-group">
@@ -173,7 +176,7 @@ const SupplierSignUpPage = () => {
 
                         <div className="form-group">
                             <label>Healthcare Provider Number</label>
-                            <input type="text" className="form-control" value={field.hcare_num} placeholder="Enter healthcare provider no." onChange={(e) => changeValue('healthcare_provider_number', e.target.value)} />
+                            <input type="text" className="form-control" value={field.healthcare_provider_number} placeholder="Enter healthcare provider no." onChange={(e) => changeValue('healthcare_provider_number', e.target.value)} />
                         </div>
 
                         <div className="form-group">
@@ -191,14 +194,20 @@ const SupplierSignUpPage = () => {
                             <input type="password" className="form-control" value={field.password} placeholder="Enter password" onChange={(e) => changeValue('password', e.target.value)} />
                         </div>
 
-                        <button type="submit" className="btn btn-primary btn-block" >Sign Up</button>
+                        <div className="form-group">
+                            <label>Private key</label>
+                            <input type="password" className="form-control" value={pvKey} placeholder="Enter password" onChange={(e) => setpvKey(e.target.value)} />
+                            <p className="forgot-password">Private key is only used to generate public key for encryption purposes and is never sent over network.</p>
+                        </div>
+
+                        <button type="submit" className="btn btn-primary btn-block" onClick={createUser} >Sign Up</button>
                         <p className="forgot-password text-right">
-                            {/* Already registered? <Link className="nav-link" to={"/sign-in"}>Sign in</Link> */}
                             Registration will be subjected to manual review.
                         </p>
                     </form>
                 </div>
             </div>
+            
         </>
     );
 

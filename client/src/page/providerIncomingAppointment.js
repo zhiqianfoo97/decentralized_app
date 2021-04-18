@@ -31,14 +31,16 @@ const AppointmentRow = (props) => {
 
     const uploadResult = async (e) => {
         e.preventDefault();
-        try {
-            await props.contract.methods.addPendingHealthRecord(result, props.date, localStorage.getItem("name"), localStorage.getItem("location"), props.ethAdd, etherAmt);
-            alert("Success!");
-            window.location.reload();
-        } catch (error) {
-            console.log(error);
-            alert(error);
-        }
+        props.contract.methods.addPendingHealthRecord(result, props.date, localStorage.getItem("name"), localStorage.getItem("location"), props.ethAdd, etherAmt).send({from: localStorage.get("eth_address")}, (err, result) => {
+            if(err){
+                alert(err);
+
+            }else{
+                alert("Success!");
+                window.location.reload();
+            }
+
+        })
     }
     // return (
 
@@ -69,7 +71,6 @@ const AppointmentRow = (props) => {
             <div className="form-group border-bottom" onClick={openPayment}>
                 <label className="appointment-info">Ethereum Address: {props.ethAdd} </label>
                 <label className="appointment-info">Date: {props.date} </label>
-                <label className="appointment-info">Haha : {props.count}</label>
             </div>
 
             <div className={styleState}>
@@ -157,173 +158,86 @@ const ProviderIncomingAppointment = () => {
         let networkID = await web3_.eth.net.getId();
         const deployedNetwork = HealthRecord.networks[networkID];
         let contract_ = new web3_.eth.Contract(HealthRecord.abi, deployedNetwork.address);
-        let length = 5;
+        let length = 0;
 
         contract_.methods.getUserAppointmentListLength(account).call({ from: account }, function (error, result) {
-            setAppointmentLength(5);
+            setAppointmentLength(result);
             setContract(contract_);
             setSetupStatus(true);
 
         })
 
-
-
-        // try{
-        //     length = await contract_.methods.getUserAppointmentListLength(account).call({from: account});
-
-        // }catch(error){
-        //     console.log("Provider history does not exist.");
-        // }finally{
-        //     setContract(contract_);
-        //     setSetupStatus(true);
-        //     setAppointmentLength(length);
-        // }
-
-
     }
 
-    // const getData = async (i, account) =>{
-    //     temp = await contract.methods.getProviderAppointmentList(i, account ).call({from: account}); 
 
-    //     return(
-    //         <AppointmentRow key={i} count={i} ethAdd={ethAdd} date={date} hkid={hkid} name={name} contract={contract} web3={web3}></AppointmentRow>
-    //     )
-    // }
 
     const makeRow = async (start) => {
         let temp_list = [];
-        let continueFlag = true;
         var temp;
-        let ethAdd = "";
-        let date = "";
-        let hkid = "";
-        let name = "";
-        var promise;
         for (let i = start - 1; i >= start - pageLimit; i--) {
             if (i < 0) {
-                continueFlag = false;
                 break;
             }
 
-            // try{
-            //     promise = new Promise(function(resolve,reject){
-            //          contract.methods.getProviderAppointmentList(i, account ).call({from: account}, function(error, result){
-            //             console.log(error);
-            //             temp = result;
-            //         }); 
-            //     }).then(function(temp){
-            //         temp = "A";
-            //          if(temp !== ""){
-            //             temp_list.push(<AppointmentRow key={i} count={i} ethAdd={ethAdd} date={date} hkid={hkid} name={name} contract={contract} web3={web3}></AppointmentRow>)
-            //             console.log("que?");
-            //         }
-            //     }) 
 
-            //     // temp = await contract.methods.getProviderAppointmentList(i, account ).call({from: account}); 
-            //     // temp.then(function(temp){
-            //     //     if(temp !== ""){
-            //     //         temp_list.push(<AppointmentRow key={i} count={i} ethAdd={ethAdd} date={date} hkid={hkid} name={name} contract={contract} web3={web3}></AppointmentRow>)
-            //     //         console.log("que?");
-            //     //     }
-            //     // })
-            // }catch(error){
-            //     console.log("Provider appointment does not exist.");
-            //     temp = "a";
-            //     promise = new Promise(function(resolve,reject){
-            //         setTimeout(resolve, 500);
-            //     }).then(function(){
-            //          ethAdd = "dsfsdfsdf";
-            //          date = "341ad";
-            //          hkid = "3234324";
-            //          name= "fck";
-            //          if(temp !== ""){
-            //             temp_list.push(<AppointmentRow key={i} count={i} ethAdd={ethAdd} date={date} hkid={hkid} name={name} contract={contract} web3={web3}></AppointmentRow>)
-            //             console.log("que?");
-            //         }
-            //     }) 
-
-
-            // }finally{
-            //     // temp.then((temp)=>{
-            //     //     if(temp !== ""){
-            //     //         temp_list.push(<AppointmentRow key={i} count={i} ethAdd={temp["ethAdd"]} date={date} hkid={hkid} name={name} contract={contract} web3={web3}></AppointmentRow>)
-            //     //         console.log("que?");
-            //     //     }
-            //     // })
-            //     console.log("fck u");
-            // }
-
-            // const back_to_json = EthCrypto.cipher.parse(to_string);
-
-            // var message = await EthCrypto.decryptWithPrivateKey(
-            //     identity.privateKey, // privateKey
-            //     back_to_json
-                
-            // ).then((message) =>{
-            //     console.log(message);
-            // })
-
-
-            promise = contract.methods.getProviderAppointmentList(i, account).call({ from: account }, function (error, result) {
+            contract.methods.getProviderAppointmentList(i, account).call({ from: account }, function (error, result) {
                 temp = result; //patient add, date, encrypted info
-            }).then(async onfulFilled => {
                 if (temp !== "") {
                     const back_to_json = EthCrypto.cipher.parse(temp["2"]);
-                    var message = await EthCrypto.decryptWithPrivateKey(
+                    EthCrypto.decryptWithPrivateKey(
                             localStorage.getItem("private_key"), // privateKey
                             back_to_json
                             
-                        ).then((message) =>{
+                    ).then((message) =>{
                             let parsedMessage = JSON.parse(message);
                             temp_list.push(<AppointmentRow key={i} count={i} ethAdd={temp["0"]} date={temp["1"]} hkid={parsedMessage["hkid"]} name={parsedMessage["name"]} contract={contract} web3={web3}></AppointmentRow>)
+                            setAppointmentList(temp_list);
                     })
-
-                   // temp_list.push(<AppointmentRow key={i} count={i} ethAdd={ethAdd} date={date} hkid={hkid} name={name} contract={contract} web3={web3}></AppointmentRow>)
-                  //  console.log("que?");
                 }
-            }, onRejected => {
-                console.log("fck");
-                console.log("Inside");
-                temp = "A";
-                ethAdd = "sam very handsome";
-                if (temp !== "") {
-                    temp_list.push(<AppointmentRow key={i} count={i} ethAdd={ethAdd} date={date} hkid={hkid} name={name} contract={contract} web3={web3}></AppointmentRow>)
-                    console.log("que?");
-                }
-            })
 
-
-            //let temp = {"0": "0x6e70cdAf8049D1FDfAC7f31DD1eeC3517d50E75c", "1": "01-02-21"};
-            // 0 = patient address, 1 = date, 2 = encrypted patient info.
-            // contract.methods.getProviderAppointmentList(i, account ).call({from: account}, function(error, result){
-            //     let ethAdd = "0x6e70cdAf8049D1FDfAC7f31DD1eeC3517d50E75c";
-            //     let date = "01-02-21";
-            //     let hkid = "M1238123";
-            //     let name = "Ali";
-            //     console.log("HELLO " + temp);
-
-
-            //     if(temp !== ""){
+            }
+        )
+    }
+            // }).then(async onfulFilled => {
+                
+            // }, onRejected => {
+            //     if (temp !== "") {
             //         temp_list.push(<AppointmentRow key={i} count={i} ethAdd={ethAdd} date={date} hkid={hkid} name={name} contract={contract} web3={web3}></AppointmentRow>)
             //         console.log("que?");
             //     }
+            // })
 
-            //     console.log("temp_list = "+ temp_list);
+            // promise = contract.methods.getProviderAppointmentList(i, account).call({ from: account }, function (error, result) {
+            //     temp = result; //patient add, date, encrypted info
+            // }).then(async onfulFilled => {
+            //     if (temp !== "") {
+            //         const back_to_json = EthCrypto.cipher.parse(temp["2"]);
+            //         var message = await EthCrypto.decryptWithPrivateKey(
+            //                 localStorage.getItem("private_key"), // privateKey
+            //                 back_to_json
+                            
+            //             ).then((message) =>{
+            //                 let parsedMessage = JSON.parse(message);
+            //                 temp_list.push(<AppointmentRow key={i} count={i} ethAdd={temp["0"]} date={temp["1"]} hkid={parsedMessage["hkid"]} name={parsedMessage["name"]} contract={contract} web3={web3}></AppointmentRow>)
+            //         })
 
-
+            //        // temp_list.push(<AppointmentRow key={i} count={i} ethAdd={ethAdd} date={date} hkid={hkid} name={name} contract={contract} web3={web3}></AppointmentRow>)
+            //       //  console.log("que?");
+            //     }
+            // }, onRejected => {
+            //     if (temp !== "") {
+            //         temp_list.push(<AppointmentRow key={i} count={i} ethAdd={ethAdd} date={date} hkid={hkid} name={name} contract={contract} web3={web3}></AppointmentRow>)
+            //         console.log("que?");
+            //     }
             // })
 
 
-
-
-
-
-        }
-        promise.then((value) => {
-            if (continueFlag) {
-                setAppointmentList(temp_list);
-            }
-        })
+        
+        //promise.then((value) => {
+        // if (continueFlag) {
+        //     setAppointmentList(temp_list);
+        // }
+        //})
 
     }
 
@@ -362,14 +276,9 @@ const ProviderIncomingAppointment = () => {
     return (
         <div className="auth-inner">
 
-
             <h3 >Incoming Appointment</h3>
 
-            <input name="text" className="search-bar" type="text" placeholder="Search" />
-
             {appointmentList}
-
-
 
 
             <button onClick={clickPrev}>Previous</button>

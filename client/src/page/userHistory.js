@@ -19,9 +19,9 @@ const UserResult = (props) => {
         setStyleState("center_hidden");
     }
 
-    const makePayment = async (count_) => (e) => {
-        console.log("Count = " + count_);
+    const makePayment = async (e) => {
         e.preventDefault();
+        console.log("Count = " + props.count);
         if (!payStatus) {
             setPayStatus(true);
             setPayText("Paying.. Do not refresh");
@@ -32,9 +32,19 @@ const UserResult = (props) => {
             }).on('confirmation', function (confirmationNumber, receipt) {
                 setPayText("Paid");
 
-                props.contract.methods.updatePendingHealthRecord(props.account, true, count_).call({ from: props.account }).then(function (result) {
-                    window.location.reload();
-                });
+                props.contract.methods.updatePendingHealthRecord(props.account, true, props.count).send({ from: props.account, gas:3000000 }, (err, result) => {
+                    if(err){
+                        alert(err);
+                    }else{
+                        alert("Success!");
+                        window.location.reload();
+                    }
+                    
+
+
+                })
+                    
+                ;
 
             }).on('error', console.error);
 
@@ -92,7 +102,7 @@ const UserResult = (props) => {
 
                     <button type="submit" className="btn btn-primary btn-block result-btn" onClick={openPayment}>
                         Pay to View
-                </button>
+                    </button>
                 }
 
             </form>
@@ -186,7 +196,7 @@ const ResultRow = (props) => {
                 <UserResult paidStat={props.paidStat} date={props.date} amount={props.amount} provName={props.provName}
                     payableTo={props.payableTo} provLocation={props.provLocation}
                     name={localStorage.getItem("name")} hkid={localStorage.getItem("hkid")}
-                    web3={props.web3} account={props.account} count={props.count} contract={props.contract}
+                    web3={props.web3} account={props.account} count={props.count} contract={props.contract} result={props.result}
                 ></UserResult>
             </div>
 
@@ -225,32 +235,19 @@ const UserHistory = (props) => {
         const web3_ = await getWeb3();
         setWeb3(web3_);
         let networkID = await web3_.eth.net.getId();
-        console.log("NETWORK ID = " + networkID);
+       
         const deployedNetwork = HealthRecord.networks[networkID];
         let contract_ = new web3_.eth.Contract(HealthRecord.abi, deployedNetwork.address);
-        let appointLength = 5;
-        let resultLength_ = 5;
+        let appointLength = 0;
+        let resultLength_ = 0;
 
         contract_.methods.getUserAppointmentListLength(account).call({ from: account }, function (error, result) {
-            setAppointmentLength(5);
+            setAppointmentLength(result);
         });
 
         contract_.methods.getPendingHealthRecordLength(account).call({ from: account }, function (error, result) {
-            setResultLength(5);
+            setResultLength(result);
         });
-
-
-        // try{
-        //     appointLength = await contract.methods.getUserAppointmentListLength(account).call({from: account});
-        // }catch(err){
-        //     appointLength = 0;
-        // }
-
-        // try{
-        //     resultLength_ = await contract.methods.getPendingHealthRecordLength(account).call({from: account});
-        // }catch(err){
-        //     resultLength_ = 0;
-        // }
 
 
         setContract(contract_);
@@ -261,7 +258,7 @@ const UserHistory = (props) => {
 
     const setupResult = async (start) => {
         let temp_list = [];
-        let temp = "999";
+        let temp = "";
         let provInfo = "";
         let continueFlag = true;
         for (let i = start - 1; i >= start - pageLimit; i--) {
@@ -271,37 +268,40 @@ const UserHistory = (props) => {
             }
 
 
-            try {
-                temp = await contract.methods.getPendingHealthRecord(i, account).call({ from: account });
-            } catch (err) {
-                console.log("Health record info err : " + err);
-                temp = { "0": "pos", "1": "01-02-21", "2": "Queen mary", "3": "Tsim sha tsui", "4": "1", "5": false, "6": "0x6e70cdAf8049D1FDfAC7f31DD1eeC3517d50E75c" };
-            }
+            // try {
+            //     temp = await contract.methods.getPendingHealthRecord(i, account).call({ from: account });
+            // } catch (err) {
+            //     console.log("Health record info err : " + err);
+    
+            // }
 
-            try {
-                provInfo = await contract.methods.getProviderInfo(temp["6"]).call({ from: account });
-            } catch (err) {
-                console.log("Provider info err : " + err);
-                provInfo = { "0": "Queen mary", "1": "HKU" };
-            }
-            //let temp = await contract.methods.getPendingHealthRecord(i, account ).call({from: account}); 
-            temp = { "0": "pos", "1": "01-02-21", "2": "Queen mary", "3": "Tsim sha tsui", "4": "1", "5": false, "6": "0x6e70cdAf8049D1FDfAC7f31DD1eeC3517d50E75c" };
-            // 0 = test result, 1 = date, 2 = placeName, 3 = place, 4 = amount, 5 = paid status, 6=payable address
-            // to use, temp["0"]
-            provInfo = { "0": "Queen mary", "1": "HKU" };
-            // 0 = place name, 1 = location
+            contract.methods.getPendingHealthRecord(i, account).call({ from: account }, (err, result) =>{
+                if(err){
+                    alert(err);
+                }else{
+                    temp = result;
+                    contract.methods.getProviderInfo(result["6"]).call({ from: account }, (err2, result2)=>{
+                        provInfo = result2;
+                        if (temp !== "") {
+                            temp_list.push(<ResultRow key={i} type={true} provName={provInfo["0"]}
+                                provLocation={provInfo["1"]} account={account} result={temp["0"]} date={temp["1"]}
+                                placeName={temp["2"]} location={temp["3"]} amount={temp["4"]} paidStat={temp["5"]} payableTo={temp["6"]} web3={web3}
+                                count={i} contract={contract}></ResultRow>)
+                        }
 
-            if (temp !== "") {
-                temp_list.push(<ResultRow key={i} type={true} provName={provInfo["0"]}
-                    provLocation={provInfo["1"]} account={account} result={temp["0"]} date={temp["1"]}
-                    placeName={temp["2"]} location={temp["3"]} amount={temp["4"]} paidStat={temp["5"]} payableTo={temp["6"]} web3={web3}
-                    count={i} contract={contract}></ResultRow>)
-            }
+                        setResultList(temp_list);
+                    });
+              
+
+                }
+                
+
+
+            });
 
         }
-        if (continueFlag) {
-            setResultList(temp_list);
-        }
+        
+
 
     }
 
@@ -370,6 +370,7 @@ const UserHistory = (props) => {
 
         }
         setCurrentLimit(count);
+        console.log(resultLength);
     }
 
     const changeToAppointment = (e) => {

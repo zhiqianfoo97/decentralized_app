@@ -11,7 +11,8 @@ const AdminAddProvider = () => {
         password: "",
         eth_address: "",
         location: "",
-
+        public_key: "",
+        encrypted: "",
     };
 
     const [showUser, setShowUser] = useState(false);
@@ -21,6 +22,7 @@ const AdminAddProvider = () => {
     const [web3, setWeb3] = useState(null);
     const [contract, setContract] = useState(null);
     const [adminAddress, setAdminAddress] = useState("");
+    
 
     const changeValue = (comp, val) => {
         setField({
@@ -29,103 +31,6 @@ const AdminAddProvider = () => {
         })
     }
 
-    const changeAdmin = (e) => {
-        e.preventDefault();
-        setAdminAddress(e.target.value);
-    }
-
-    const ipfsAPI = require('ipfs-api');
-    // // const ipfs = ipfsAPI('localhost', '5001');
-    const ipfs = ipfsAPI({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
-    // ipfs.id(function(err, res) {
-    //     if (err) throw err
-    //     console.log("Connected to IPFS node!", res.id, res.agentVersion, res.protocolVersion);
-    // });
-
-    // const run = async (files) => {
-    //     // This code adds your uploaded files to your root directory in IPFS
-    //     await Promise.all(files.map(f => ipfs.files.write('/' + f.name, f, { create: true })))
-
-    //     // Add your code to create a new directory here
-    //     await ipfs.files.mkdir('/userInfo', { parents: true })
-
-    //     let rootDirectoryContents = await all(ipfs.files.ls('/'))
-    //     return rootDirectoryContents
-    // }
-
-    function createUser(e) {
-        e.preventDefault();
-        var username = field.username;
-        var name = field.name;
-        var address = field.address;
-        var healthcare_provider_number = field.healthcare_provider_number;
-        var password = field.password;
-        var ipfsHash = "";
-        console.log("creating user on ipfs for", username);
-        var userJsonAuthentication = {
-            name: name,
-            password: password
-        };
-
-        var userJsonInfo = {
-            address: address,
-            healthcare_provider_number: healthcare_provider_number,
-        }
-
-
-        // const options = {
-        //     mode: 'no-cors',
-        //     method: 'POST',
-        //     headers: {'Content-Type': 'application/json'},
-        //     body: JSON.stringify(userJson)
-        // }
-
-
-
-        // const response = await fetch('http://localhost:3001/api', options);
-        // const data = await response.text();
-
-        // fetch('http://localhost:3001/api',{
-        //     method: 'POST',
-        //     headers: {
-        //         'Accept': 'application/json',
-        //         'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify(userJson)
-        // }).then(response => {
-        //         console.log(response)
-        //     })
-        // .catch(error =>{
-        //         console.log(error)
-        // })
-
-        // console.log(JSON.stringify(userJson));
-
-        ipfs.add([Buffer.from(JSON.stringify(userJsonAuthentication))], function (err, res) {
-            if (err) throw err
-            ipfsHash = res[0].hash
-            console.log(ipfsHash);
-            if (ipfsHash != 'not-available') {
-                var url = 'https://ipfs.io/ipfs/' + ipfsHash;
-                console.log('getting user authentication from', url);
-
-            }
-        });
-
-
-        ipfs.add([Buffer.from(JSON.stringify(userJsonInfo))], function (err, res) {
-            if (err) throw err
-            ipfsHash = res[0].hash
-            console.log(ipfsHash);
-            if (ipfsHash != 'not-available') {
-                var url = 'https://ipfs.io/ipfs/' + ipfsHash;
-                console.log('getting user info from', url);
-
-            }
-        });
-
-
-    }
 
     const setup = async () => {
         const web3_ = await getWeb3();
@@ -133,29 +38,32 @@ const AdminAddProvider = () => {
         let networkID = await web3_.eth.net.getId();
         const deployedNetwork = HealthRecord.networks[networkID];
         let contract_ = new web3_.eth.Contract(HealthRecord.abi, deployedNetwork.address);
+        web3_.eth.getAccounts().then((acc) =>{
+            setAdminAddress(acc[0]);
+        })
         setContract(contract_);
 
     }
 
-    const toHospital = () => {
-        contract.methods.registerHospital(field.eth_address, field.location, field.name).call({ from: { adminAddress } }, function (error, result) {
-            if (error) {
-                alert("Error.");
-            }
-            alert("Success!");
-        });
 
+    const toHospital = (e) => {
+        e.preventDefault();
+        contract.methods.registerHospital(field.eth_address, field.location, field.name, field.public_key, field.encrypted).send({ from: {adminAddress} , gas: 3000000 }, function (error, result) {
+            if (error) {
+                
+                window.alert("Error.");
+            }
+            window.alert("Success!");
+        });
     }
-
-    const toKiosk = () => {
-        contract.methods.registerKiosk(field.eth_address, field.location, field.name).call({ from: { adminAddress } }, function (error, result) {
+    const toKiosk = (e) => {
+        e.preventDefault();
+        contract.methods.registerKiosk(field.eth_address, field.location, field.name, field.public_key,  field.encrypted).send({ from: {adminAddress} , gas: 3000000 }, function (error, result) {
             if (error) {
                 alert("Error.");
             }
             alert("Success!");
         });
-
-
 
     }
 
@@ -186,11 +94,6 @@ const AdminAddProvider = () => {
     }, []);
 
 
-
-
-
-
-
     return (
         <>
             <div className="auth-wrapper">
@@ -198,7 +101,6 @@ const AdminAddProvider = () => {
                     {showAll ? "" : <button id="back-button" onClick={closeAll}> Back </button>}
                     <form>
                         {showAll ? <h3>Register provider</h3> : ""}
-
 
                         {showAll ?
                             <div >
@@ -227,14 +129,10 @@ const AdminAddProvider = () => {
 
 
                                 <h3>New Kiosk Provider</h3>
-                                <div className="form-group">
-                                    <label>Username</label>
-                                    <input type="text" className="form-control" value={field.username} placeholder="Enter name" onChange={(e) => changeValue('username', e.target.value)} />
-                                </div>
 
                                 <div className="form-group">
                                     <label>Name</label>
-                                    <input type="text" className="form-control" value={field.username} placeholder="Enter name" onChange={(e) => changeValue('name', e.target.value)} />
+                                    <input type="text" className="form-control" value={field.name} placeholder="Enter name" onChange={(e) => changeValue('name', e.target.value)} />
                                 </div>
 
                                 <div className="form-group">
@@ -248,15 +146,14 @@ const AdminAddProvider = () => {
                                 </div>
 
                                 <div className="form-group">
-                                    <label>Password</label>
-                                    <input type="password" className="form-control" value={field.password} placeholder="Enter password" onChange={(e) => changeValue('password', e.target.value)} />
+                                    <label>Provider public key</label>
+                                    <input type="text" className="form-control" value={field.public_key} placeholder="Enter public key" onChange={(e) => changeValue('public_key', e.target.value)} />
                                 </div>
 
                                 <div className="form-group">
-                                    <label>Admin address</label>
-                                    <input type="text" className="form-control" value={adminAddress} onChange={changeAdmin} ></input>
+                                    <label>Encrypted login information</label>
+                                    <input type="text" className="form-control" value={field.encrypted} placeholder="Provider encrypted login info" onChange={(e) => changeValue('encrypted', e.target.value)} />
                                 </div>
-
                                 <button type="submit" className="btn btn-primary btn-block" onClick={toKiosk} >Add</button>
 
                             </div>
@@ -268,16 +165,11 @@ const AdminAddProvider = () => {
 
                             <div>
 
-
                                 <h3>New Hospital Provider</h3>
-                                <div className="form-group">
-                                    <label>Username</label>
-                                    <input type="text" className="form-control" value={field.username} placeholder="Enter name" onChange={(e) => changeValue('username', e.target.value)} />
-                                </div>
 
                                 <div className="form-group">
                                     <label>Name</label>
-                                    <input type="text" className="form-control" value={field.username} placeholder="Enter name" onChange={(e) => changeValue('name', e.target.value)} />
+                                    <input type="text" className="form-control" value={field.name} placeholder="Enter name" onChange={(e) => changeValue('name', e.target.value)} />
                                 </div>
 
                                 <div className="form-group">
@@ -291,17 +183,15 @@ const AdminAddProvider = () => {
                                 </div>
 
                                 <div className="form-group">
-                                    <label>Password</label>
-                                    <input type="password" className="form-control" value={field.password} placeholder="Enter password" onChange={(e) => changeValue('password', e.target.value)} />
+                                    <label>Provider public key</label>
+                                    <input type="text" className="form-control" value={field.public_key} placeholder="Enter public key" onChange={(e) => changeValue('public_key', e.target.value)} />
                                 </div>
 
                                 <div className="form-group">
-                                    <label>Admin address</label>
-                                    <input type="text" className="form-control" value={adminAddress} onChange={changeAdmin} ></input>
+                                    <label>Encrypted login information</label>
+                                    <input type="text" className="form-control" value={field.encrypted} placeholder="Provider encrypted login info" onChange={(e) => changeValue('encrypted', e.target.value)} />
                                 </div>
-
-                                <button type="submit" className="btn btn-primary btn-block" onClick={toHospital} >Add</button>
-
+                                <button type="submit" className="btn btn-primary btn-block" onClick={toHospital}>Add</button>
                             </div>
                             : ""}
 
