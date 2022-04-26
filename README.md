@@ -1,4 +1,4 @@
-                                                       #Documentation
+                                                       Documentation
 To start testing the decentralized application on a localhost, first we need to set up truffle on our computer. Truffle (also known as Ganache), can quickly fire up a personal Ethereum blockchain locally which we can use to run tests, execute commands, and inspect state while controlling how the chain operates.
 
  ![image](https://user-images.githubusercontent.com/52153734/165371931-d68cb1f1-c9bf-446a-b379-e289eac0c823.png)
@@ -66,7 +66,7 @@ Click on any of the option and fill in the information of the applicants that yo
 
 
 
-                                                #A Walkthrough of User Interfaces 
+                                                A Walkthrough of User Interfaces 
 We have designed our system architecture carefully and produced some amazing user interfaces to provide our users with best experience. A walkthrough of our user interfaces is as follow: 
 
 ![image](https://user-images.githubusercontent.com/52153734/165372200-e7189f8a-cf46-4d8a-be4f-170dc9768674.png) 
